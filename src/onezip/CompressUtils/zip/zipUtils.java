@@ -3,6 +3,7 @@ package onezip.CompressUtils.zip;
 import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.control.ProgressBar;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import net.lingala.zip4j.ZipFile;
@@ -17,7 +18,12 @@ import net.lingala.zip4j.progress.ProgressMonitor;
 import java.io.*;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReference;
 
+import onezip.testOne;
 import onezip.ProcessFrame;
 
 public class zipUtils {
@@ -71,20 +77,16 @@ public class zipUtils {
     }
     public static void zipFolder(File folder, File output, int method, int level, boolean isEncrypt,String password) throws Exception{
         long d1 = System.currentTimeMillis();//开始时间
-        System.out.println("a");
+
         ZipFile zipFile = new ZipFile(output.getPath());//生成的压缩包
-        System.out.println("b");
         ZipParameters zipParameters = new ZipParameters();//压缩参数
 
-        System.out.println("c");
-
         setZipParameters(zipFile,zipParameters,method,level,isEncrypt,password);
-        System.out.println("d");
         ProgressMonitor progressMonitor = zipFile.getProgressMonitor();
 
-        System.out.println("e");
+
         zipFile.setRunInThread(true);
-        System.out.println("f");
+
         /*if(input.isFile()){//文件
             zipFile.addFile(input,zipParameters);
         }else{//文件夹
@@ -92,10 +94,9 @@ public class zipUtils {
         }
          */
         InputStream inputStream = null;
-        System.out.println("g");
+
         System.out.println(folder);
         ProgressMonitor progressMonitor1 =zipFile.getProgressMonitor();
-        System.out.println("h");
         zipFile.addFolder(folder,zipParameters);
         monitor(progressMonitor1);
 
@@ -120,6 +121,21 @@ public class zipUtils {
         System.out.println("摘要"+"\n"+"要解压的文件："+input.getName()+"(路径:"+input.getPath()+")"+"\n"+"解压到："+output.getName()+"(路径:"+output.getPath()+")"+"\n"+"用时："+(System.currentTimeMillis()-d1)+"ms");
     }
 
+    public static void unzip(File input, File output,Charset charset,String password) throws Exception{
+        long d1 = System.currentTimeMillis();//开始时间
+
+        ZipFile zipFile = new ZipFile(input,password.toCharArray());
+
+        ProgressMonitor progressMonitor = zipFile.getProgressMonitor();
+        zipFile.setRunInThread(true);
+        zipFile.setCharset(charset);
+        zipFile.extractAll(output.getPath());
+        monitor(progressMonitor);//监视进度
+
+        System.out.println("摘要" + "\n" + "要解压的文件：" + input.getName() + "(路径:" + input.getPath() + ")" + "\n" + "解压到：" + output.getName() + "(路径:" + output.getPath() + ")" + "\n" + "用时：" + (System.currentTimeMillis() - d1) + "ms");
+
+    }
+
     public static void add(File input,File output,int method) throws Exception{//不能添加文件夹
         long d1 = System.currentTimeMillis();//开始时间
 
@@ -128,28 +144,37 @@ public class zipUtils {
         ZipFile zipFile = new ZipFile(output);
 
         ZipParameters zipParameters = new ZipParameters();//压缩参数
-        setCompressionMethod(zipParameters,method);
+        setCompressionMethod(zipParameters, method);
         zipParameters.setFileNameInZip(input.getName());
         zipParameters.setWriteExtendedLocalFileHeader(true);
 
         inputStream = new BufferedInputStream(new FileInputStream(input));
-        zipFile.addStream(inputStream,zipParameters);
+        zipFile.addStream(inputStream, zipParameters);
 
+        System.out.println("摘要" + "\n" + "要添加到压缩包的文件：" + input.getName() + "(路径:" + input.getPath() + ")" + "\n" + "压缩包" + output.getName() + "(路径:" + output.getPath() + ")" + "\n" + "用时：" + (System.currentTimeMillis() - d1) + "ms");
 
-
-
-        System.out.println("摘要"+"\n"+"要添加到压缩包的文件："+input.getName()+"(路径:"+input.getPath()+")"+"\n"+"压缩包"+output.getName()+"(路径:"+output.getPath()+")"+"\n"+"用时："+(System.currentTimeMillis()-d1)+"ms");
 
     }
     public static void add(File input,File output) throws Exception{
         add(input,output,0);
     }
 
-    public static void delete(String inputPath,File zip) throws Exception{
+    public static int deleteFile(String inputPath,File zip){
         long d1 = System.currentTimeMillis();//开始时间
+        System.out.println(d1);
         ZipFile zipFile = new ZipFile(zip.getPath());
-        zipFile.removeFile(inputPath);
+        System.out.println(zipFile);
+        //inputPath=inputPath.replace("\\","/");
+        System.out.println(inputPath);
+        try {
+            zipFile.removeFile(inputPath);
+        }catch (Exception e){
+
+            Platform.runLater(()->testOne.alertException(e));
+            return 12;
+        }
         System.out.println("摘要"+"\n"+"要删除的文件："+inputPath+"\n"+"压缩包："+zip.getPath()+"\n"+"用时："+(System.currentTimeMillis()-d1)+"ms");
+        return 2;
     }
 
     private static void monitor(ProgressMonitor progressMonitor) throws InterruptedException {
@@ -186,8 +211,8 @@ public class zipUtils {
         ZipFile zipFile = new ZipFile(zip);
         return zipFile.isEncrypted();
     }
-    public static boolean isValid(File zip) throws ZipException {
-        ZipFile zipFile = new ZipFile(zip);
+    public static boolean isValid(File file) throws ZipException {
+        ZipFile zipFile = new ZipFile(file);
         return zipFile.isValidZipFile();
     }
 
