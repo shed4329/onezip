@@ -1,11 +1,6 @@
 package onezip.CompressUtils.zip;
 
 import javafx.application.Platform;
-import javafx.scene.Scene;
-import javafx.scene.control.ProgressBar;
-import javafx.scene.control.TextInputDialog;
-import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
 import net.lingala.zip4j.ZipFile;
 import net.lingala.zip4j.exception.ZipException;
 import net.lingala.zip4j.model.ZipParameters;
@@ -18,10 +13,7 @@ import net.lingala.zip4j.progress.ProgressMonitor;
 import java.io.*;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import onezip.testOne;
 import onezip.ProcessFrame;
@@ -164,15 +156,28 @@ public class zipUtils {
         System.out.println(d1);
         ZipFile zipFile = new ZipFile(zip.getPath());
         System.out.println(zipFile);
+
         //inputPath=inputPath.replace("\\","/");
         System.out.println(inputPath);
+        String[] argument = new String[]{inputPath, zip.getPath()};
         try {
-            zipFile.removeFile(inputPath);
-        }catch (Exception e){
-
-            Platform.runLater(()->testOne.alertException(e));
+            deleteUtils.main(argument);
+        } catch (ZipException e) {
+            e.printStackTrace();
+            testOne.alertException(e);
             return 12;
         }
+        File folder = zip.getParentFile();
+        String[] fileList = folder.list();
+        for (String fileName:fileList){
+            System.out.println(fileName);
+            if (fileName.contains(zip.getName())&&fileName.length()>zip.getName().length()){
+                File tempFile=new File(folder.getPath()+File.separator+fileName);
+                tempFile.delete();
+                System.out.println("删除临时文件（*.zipxxxx："+folder.getPath()+File.separator+fileName);
+            }
+        }
+
         System.out.println("摘要"+"\n"+"要删除的文件："+inputPath+"\n"+"压缩包："+zip.getPath()+"\n"+"用时："+(System.currentTimeMillis()-d1)+"ms");
         return 2;
     }
