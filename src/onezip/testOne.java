@@ -701,10 +701,10 @@ public class testOne extends Application {
                         Alert alert = new Alert(Alert.AlertType.WARNING);
                         alert.setTitle("警告");
                         alert.setHeaderText("可能出现的问题");
-                        alert.setContentText("由于本功能存在一定问题，即使提示‘成功’也有可能未删除文件（诈骗功能）");
+                        alert.setContentText("1.这可能会导致其他解压软件打开该压缩文件时中文乱码\n2.由于本功能存在一定问题，即使提示‘成功’也有可能未删除文件（诈骗功能）");
 
                         alert.showAndWait();
-                        String str=new String(viewPath.replace("/","\\")+listItemName.substring(0,listItemName.length()));
+                        String str=new String(viewPath.replace("\\","/")+listItemName.substring(0,listItemName.length()));
                         System.out.println("str:"+str);
                         AddOrDeleteScheduledService addOrDeleteScheduledService = new AddOrDeleteScheduledService(str,file);
                         addOrDeleteScheduledService.start();
