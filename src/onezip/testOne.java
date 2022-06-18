@@ -113,7 +113,7 @@ public class testOne extends Application {
         stage.setScene(scene);
         stage.setWidth(700);
         stage.setHeight(500);
-        stage.setTitle("OneZip version 0.03 beta(only for test)");
+        stage.setTitle("OneZip version 0.04 channel(only for test)");
         stage.getIcons().add(new Image("img/ZIP.png"));
         stage.show();
 
@@ -324,7 +324,7 @@ public class testOne extends Application {
         about.setOnAction(actionEvent -> {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.titleProperty().set("关于");
-            alert.headerTextProperty().set("OneZip\n版本号：0.03 beta\n仅供测试");
+            alert.headerTextProperty().set("OneZip\n版本号：0.04 channel\n仅供测试");
             alert.showAndWait();
         });
         setting.setOnAction(actionEvent -> {
@@ -496,12 +496,20 @@ public class testOne extends Application {
             }else{
                 HBox northPane = new HBox();
                 Button viewPaneExtract = new Button("解压文件");
+                Image unzipImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("img/unzip.png")));
+                viewPaneExtract.setGraphic(new ImageView(unzipImage));
                 viewPaneExtract.setStyle("-fx-background-color:#4b9fe2");
                 Button viewPaneAdd = new Button("添加文件");
+                Image addImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("img/fileAdd.png")));
+                viewPaneAdd.setGraphic(new ImageView(addImage));
                 viewPaneAdd.setStyle("-fx-background-color:#4b9fe2");
                 Button viewPaneDelete = new Button("删除文件");
+                Image deleteImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("img/delete.png")));
+                viewPaneDelete.setGraphic(new ImageView(deleteImage));
                 viewPaneDelete.setStyle("-fx-background-color:#4b9fe2");
                 Button viewPaneSetComment = new Button("编辑注释");
+                Image commentImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("img/comments.png")));
+                viewPaneSetComment.setGraphic(new ImageView(commentImage));
                 viewPaneSetComment.setStyle("-fx-background-color:#4b9fe2");
                 northPane.getChildren().addAll(viewPaneExtract,viewPaneAdd,viewPaneDelete,viewPaneSetComment);
                 viewPaneExtract.setPrefSize(100,50);
@@ -611,6 +619,7 @@ public class testOne extends Application {
                         System.out.println(nameList.get(0));
 
                         listView.setItems(fileItems);
+
                     }
 
                 });
