@@ -28,7 +28,7 @@ import javafx.stage.Stage;
 
 import onezip.CompressUtils.zip.zipUtils;
 import onezip.FX.setting.FX_GUISetting;
-import onezip.normal.setting.NormalSetting;
+import onezip.setting.NormalSetting;
 
 import net.lingala.zip4j.exception.ZipException;
 
@@ -39,7 +39,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicReference;
 
 
 public class testOne extends Application {
@@ -48,7 +47,6 @@ public class testOne extends Application {
     int level=0;
     String viewPath="";
     boolean parent=false;
-    ProgressBar progressBar;
     ArrayList<File> compressedFiles=new ArrayList<File>();
     ArrayList<File> compressedFolders=new ArrayList<File>();
     ArrayList<String> listFiles=new ArrayList<String>();
@@ -57,12 +55,10 @@ public class testOne extends Application {
     FX_GUISetting fx_guiSetting= new FX_GUISetting();
     Image cursorImage;
     boolean cursorAble=false;
-
-    ProgressBar processBar;
     boolean deleteModel=false;
 
     NormalSetting normalSetting1 = new NormalSetting();
-
+    boolean isView=true;
     ArrayList<String> nameList =new ArrayList<>();//文件列表，预览使用
     ObservableList<String> fileItems;
     public static void main(String[] args) {
@@ -428,9 +424,8 @@ public class testOne extends Application {
             normalSetting.setOnAction(e->{
                 Text text = new Text("解压设置");
                 CheckBox checkBox = new CheckBox("解压界面关闭‘预览’以节约资源");
-
                 try {
-                    checkBox.setSelected(normalSetting1.getViewSwitch());
+                    checkBox.setSelected(NormalSetting.getViewSwitch());
                 } catch (Exception ex) {
                     ex.printStackTrace();
                     checkBox.setSelected(false);
