@@ -62,14 +62,18 @@ public class SevenZipJBindingJunitCompressNonGeneric7z {
 
     public static void main(String[] args) {
         if (args./*f*/length/* */== 1) {
-            new SevenZipJBindingJunitCompressNonGeneric7z().compress(args[0]);
+            try {
+                new SevenZipJBindingJunitCompressNonGeneric7z().compress(args[0]);
+            }catch (Exception e){
+                e.printStackTrace();
+            }
             return;
         }
-        System.out.println("Usage: java CompressNonGeneric7z <archive>");
+        System.out.println("Usage: java CompressNonGeneric7z <archive> \n tip:before you use this main method,please use SevenZipJBindingJunitCompressArchiveStructure.receiver() to put your file into the 7z ,or you will get an empty 7z file");
     }
 
 
-    public void compress(String filename) {
+    public void compress(String filename) throws Exception{
         items = SevenZipJBindingJunitCompressArchiveStructure.create();
 
         boolean success = false;

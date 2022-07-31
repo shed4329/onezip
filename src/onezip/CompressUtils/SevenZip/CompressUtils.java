@@ -57,14 +57,19 @@ public class CompressUtils {
 
     public static void main(String[] args) {
         if (args.length == 1) {
-            new SevenZipJBindingJunitCompressNonGeneric7z().compress(args[0]);
+            try {
+                new SevenZipJBindingJunitCompressNonGeneric7z().compress(args[0]);
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+
             return;
         }
         System.out.println("Usage: java CompressNonGeneric7z <archive>");
     }
 
 
-    private void compress(String filename) {
+    private void compress(String filename) throws Exception{
         items = SevenZipJBindingJunitCompressArchiveStructure.create();
 
         boolean success = false;
