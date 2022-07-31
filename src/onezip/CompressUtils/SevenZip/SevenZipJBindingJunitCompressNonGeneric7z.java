@@ -1,3 +1,5 @@
+package onezip.CompressUtils.SevenZip;
+
 /* BEGIN_SNIPPET(CompressNonGeneric7z) */
 import java.io.IOException;
 import java.io.RandomAccessFile;
@@ -51,6 +53,7 @@ public class SevenZipJBindingJunitCompressNonGeneric7z {
         }
 
         public ISequentialInStream getStream(int i) throws SevenZipException {
+            System.out.println(i);//此处i是从某个数字开始，可以统计i的个数，与数组元素个数相比，得到进度
             if (/*f*/items/**/[i].getContent() == null) {
                 return null;
             }

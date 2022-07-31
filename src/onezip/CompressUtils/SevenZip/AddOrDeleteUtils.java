@@ -1,3 +1,5 @@
+package onezip.CompressUtils.SevenZip;
+
 import java.io.Closeable;
 import java.io.RandomAccessFile;
 import java.util.ArrayList;

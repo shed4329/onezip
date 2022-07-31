@@ -1,3 +1,5 @@
+package onezip.CompressUtils.SevenZip;
+
 import net.sf.sevenzipjbinding.*;
 import net.sf.sevenzipjbinding.impl.RandomAccessFileInStream;
 import net.sf.sevenzipjbinding.simple.ISimpleInArchive;
