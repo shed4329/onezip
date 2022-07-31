@@ -29,6 +29,7 @@ import javafx.stage.Stage;
 import onezip.CompressUtils.zip.zipUtils;
 import onezip.FX.setting.FX_GUISetting;
 import onezip.setting.NormalSetting;
+import onezip.CompressUtils.SevenZip.viewUtils;
 
 import net.lingala.zip4j.exception.ZipException;
 
@@ -56,6 +57,7 @@ public class testOne extends Application {
     Image cursorImage;
     boolean cursorAble=false;
     boolean deleteModel=false;
+    ArrayList<String> arrayList1 = new ArrayList();
 
     NormalSetting normalSetting1 = new NormalSetting();
     boolean isView=true;
@@ -154,7 +156,7 @@ public class testOne extends Application {
                 Text zipSetting = new Text("压缩级别");
                 zipSetting.setLayoutY(15);
                 ChoiceBox<String> choiceBox = new ChoiceBox<>();
-                choiceBox.setItems(FXCollections.observableArrayList("0","1","2","3","4","5","6","7","8"));
+                choiceBox.setItems(FXCollections.observableArrayList("1","3","5","7","9"));
                 group3.getChildren().addAll(zipSetting,choiceBox);
                 choiceBox.setLayoutX(120);
 
@@ -309,7 +311,7 @@ public class testOne extends Application {
         extract.setOnAction(actionEvent -> {
             FileChooser fileChooser = new FileChooser();
             fileChooser.setTitle("选择压缩包");
-            fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("压缩文件", "*.zip"));
+            fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("压缩文件", "*.zip"),new FileChooser.ExtensionFilter("压缩文件","*.7z"));
             File file =fileChooser.showOpenDialog(stage);
             if (file==null){
                 alert("文件不能为空");
@@ -320,7 +322,7 @@ public class testOne extends Application {
         about.setOnAction(actionEvent -> {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.titleProperty().set("关于");
-            alert.headerTextProperty().set("OneZip\n版本号：0.04 channel\n仅供测试");
+            alert.headerTextProperty().set("OneZip\n版本号：0.04 channel2\n仅供测试");
             alert.showAndWait();
         });
         setting.setOnAction(actionEvent -> {
@@ -484,242 +486,348 @@ public class testOne extends Application {
             }
         });
     }
-    private void extractPane(File file){
-        try {
-            if(!zipUtils.isValid(file)){
-                alert("无效的文件");
-            }else{
-                HBox northPane = new HBox();
-                Button viewPaneExtract = new Button("解压文件");
-                Image unzipImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("img/unzip.png")));
-                viewPaneExtract.setGraphic(new ImageView(unzipImage));
-                viewPaneExtract.setStyle("-fx-background-color:#4b9fe2");
-                Button viewPaneAdd = new Button("添加文件");
-                Image addImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("img/fileAdd.png")));
-                viewPaneAdd.setGraphic(new ImageView(addImage));
-                viewPaneAdd.setStyle("-fx-background-color:#4b9fe2");
-                Button viewPaneDelete = new Button("删除文件");
-                Image deleteImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("img/delete.png")));
-                viewPaneDelete.setGraphic(new ImageView(deleteImage));
-                viewPaneDelete.setStyle("-fx-background-color:#4b9fe2");
-                Button viewPaneSetComment = new Button("编辑注释");
-                Image commentImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("img/comments.png")));
-                viewPaneSetComment.setGraphic(new ImageView(commentImage));
-                viewPaneSetComment.setStyle("-fx-background-color:#4b9fe2");
-                northPane.getChildren().addAll(viewPaneExtract,viewPaneAdd,viewPaneDelete,viewPaneSetComment);
-                viewPaneExtract.setPrefSize(100,50);
-                viewPaneAdd.setPrefSize(100,50);
-                viewPaneDelete.setPrefSize(100,50);
-                viewPaneSetComment.setPrefSize(100,50);
+    private void extractPane(File file) {
+        if (file.getName().contains(".zip")) {
+            try {
+                if (!zipUtils.isValid(file)) {
+                    alert("无效的文件");
+                } else {
+                    HBox northPane = new HBox();
+                    Button viewPaneExtract = new Button("解压文件");
+                    Image unzipImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("img/unzip.png")));
+                    viewPaneExtract.setGraphic(new ImageView(unzipImage));
+                    viewPaneExtract.setStyle("-fx-background-color:#4b9fe2");
+                    Button viewPaneAdd = new Button("添加文件");
+                    Image addImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("img/fileAdd.png")));
+                    viewPaneAdd.setGraphic(new ImageView(addImage));
+                    viewPaneAdd.setStyle("-fx-background-color:#4b9fe2");
+                    Button viewPaneDelete = new Button("删除文件");
+                    Image deleteImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("img/delete.png")));
+                    viewPaneDelete.setGraphic(new ImageView(deleteImage));
+                    viewPaneDelete.setStyle("-fx-background-color:#4b9fe2");
+                    Button viewPaneSetComment = new Button("编辑注释");
+                    Image commentImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("img/comments.png")));
+                    viewPaneSetComment.setGraphic(new ImageView(commentImage));
+                    viewPaneSetComment.setStyle("-fx-background-color:#4b9fe2");
+                    northPane.getChildren().addAll(viewPaneExtract, viewPaneAdd, viewPaneDelete, viewPaneSetComment);
+                    viewPaneExtract.setPrefSize(100, 50);
+                    viewPaneAdd.setPrefSize(100, 50);
+                    viewPaneDelete.setPrefSize(100, 50);
+                    viewPaneSetComment.setPrefSize(100, 50);
 
 
-                AnchorPane southPane = new AnchorPane();
-                TextArea commentArea = new TextArea();
-                try {
-                    String comment = zipUtils.getComment(file);
-                    String UTF_8Comment = new String(comment.getBytes(),"UTF-8");
-                    commentArea.setText(UTF_8Comment);
-                    commentArea.setPrefWidth(800);
-                    commentArea.setEditable(false);
-                    southPane.getChildren().add(commentArea);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                AnchorPane middlePane = new AnchorPane();
-
-                ListView<String> listView = new ListView<>();//文件列表
-                listView.setPrefWidth(800);
-                boolean normalSet = true;
-
-                try {
-                    normalSet=(!normalSetting1.getViewSwitch());
-                    if (normalSet){
-                        System.out.println(normalSetting1.getViewSwitch());
-                        list(file,listView);
-                    }else{
-                        fileItems = FXCollections.observableArrayList("预览已关闭");
-                        System.out.println("预览已关闭");
-                    }
-                    listView.setItems(fileItems);
-                } catch (ZipException e) {
-                    e.printStackTrace();
-                    fileItems = FXCollections.observableArrayList("预览失败");
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (Exception e) {
-                    e.printStackTrace();
+                    AnchorPane southPane = new AnchorPane();
+                    TextArea commentArea = new TextArea();
                     try {
-                        list(file,listView);
-                    } catch (IOException ex) {
-                        ex.printStackTrace();
-                    }
-                }
-                middlePane.getChildren().add(listView);
-
-                AnchorPane westPane = new AnchorPane();
-                System.out.println("Name："+file.getName());
-
-                BorderPane borderPane = new BorderPane();
-                borderPane.setTop(northPane);
-                borderPane.setLeft(westPane);
-                borderPane.setBottom(southPane);
-                borderPane.setCenter(middlePane);
-
-                Scene viewScene = new Scene(borderPane);
-                if (cursorAble){//自定义鼠标
-                    viewScene.setCursor(new ImageCursor(cursorImage));
-                }
-
-                Stage viewStage = new Stage();
-                viewStage.setScene(viewScene);
-                viewStage.setWidth(800);
-                viewStage.setHeight(600);
-                viewStage.getIcons().add(new Image("img/ZIP.png"));
-                viewStage.setTitle(file.getName());
-                //stage.close();
-                viewStage.show();
-
-                boolean finalNormalSet = normalSet;
-                listView.addEventHandler(MouseEvent.MOUSE_CLICKED, e->{
-                    if (finalNormalSet&&!deleteModel) {
-                        String newValue = listView.getSelectionModel().getSelectedItem();
-                        //System.out.println("old value:"+oldValue);
-                        System.out.println("new value:" + newValue);
-                        System.out.println("\033[45m" + "viewPath:" + viewPath + "");//紫色标注
-                        if (newValue.equals("..")) {
-                            int temp = viewPath.substring(0, viewPath.length() - 2).lastIndexOf("/");//查找最后出现的位置(最末的”/“不算)
-                            if (temp == -1) {//没有”/“
-                                viewPath = "";
-                            } else {
-                                viewPath = viewPath.substring(0, temp);
-                            }
-                            System.out.println("viewPath.." + viewPath);
-                            fileItems = FXCollections.observableArrayList(zipUtils.viewInPath(nameList, viewPath));
-                            System.out.println("items:" + fileItems);
-                            parent = true;
-                        } else {
-                            if (parent) {//如果按了..,
-                                if (!viewPath.isEmpty() && !viewPath.endsWith("/")) {//空的话在根目录,用短路与防止判断第二个条件时报错，如果在最后一个字符为“/”
-                                    viewPath = viewPath + "/";//..会导致路径末尾的”/“丢失
-                                }
-                                parent = false;
-                            }
-
-                            viewPath = viewPath + newValue;
-                            System.out.println("\033[44m" + "viewPath:" + viewPath + "");
-
-                            fileItems = FXCollections.observableArrayList(zipUtils.viewInPath(nameList, viewPath.substring(0, viewPath.length() - 1)));//去掉viewPath里最后的"/"
-                        }
-
-                        System.out.println(nameList.get(0));
-
-                        listView.setItems(fileItems);
-
-                    }
-
-                });
-
-
-
-                viewPaneExtract.setOnAction(actionEvent15 -> {
-                    String extractPassword=null;
-                    DirectoryChooser directoryChooser = new DirectoryChooser();
-                    directoryChooser.setTitle("解压到");
-                    File extractTo =directoryChooser.showDialog(viewStage);
-                    try {
-                        boolean temp = zipUtils.isEncrypted(file);
-                        if (temp){
-                            Alert alert = new Alert(Alert.AlertType.WARNING);
-                            alert.setTitle("警告");
-                            alert.setHeaderText("可能出现的问题");
-                            alert.setContentText("本文件已加密，若文件解压密码输入错误，将只会解压文件夹，并不会提示错误，而是提示‘成功’");
-
-                            alert.showAndWait();
-
-                            extractPassword = textInputDialog();
-
-                        }
-                    } catch (ZipException e) {
+                        String comment = zipUtils.getComment(file);
+                        String UTF_8Comment = new String(comment.getBytes(), "UTF-8");
+                        commentArea.setText(UTF_8Comment);
+                        commentArea.setPrefWidth(800);
+                        commentArea.setEditable(false);
+                        southPane.getChildren().add(commentArea);
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
-                    if (extractTo==null){
-                        alert("请选择解压位置");
-                    }else{
+                    AnchorPane middlePane = new AnchorPane();
+
+                    ListView<String> listView = new ListView<>();//文件列表
+                    listView.setPrefWidth(800);
+                    boolean normalSet = true;
+
+                    try {
+                        normalSet = (!normalSetting1.getViewSwitch());
+                        if (normalSet) {
+                            System.out.println(normalSetting1.getViewSwitch());
+                            list(file, listView);
+                        } else {
+                            fileItems = FXCollections.observableArrayList("预览已关闭");
+                            System.out.println("预览已关闭");
+                        }
+                        listView.setItems(fileItems);
+                    } catch (ZipException e) {
+                        e.printStackTrace();
+                        fileItems = FXCollections.observableArrayList("预览失败");
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } catch (Exception e) {
+                        e.printStackTrace();
                         try {
-
-                            if (extractPassword==null||extractPassword.isEmpty()){
-                                ZipScheduledService zipScheduledService = new ZipScheduledService(2,file,extractTo,Charset.forName("gbk"));
-                                zipScheduledService.start();
-                            }else{
-                                ZipScheduledService zipScheduledService = new ZipScheduledService(2,file,extractTo,Charset.forName("gbk"),extractPassword);
-                                zipScheduledService.start();
-                            }
-
-                        } catch (Exception e) {
-                            e.printStackTrace();
+                            list(file, listView);
+                        } catch (IOException ex) {
+                            ex.printStackTrace();
                         }
                     }
-                });
-                viewPaneSetComment.setOnAction(actionEvent16 ->{
-                    Alert alert = new Alert(Alert.AlertType.WARNING);
-                    alert.setTitle("警告");
-                    alert.setHeaderText("可能导致的乱码");
-                    alert.setContentText("编辑注释可能会导致在其他解压软件（如Bandizip）打开文件时文件名乱码");
+                    middlePane.getChildren().add(listView);
 
-                    alert.showAndWait();
+                    AnchorPane westPane = new AnchorPane();
+                    System.out.println("Name：" + file.getName());
 
-                    TextInputDialog dialog = new TextInputDialog();
-                    dialog.setTitle("注释");
-                    dialog.setHeaderText("编辑压缩文件的注释");
-                    dialog.setContentText("注释:");
-                    Optional<String> result = dialog.showAndWait();
-                    result.ifPresent(s -> {
-                        System.out.println("comment: " + s);
+                    BorderPane borderPane = new BorderPane();
+                    borderPane.setTop(northPane);
+                    borderPane.setLeft(westPane);
+                    borderPane.setBottom(southPane);
+                    borderPane.setCenter(middlePane);
+
+                    Scene viewScene = new Scene(borderPane);
+                    if (cursorAble) {//自定义鼠标
+                        viewScene.setCursor(new ImageCursor(cursorImage));
+                    }
+
+                    Stage viewStage = new Stage();
+                    viewStage.setScene(viewScene);
+                    viewStage.setWidth(800);
+                    viewStage.setHeight(600);
+                    viewStage.getIcons().add(new Image("img/ZIP.png"));
+                    viewStage.setTitle(file.getName());
+                    //stage.close();
+                    viewStage.show();
+
+                    boolean finalNormalSet = normalSet;
+                    listView.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
+                        if (finalNormalSet && !deleteModel) {
+                            String newValue = listView.getSelectionModel().getSelectedItem();
+                            //System.out.println("old value:"+oldValue);
+                            System.out.println("new value:" + newValue);
+                            System.out.println("\033[45m" + "viewPath:" + viewPath + "");//紫色标注
+                            if (newValue.equals("..")) {
+                                int temp = viewPath.substring(0, viewPath.length() - 2).lastIndexOf("/");//查找最后出现的位置(最末的”/“不算)
+                                if (temp == -1) {//没有”/“
+                                    viewPath = "";
+                                } else {
+                                    viewPath = viewPath.substring(0, temp);
+                                }
+                                System.out.println("viewPath.." + viewPath);
+                                fileItems = FXCollections.observableArrayList(zipUtils.viewInPath(nameList, viewPath));
+                                System.out.println("items:" + fileItems);
+                                parent = true;
+                            } else {
+                                if (parent) {//如果按了..,
+                                    if (!viewPath.isEmpty() && !viewPath.endsWith("/")) {//空的话在根目录,用短路与防止判断第二个条件时报错，如果在最后一个字符为“/”
+                                        viewPath = viewPath + "/";//..会导致路径末尾的”/“丢失
+                                    }
+                                    parent = false;
+                                }
+
+                                viewPath = viewPath + newValue;
+                                System.out.println("\033[44m" + "viewPath:" + viewPath + "");
+
+                                fileItems = FXCollections.observableArrayList(zipUtils.viewInPath(nameList, viewPath.substring(0, viewPath.length() - 1)));//去掉viewPath里最后的"/"
+                            }
+
+                            System.out.println(nameList.get(0));
+
+                            listView.setItems(fileItems);
+
+                        }
+
+                    });
+
+
+                    viewPaneExtract.setOnAction(actionEvent15 -> {
+                        String extractPassword = null;
+                        DirectoryChooser directoryChooser = new DirectoryChooser();
+                        directoryChooser.setTitle("解压到");
+                        File extractTo = directoryChooser.showDialog(viewStage);
                         try {
-                            zipUtils.setComment(s,file);
-                            alertSuccess();
+                            boolean temp = zipUtils.isEncrypted(file);
+                            if (temp) {
+                                Alert alert = new Alert(Alert.AlertType.WARNING);
+                                alert.setTitle("警告");
+                                alert.setHeaderText("可能出现的问题");
+                                alert.setContentText("本文件已加密，若文件解压密码输入错误，将只会解压文件夹，并不会提示错误，而是提示‘成功’");
+
+                                alert.showAndWait();
+
+                                extractPassword = textInputDialog();
+
+                            }
                         } catch (ZipException e) {
                             e.printStackTrace();
                         }
+                        if (extractTo == null) {
+                            alert("请选择解压位置");
+                        } else {
+                            try {
+
+                                if (extractPassword == null || extractPassword.isEmpty()) {
+                                    ZipScheduledService zipScheduledService = new ZipScheduledService(2, file, extractTo, Charset.forName("gbk"));
+                                    zipScheduledService.start();
+                                } else {
+                                    ZipScheduledService zipScheduledService = new ZipScheduledService(2, file, extractTo, Charset.forName("gbk"), extractPassword);
+                                    zipScheduledService.start();
+                                }
+
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
                     });
+                    viewPaneSetComment.setOnAction(actionEvent16 -> {
+                        Alert alert = new Alert(Alert.AlertType.WARNING);
+                        alert.setTitle("警告");
+                        alert.setHeaderText("可能导致的乱码");
+                        alert.setContentText("编辑注释可能会导致在其他解压软件（如Bandizip）打开文件时文件名乱码");
 
-                });
-                viewPaneAdd.setOnAction(actionEvent17 -> {
-                    FileChooser fileChooser1 = new FileChooser();//选择文件
-                    fileChooser1.setTitle("要添加的文件");
+                        alert.showAndWait();
 
-                    File toAdd = fileChooser1.showOpenDialog(viewStage);
-                    AddOrDeleteScheduledService addOrDeleteScheduledService = new AddOrDeleteScheduledService(toAdd,file);
-                    addOrDeleteScheduledService.start();
-                });
-                viewPaneDelete.setOnAction(actionEvent18 -> {
-                    deleteModel=!deleteModel;
+                        TextInputDialog dialog = new TextInputDialog();
+                        dialog.setTitle("注释");
+                        dialog.setHeaderText("编辑压缩文件的注释");
+                        dialog.setContentText("注释:");
+                        Optional<String> result = dialog.showAndWait();
+                        result.ifPresent(s -> {
+                            System.out.println("comment: " + s);
+                            try {
+                                zipUtils.setComment(s, file);
+                                alertSuccess();
+                            } catch (ZipException e) {
+                                e.printStackTrace();
+                            }
+                        });
+
+                    });
+                    viewPaneAdd.setOnAction(actionEvent17 -> {
+                        FileChooser fileChooser1 = new FileChooser();//选择文件
+                        fileChooser1.setTitle("要添加的文件");
+
+                        File toAdd = fileChooser1.showOpenDialog(viewStage);
+                        AddOrDeleteScheduledService addOrDeleteScheduledService = new AddOrDeleteScheduledService(toAdd, file);
+                        addOrDeleteScheduledService.start();
+                    });
+                    viewPaneDelete.setOnAction(actionEvent18 -> {
+                        deleteModel = !deleteModel;
                             /*System.out.println(listView.getSelectionModel().getSelectedItem());
                             System.out.println(listView.getSelectionModel().getSelectedItem().substring(0,listView.getSelectionModel().getSelectedItem().length()-2));
                             System.out.println(viewPath);
                             System.out.println(viewPath.substring(0,viewPath.length()-2));
 
                              */
-                    String listItemName=listView.getSelectionModel().getSelectedItem();
-                    if (listItemName.contains(".")){
-                        Alert alert = new Alert(Alert.AlertType.WARNING);
-                        alert.setTitle("警告");
-                        alert.setHeaderText("可能出现的问题");
-                        alert.setContentText("1.这可能会导致其他解压软件打开该压缩文件时中文乱码\n2.由于本功能存在一定问题，即使提示‘成功’也有可能未删除文件（诈骗功能）");
+                        String listItemName = listView.getSelectionModel().getSelectedItem();
+                        if (listItemName.contains(".")) {
+                            Alert alert = new Alert(Alert.AlertType.WARNING);
+                            alert.setTitle("警告");
+                            alert.setHeaderText("可能出现的问题");
+                            alert.setContentText("1.这可能会导致其他解压软件打开该压缩文件时中文乱码\n2.由于本功能存在一定问题，即使提示‘成功’也有可能未删除文件（诈骗功能）");
 
-                        alert.showAndWait();
-                        String str=new String(viewPath.replace("\\","/")+listItemName.substring(0,listItemName.length()));
-                        System.out.println("str:"+str);
-                        AddOrDeleteScheduledService addOrDeleteScheduledService = new AddOrDeleteScheduledService(str,file);
-                        addOrDeleteScheduledService.start();
-                    }
+                            alert.showAndWait();
+                            String str = new String(viewPath.replace("\\", "/") + listItemName.substring(0, listItemName.length()));
+                            System.out.println("str:" + str);
+                            AddOrDeleteScheduledService addOrDeleteScheduledService = new AddOrDeleteScheduledService(str, file);
+                            addOrDeleteScheduledService.start();
+                        }
 
 
-
-                });
+                    });
+                }
+            } catch (ZipException e) {
+                e.printStackTrace();
             }
-        } catch (ZipException e) {
-            e.printStackTrace();
+        }else if (file.getName().contains(".7z")){
+            HBox northPane = new HBox();
+            Button viewPaneExtract = new Button("解压文件");
+            Image unzipImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("img/unzip.png")));
+            viewPaneExtract.setGraphic(new ImageView(unzipImage));
+            viewPaneExtract.setStyle("-fx-background-color:#4b9fe2");
+            Button viewPaneAdd = new Button("添加文件");
+            Image addImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("img/fileAdd.png")));
+            viewPaneAdd.setGraphic(new ImageView(addImage));
+            viewPaneAdd.setStyle("-fx-background-color:#4b9fe2");
+            Button viewPaneDelete = new Button("删除文件");
+            Image deleteImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("img/delete.png")));
+            viewPaneDelete.setGraphic(new ImageView(deleteImage));
+            viewPaneDelete.setStyle("-fx-background-color:#4b9fe2");
+            Button viewPaneSetComment = new Button("编辑注释");
+            Image commentImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("img/comments.png")));
+            viewPaneSetComment.setGraphic(new ImageView(commentImage));
+            viewPaneSetComment.setStyle("-fx-background-color:#4b9fe2");
+            northPane.getChildren().addAll(viewPaneExtract, viewPaneAdd, viewPaneDelete, viewPaneSetComment);
+            viewPaneExtract.setPrefSize(100, 50);
+            viewPaneAdd.setPrefSize(100, 50);
+            viewPaneDelete.setPrefSize(100, 50);
+            viewPaneSetComment.setPrefSize(100, 50);
+            AnchorPane westPane = new AnchorPane();
+            System.out.println("Name：" + file.getName());
+            AnchorPane middlePane = new AnchorPane();
+
+            ListView<String> listView = new ListView<>();//文件列表
+            listView.setPrefWidth(800);
+            boolean normalSet = true;
+
+            try {
+                normalSet = (!normalSetting1.getViewSwitch());
+                if (normalSet) {
+                    System.out.println(normalSetting1.getViewSwitch());
+                   sevenZipList(file,listView);
+                } else {
+                    fileItems = FXCollections.observableArrayList("预览已关闭");
+                    System.out.println("预览已关闭");
+                }
+                listView.setItems(fileItems);
+            } catch (Exception e) {
+                e.printStackTrace();
+                System.out.println("3");
+                sevenZipList(file, listView);
+            }
+
+
+            middlePane.getChildren().add(listView);
+            BorderPane borderPane = new BorderPane();
+            borderPane.setTop(northPane);
+            borderPane.setLeft(westPane);
+
+            borderPane.setCenter(middlePane);
+
+            Scene viewScene = new Scene(borderPane);
+            if (cursorAble) {//自定义鼠标
+                viewScene.setCursor(new ImageCursor(cursorImage));
+            }
+
+            Stage viewStage = new Stage();
+            viewStage.setScene(viewScene);
+            viewStage.setWidth(800);
+            viewStage.setHeight(600);
+            viewStage.getIcons().add(new Image("img/ZIP.png"));
+            viewStage.setTitle(file.getName());
+            //stage.close();
+            viewStage.show();
+            boolean finalNormalSet = normalSet;
+
+            listView.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
+                if (finalNormalSet && !deleteModel) {
+                    String newValue = listView.getSelectionModel().getSelectedItem();
+                    //System.out.println("old value:"+oldValue);
+                    System.out.println("new value:" + newValue);
+                    System.out.println("\033[45m" + "viewPath:" + viewPath + "");//紫色标注
+                    if (viewPath.isEmpty()){
+                        System.out.println(newValue);
+                        viewPath=newValue;
+                        System.out.println(viewPath);
+                        arrayList1=viewUtils.getFileNameInPath(nameList, viewPath);
+                        System.out.println(arrayList1);
+                        fileItems = FXCollections.observableArrayList(arrayList1);
+                    }else {
+                        if (newValue == "..") {
+                            if (viewPath.contains("\\")) {
+                                int i = viewPath.lastIndexOf("\\");
+                                viewPath = viewPath.substring(0, i);
+
+                            }else{
+                                viewPath="";
+                            }
+                            arrayList1 = viewUtils.getFileNameInPath(nameList, viewPath);
+                            fileItems = FXCollections.observableArrayList(arrayList1);
+                        } else {
+                            viewPath = viewPath + newValue.replace(viewPath,"");
+                            System.out.println(newValue);
+                            arrayList1=viewUtils.getFileNameInPath(nameList, viewPath);
+                            fileItems = FXCollections.observableArrayList(arrayList1);
+                        }
+                    }
+                    listView.setItems(fileItems);
+                    arrayList1.clear();
+                }
+
+            });
         }
     }
     private void list(File file,ListView listView) throws IOException {
@@ -728,6 +836,12 @@ public class testOne extends Application {
         fileItems = FXCollections.observableArrayList(zipUtils.viewInPath(nameList,""));
         System.out.println(fileItems);
 
+    }
+    private void sevenZipList(File file,ListView listView){
+        viewUtils.fileView(file.getPath(),nameList);
+        System.out.println(nameList);
+        fileItems = FXCollections.observableArrayList(onezip.CompressUtils.SevenZip.viewUtils.getFileNameInPath(nameList,""));
+        System.out.println(fileItems);
     }
     public static void alert(String text){
         Alert alert = new Alert(Alert.AlertType.ERROR);
