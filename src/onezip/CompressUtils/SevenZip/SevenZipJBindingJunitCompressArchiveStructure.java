@@ -41,6 +41,7 @@ public class SevenZipJBindingJunitCompressArchiveStructure {
         for (String path:filePath){
             //System.out.println(path);
             File file = new File(path);
+            System.out.println(filePathIn7Zip);
             System.out.println(filePathIn7Zip.get(count));
             int length = (int) file.length();
             byte[] data = new byte[length];
@@ -79,6 +80,7 @@ public class SevenZipJBindingJunitCompressArchiveStructure {
         for (File item : arrayList) {//理想状态：传入一个含有文件列表的数组，自己记录每个文件的内容,如REDACTED_LOCAL_PATH
             if (item.isFile()) {
                 filePath.add(item.getPath());
+                filePathIn7Zip.add(item.getName());
             } else {
                 //这里用递归添加，下次再写
                 listAll(item.getName(),item);

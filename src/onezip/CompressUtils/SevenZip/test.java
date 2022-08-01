@@ -17,11 +17,11 @@ public class test {
 
         long d1 = System.currentTimeMillis();
         //ExtractUtils.extract("REDACTED_LOCAL_PATH","REDACTED_LOCAL_PATH","1111");
-        /*String[] argument={"REDACTED_LOCAL_PATH","REDACTED_LOCAL_PATH","android.txt","android os is also an operation system based on open-source system,linux,created by google llc."};//实现7z的自身更新
-          String[] argument={"REDACTED_LOCAL_PATH","REDACTED_LOCAL_PATH","ios.txt"};//实测不可以，可以尝试的数组3
-          String[] argument={"REDACTED_LOCAL_PATH","REDACTED_LOCAL_PATH","sir.txt","this txt file appear due to some technology limits,we're sorry for that","sorry.txt"};//实现7z的自身更新
+        //String[] argument={"REDACTED_LOCAL_PATH","REDACTED_LOCAL_PATH","android.txt","android os is also an operation system based on open-source system,linux,created by google llc."};//实现7z的自身更新
+          //String[] argument={"REDACTED_LOCAL_PATH","REDACTED_LOCAL_PATH","ios.txt"};//实测不可以，可以尝试的数组3
+          String[] argument={"REDACTED_LOCAL_PATH","REDACTED_LOCAL_PATH","ios.txt","this txt file appear due to some technology limits,we're sorry for that","sorry.txt"};//实现7z的自身更新
           AddOrDeleteUtils.main(argument);
-         */
+
         ///ArrayList<File> arrayList = new ArrayList<>();
         //arrayList.add(new File("REDACTED_LOCAL_PATH"));
         //arrayList.add(new File("REDACTED_LOCAL_PATH"));

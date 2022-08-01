@@ -29,6 +29,7 @@ public class AddOrDeleteUtils {
     static String fileToDeleteName;
     static byte[] fileToAddContent;
     static boolean addMode = true;
+    static String password;
 
     int itemToRemove; // Old index of the item to be removed
 
@@ -84,7 +85,6 @@ public class AddOrDeleteUtils {
         itemToAdd = inArchive.getNumberOfItems() - 1;
         itemToAddPath = fileToAddName;
         itemToAddContent = fileToAddContent;
-        System.out.println("initUpdate");
         itemToRemove = -1;
         for (int i = 0; i < inArchive.getNumberOfItems(); i++) {
             if (inArchive.getProperty(i, PropID.PATH).equals(fileToDeleteName)) {
@@ -101,19 +101,20 @@ public class AddOrDeleteUtils {
 
     public static void main(String[] args) {
         if (args.length == 4) {
-
+            System.out.println("add");
             fileToAddName=args[2];
             fileToAddContent = args[3].getBytes();
 
             new AddOrDeleteUtils().compress(args[0], args[1]);
             return;
-        }else if(args.length==3){
+        }/*else if(args.length==3){//应该是native方法的问题，从之这样处理抛异常，干脆注释掉
             addMode=false;
             fileToDeleteName=args[2];
             new AddOrDeleteUtils().compress(args[0], args[1]);
             return;
 
-        }else if(args.length==5){
+        }*/else if(args.length==5){
+            System.out.println("delete"+args[0]+args[1]+args[2]+args[3]+args[4]);
             fileToAddName=args[2];
             fileToAddContent = args[3].getBytes();
             fileToDeleteName=args[4];
@@ -122,6 +123,32 @@ public class AddOrDeleteUtils {
         }
         System.out.println("Usage1: java UpdateAddRemoveItems <input 7z> <output 7z> <to add file name> <addFile content>\nUsage2: java UpdateAddRemoveItems <input 7z> <output 7z> <delete file name>");
     }
+    public static void encryptUtilsLoader(String[] args){
+        if (args.length == 5) {
+
+            fileToAddName=args[2];
+            fileToAddContent = args[3].getBytes();
+            password=args[4];
+
+            new AddOrDeleteUtils().compress(args[0], args[1]);
+            return;
+        }/*else if(args.length==3){//应该是native方法的问题，从之这样处理抛异常，干脆注释掉
+            addMode=false;
+            fileToDeleteName=args[2];
+            new AddOrDeleteUtils().compress(args[0], args[1]);
+            return;
+
+        }*/else if(args.length==6){
+            fileToAddName=args[2];
+            fileToAddContent = args[3].getBytes();
+            fileToDeleteName=args[4];
+            password=args[5];
+            new AddOrDeleteUtils().compress(args[0], args[1]);
+            return;
+        }
+        System.out.println("Usage1: java UpdateAddRemoveItems <input 7z> <output 7z> <to add file name> <addFile content> <7z password>\nUsage2: java UpdateAddRemoveItems <input 7z> <output 7z> <delete file name> <7z password>");
+    }
+
 
     private void compress(String in, String out) {
         boolean success = false;

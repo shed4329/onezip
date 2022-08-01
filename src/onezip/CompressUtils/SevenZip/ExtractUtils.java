@@ -89,4 +89,22 @@ public class ExtractUtils {
     public static void extract(String sourceZipFile, String destinationDir){
         extract(sourceZipFile, destinationDir,"");
     }
+    public static boolean isEncrypted(String sourceZipFile) {
+        RandomAccessFile randomAccessFile = null;
+        IInArchive inArchive = null;
+        String lastFolderName = "";
+
+        try {
+            randomAccessFile = new RandomAccessFile(sourceZipFile, "r");
+
+            inArchive = SevenZip.openInArchive(null,
+                    new RandomAccessFileInStream(randomAccessFile));
+            ISimpleInArchive simpleInArchive = inArchive.getSimpleInterface();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (SevenZipException e) {
+            return true;
+        }
+        return false;
+    }
 }
