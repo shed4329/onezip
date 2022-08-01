@@ -46,6 +46,7 @@ import java.util.Optional;
 
 public class testOne extends Application {
     File zipTo;
+    File compressTo;
     String password="";
     int level=0;
     String viewPath="";
@@ -53,6 +54,7 @@ public class testOne extends Application {
     ArrayList<File> compressedFiles=new ArrayList<>();
     ArrayList<File> compressedFolders=new ArrayList<>();
     ArrayList<String> listFiles=new ArrayList<>();
+    int compressFormatType=999;//0=zip,1=7z, 7z不支持设置压缩级别
     ListView compressListView = new ListView();
 
     String cursorPath="";//ui自定义
@@ -293,9 +295,8 @@ public class testOne extends Application {
                     }
                     listFiles.add(file.getPath());
                     compressListView.setItems(FXCollections.observableArrayList(listFiles));
-                    compressPane();
                 }
-
+                compressPane();
 
             }
         });
@@ -367,20 +368,29 @@ public class testOne extends Application {
         Group group3 = new Group();
         Text zipSetting = new Text("压缩级别");
         zipSetting.setLayoutY(15);
-        ChoiceBox<String> choiceBox = new ChoiceBox<>();
-        choiceBox.setItems(FXCollections.observableArrayList("1","3","5","7","9"));
-        group3.getChildren().addAll(zipSetting,choiceBox);
-        choiceBox.setLayoutX(120);
+        ChoiceBox<String> compressLevelChoiceBox = new ChoiceBox<>();
+        compressLevelChoiceBox.setItems(FXCollections.observableArrayList("1","3","5","7","9"));
+        group3.getChildren().addAll(zipSetting,compressLevelChoiceBox);
+        compressLevelChoiceBox.setLayoutX(120);
+
 
         Group group4 = new Group();
+        Text formatSetting = new Text("压缩文件格式");
+        formatSetting.setLayoutY(15);
+        ChoiceBox<String> formatChoiceBox = new ChoiceBox<>();
+        formatChoiceBox.setItems(FXCollections.observableArrayList("zip","7z"));
+        group4.getChildren().addAll(formatSetting,formatChoiceBox);
+        formatChoiceBox.setLayoutX(120);
+
+        Group group5 = new Group();
         Button start = new Button("开始(s)");
         Button cancel = new Button("取消");
-        group4.getChildren().addAll(start,cancel);
+        group5.getChildren().addAll(start,cancel);
         cancel.setLayoutX(70);
 
 
         VBox box = new VBox();
-        box.getChildren().addAll(group0,group1,group2,setPassword,group3,group4);
+        box.getChildren().addAll(group0,group1,group2,setPassword,group3,group4,group5);
         box.setSpacing(10.0);
 
         Scene compressScene = new Scene(box);
@@ -391,7 +401,7 @@ public class testOne extends Application {
         Stage compressFrame = new Stage();
         compressFrame.setScene(compressScene);
         compressFrame.setTitle("新建压缩文件");
-        compressFrame.setHeight(460);
+        compressFrame.setHeight(490);
         compressFrame.setWidth(800);
         compressFrame.initModality(Modality.WINDOW_MODAL);
         compressFrame.getIcons().add(new Image("img/ZIP.png"));
@@ -432,12 +442,10 @@ public class testOne extends Application {
             }else{
                 String path = savedFile.getAbsoluteFile().toString();
                 if (!path.contains(".")) {
-                    fileTextField.setText(path + ".zip");
-                    zipTo = new File(path + ".zip");
+                    fileTextField.setText(path);
                 } else {
-                    String value = path.substring(0, path.indexOf(".")) + ".zip";
+                    String value = path.substring(0, path.lastIndexOf("."));
                     fileTextField.setText(value);
-                    zipTo = new File(value);
                 }
             }
         });
@@ -489,33 +497,82 @@ public class testOne extends Application {
             });
             cancel1.setOnAction(actionEvent112 -> passwordSetStage.close());
         });
-        choiceBox.getSelectionModel().selectedIndexProperty().addListener((observableValue, number, t1) -> {
-            int level = t1.intValue();
+        compressLevelChoiceBox.getSelectionModel().selectedIndexProperty().addListener((observableValue, number, t1) -> {
+            level = t1.intValue();
             System.out.println(level);
         });
+        formatChoiceBox.getSelectionModel().selectedIndexProperty().addListener(((observableValue, number, t1) -> {
+            compressFormatType=t1.intValue();
+            System.out.println(compressFormatType);
+            if (compressFormatType==0){
+                String str=fileTextField.getText();
+                if (str.contains(".zip")||str.contains(".7z")){
+                    str=str.substring(0,str.lastIndexOf("."));
+                }
+                fileTextField.setText(str+".zip");
+                zipTo = new File(str+ ".zip");
+            }else if (compressFormatType==1){
+                String str=fileTextField.getText();
+                if (str.contains(".zip")||str.contains(".7z")){
+                    str=str.substring(0,str.lastIndexOf("."));
+                }
+                fileTextField.setText(str+".7z");
+                compressTo = new File(str+ ".7z");
+            }
+        }));
+
         start.setOnAction(actionEvent12 -> {
             System.out.println(compressedFiles);
             System.out.println(compressedFolders);
-            if (zipTo==null){
-                alert("还没选择保存路径");
-            }else{
-
-                if(password.isEmpty()){
-                    try {
-                        ZipScheduledService zipScheduledService = new ZipScheduledService(1,level,0,compressedFiles,compressedFolders,zipTo,false,password);
-                        zipScheduledService.start();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+            if (compressFormatType==999){
+                alert("请选择文件格式");
+            } else if (compressFormatType==0) {
+                if (zipTo==null){
+                    alert("还没选择保存路径");
                 }else{
-                    try {
-                        ZipScheduledService zipScheduledService = new ZipScheduledService(1,level,0,compressedFiles,compressedFolders,zipTo,true,password);
-                        zipScheduledService.start();
-                    } catch (Exception e) {
-                        e.printStackTrace();
+
+                    if(password.isEmpty()){
+                        try {
+                            ZipScheduledService zipScheduledService = new ZipScheduledService(1,level,0,compressedFiles,compressedFolders,zipTo,false,password);
+                            zipScheduledService.start();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }else{
+                        try {
+                            ZipScheduledService zipScheduledService = new ZipScheduledService(1,level,0,compressedFiles,compressedFolders,zipTo,true,password);
+                            zipScheduledService.start();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            }else if (compressFormatType==1){
+                if (compressTo==null){
+                    alert("还没选择保存路径");
+                }else{
+                    ArrayList<File> arrayList = new ArrayList<>();
+                    arrayList.addAll(compressedFiles);
+                    arrayList.addAll(compressedFolders);
+                    if(password.isEmpty()){
+                        try {
+                            System.out.println(arrayList);
+                            SevenZipCompressService sevenZipCompressService = new SevenZipCompressService(arrayList,compressTo.getPath());
+                            sevenZipCompressService.start();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }else{
+                        try {
+                            SevenZipCompressService sevenZipCompressService = new SevenZipCompressService(arrayList,compressTo.getPath(),password);
+                            sevenZipCompressService.start();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
             }
+
         });
         cancel.setOnAction(actionEvent14 -> compressFrame.close());
     }
@@ -827,7 +884,7 @@ public class testOne extends Application {
                     //System.out.println("old value:"+oldValue);
                     System.out.println("new value:" + newValue);
                     System.out.println("\033[45m" + "viewPath:" + viewPath + "");//紫色标注
-                    if (viewPath.isEmpty()){
+                    if (viewPath==null||viewPath.isEmpty()){
                         System.out.println(newValue);
                         viewPath=newValue;
                         System.out.println(viewPath);
@@ -1165,7 +1222,7 @@ class SevenZipCompressService extends ScheduledService{
 
             @Override
             protected Integer call() throws Exception {
-                System.out.println(Thread.currentThread().getName());
+                System.out.println(Thread.currentThread().getName()+"     "+toCompress+"    "+compressTo);
                 if (type==1){
                     CompressUtils.compress(toCompress,compressTo);
                     return 1;
