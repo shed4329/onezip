@@ -54,7 +54,7 @@ public class testOne extends Application {
     ArrayList<File> compressedFiles=new ArrayList<>();
     ArrayList<File> compressedFolders=new ArrayList<>();
     ArrayList<String> listFiles=new ArrayList<>();
-    int compressFormatType=999;//0=zip,1=7z, 7z不支持设置压缩级别
+    int compressFormatType=999;//0=zip,1=7z, 7z不支持设置压缩级别,空文件夹不会被添加
     ListView compressListView = new ListView();
 
     String cursorPath="";//ui自定义
@@ -573,6 +573,33 @@ public class testOne extends Application {
                 }
             }
 
+        });
+        compressListView.setOnDragOver(new EventHandler<DragEvent>() {
+            @Override
+            public void handle(DragEvent event) {
+                if (event.getGestureSource() != compressListView) {
+                    event.acceptTransferModes(TransferMode.ANY);
+                }
+            }
+        });
+        compressListView.setOnDragDropped(new EventHandler<DragEvent>() {
+            @Override
+            public void handle(DragEvent dragEvent) {
+                Dragboard dragboard = dragEvent.getDragboard();
+                List<File> files = dragboard.getFiles();
+                System.out.println(files);
+                for (File file:files){
+                    if (!listFiles.contains(file.getPath())) {
+                        if (file.isDirectory()) {
+                            compressedFolders.add(file);
+                        } else {
+                            compressedFiles.add(file);
+                        }
+                        listFiles.add(file.getPath());
+                        compressListView.setItems(FXCollections.observableArrayList(listFiles));
+                    }
+                }
+            }
         });
         cancel.setOnAction(actionEvent14 -> compressFrame.close());
     }
