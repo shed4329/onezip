@@ -26,6 +26,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
+import onezip.CompressUtils.SevenZip.AddOrDeleteUtils;
 import onezip.CompressUtils.zip.zipUtils;
 import onezip.FX.setting.FX_GUISetting;
 import onezip.setting.NormalSetting;
@@ -37,6 +38,8 @@ import net.lingala.zip4j.exception.ZipException;
 
 
 import java.io.*;
+import java.nio.MappedByteBuffer;
+import java.nio.channels.FileChannel;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
@@ -55,6 +58,7 @@ public class testOne extends Application {
     ArrayList<File> compressedFolders=new ArrayList<>();
     ArrayList<String> listFiles=new ArrayList<>();
     int compressFormatType=999;//0=zip,1=7z, 7z不支持设置压缩级别,空文件夹不会被添加
+    String extractPassword = null;
     ListView compressListView = new ListView();
 
     String cursorPath="";//ui自定义
@@ -700,43 +704,46 @@ public class testOne extends Application {
                     viewStage.show();
 
                     boolean finalNormalSet = normalSet;
-                    listView.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
-                        if (finalNormalSet && !deleteModel) {
-                            String newValue = listView.getSelectionModel().getSelectedItem();
-                            //System.out.println("old value:"+oldValue);
-                            System.out.println("new value:" + newValue);
-                            System.out.println("\033[45m" + "viewPath:" + viewPath + "");//紫色标注
-                            if (newValue.equals("..")) {
-                                int temp = viewPath.substring(0, viewPath.length() - 2).lastIndexOf("/");//查找最后出现的位置(最末的”/“不算)
-                                if (temp == -1) {//没有”/“
-                                    viewPath = "";
-                                } else {
-                                    viewPath = viewPath.substring(0, temp);
-                                }
-                                System.out.println("viewPath.." + viewPath);
-                                fileItems = FXCollections.observableArrayList(zipUtils.viewInPath(nameList, viewPath));
-                                System.out.println("items:" + fileItems);
-                                parent = true;
-                            } else {
-                                if (parent) {//如果按了..,
-                                    if (!viewPath.isEmpty() && !viewPath.endsWith("/")) {//空的话在根目录,用短路与防止判断第二个条件时报错，如果在最后一个字符为“/”
-                                        viewPath = viewPath + "/";//..会导致路径末尾的”/“丢失
+                    listView.addEventHandler(MouseEvent.MOUSE_CLICKED, mouseEvent -> {
+                        if (mouseEvent.getClickCount() == 2) {
+
+                            if (finalNormalSet && !deleteModel) {
+                                String newValue = listView.getSelectionModel().getSelectedItem();
+                                //System.out.println("old value:"+oldValue);
+                                System.out.println("new value:" + newValue);
+                                System.out.println("\033[45m" + "viewPath:" + viewPath + "");//紫色标注
+                                if (newValue.equals("..")) {
+                                    int temp = viewPath.substring(0, viewPath.length() - 2).lastIndexOf("/");//查找最后出现的位置(最末的”/“不算)
+                                    if (temp == -1) {//没有”/“
+                                        viewPath = "";
+                                    } else {
+                                        viewPath = viewPath.substring(0, temp);
                                     }
-                                    parent = false;
+                                    System.out.println("viewPath.." + viewPath);
+                                    fileItems = FXCollections.observableArrayList(zipUtils.viewInPath(nameList, viewPath));
+                                    System.out.println("items:" + fileItems);
+                                    parent = true;
+                                } else {
+                                    if (parent) {//如果按了..,
+                                        if (!viewPath.isEmpty() && !viewPath.endsWith("/")) {//空的话在根目录,用短路与防止判断第二个条件时报错，如果在最后一个字符为“/”
+                                            viewPath = viewPath + "/";//..会导致路径末尾的”/“丢失
+                                        }
+                                        parent = false;
+                                    }
+
+                                    viewPath = viewPath + newValue;
+                                    System.out.println("\033[44m" + "viewPath:" + viewPath + "");
+
+                                    fileItems = FXCollections.observableArrayList(zipUtils.viewInPath(nameList, viewPath.substring(0, viewPath.length() - 1)));//去掉viewPath里最后的"/"
                                 }
 
-                                viewPath = viewPath + newValue;
-                                System.out.println("\033[44m" + "viewPath:" + viewPath + "");
+                                System.out.println(nameList.get(0));
 
-                                fileItems = FXCollections.observableArrayList(zipUtils.viewInPath(nameList, viewPath.substring(0, viewPath.length() - 1)));//去掉viewPath里最后的"/"
+                                listView.setItems(fileItems);
+
+
                             }
-
-                            System.out.println(nameList.get(0));
-
-                            listView.setItems(fileItems);
-
                         }
-
                     });
 
 
@@ -745,21 +752,16 @@ public class testOne extends Application {
                         DirectoryChooser directoryChooser = new DirectoryChooser();
                         directoryChooser.setTitle("解压到");
                         File extractTo = directoryChooser.showDialog(viewStage);
-                        try {
-                            boolean temp = zipUtils.isEncrypted(file);
-                            if (temp) {
-                                Alert alert = new Alert(Alert.AlertType.WARNING);
-                                alert.setTitle("警告");
-                                alert.setHeaderText("可能出现的问题");
-                                alert.setContentText("本文件已加密，若文件解压密码输入错误，将只会解压文件夹，并不会提示错误，而是提示‘成功’");
+                        if (extractPassword==null||extractPassword.isEmpty()) {
+                            Alert alert = new Alert(Alert.AlertType.WARNING);
+                            alert.setTitle("警告");
+                            alert.setHeaderText("可能出现的问题");
+                            alert.setContentText("本文件已加密，若文件解压密码输入错误，将只会解压文件夹，并不会提示错误，而是提示‘成功’");
 
-                                alert.showAndWait();
+                            alert.showAndWait();
 
-                                extractPassword = textInputDialog();
+                            extractPassword = textInputDialog();
 
-                            }
-                        } catch (ZipException e) {
-                            e.printStackTrace();
                         }
                         if (extractTo == null) {
                             alert("请选择解压位置");
@@ -839,7 +841,7 @@ public class testOne extends Application {
             } catch (ZipException e) {
                 e.printStackTrace();
             }
-        }else if (file.getName().contains(".7z")){
+        }else if (file.getName().contains(".7z")) {
             HBox northPane = new HBox();
             Button viewPaneExtract = new Button("解压文件");
             Image unzipImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("img/unzip.png")));
@@ -870,7 +872,12 @@ public class testOne extends Application {
                 normalSet = (!normalSetting1.getViewSwitch());
                 if (normalSet) {
                     System.out.println(normalSetting1.getViewSwitch());
-                   sevenZipList(file,listView);
+                    if (ExtractUtils.isEncrypted(file.getPath())){
+                        extractPassword = textInputDialog();
+                        sevenZipList(file,listView,extractPassword);
+                    }else {
+                        sevenZipList(file, listView);
+                    }
                 } else {
                     fileItems = FXCollections.observableArrayList("预览已关闭");
                     System.out.println("预览已关闭");
@@ -905,49 +912,50 @@ public class testOne extends Application {
             viewStage.show();
             boolean finalNormalSet = normalSet;
 
-            listView.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
-                if (finalNormalSet && !deleteModel) {
-                    String newValue = listView.getSelectionModel().getSelectedItem();
-                    //System.out.println("old value:"+oldValue);
-                    System.out.println("new value:" + newValue);
-                    System.out.println("\033[45m" + "viewPath:" + viewPath + "");//紫色标注
-                    if (viewPath==null||viewPath.isEmpty()){
-                        System.out.println(newValue);
-                        viewPath=newValue;
-                        System.out.println(viewPath);
-                        arrayList1=viewUtils.getFileNameInPath(nameList, viewPath);
-                        System.out.println(arrayList1);
-                        fileItems = FXCollections.observableArrayList(arrayList1);
-                    }else {
-                        if (newValue == "..") {
-                            if (viewPath.contains("\\")) {
-                                int i = viewPath.lastIndexOf("\\");
-                                viewPath = viewPath.substring(0, i);
+            listView.addEventHandler(MouseEvent.MOUSE_CLICKED, mouseEvent -> {
+                if(mouseEvent.getClickCount()==2) {
 
-                            }else{
-                                viewPath="";
-                            }
+                    if (finalNormalSet && !deleteModel) {
+                        String newValue = listView.getSelectionModel().getSelectedItem();
+                        //System.out.println("old value:"+oldValue);
+                        System.out.println("new value:" + newValue);
+                        System.out.println("\033[45m" + "viewPath:" + viewPath + "");//紫色标注
+                        if (viewPath == null || viewPath.isEmpty()) {
+                            System.out.println(newValue);
+                            viewPath = newValue;
+                            System.out.println(viewPath);
                             arrayList1 = viewUtils.getFileNameInPath(nameList, viewPath);
+                            System.out.println(arrayList1);
                             fileItems = FXCollections.observableArrayList(arrayList1);
                         } else {
-                            viewPath = viewPath + newValue.replace(viewPath,"");
-                            System.out.println(newValue);
-                            arrayList1=viewUtils.getFileNameInPath(nameList, viewPath);
-                            fileItems = FXCollections.observableArrayList(arrayList1);
-                        }
-                    }
-                    listView.setItems(fileItems);
-                    arrayList1.clear();
-                }
+                            if (newValue == "..") {
+                                if (viewPath.contains("\\")) {
+                                    int i = viewPath.lastIndexOf("\\");
+                                    viewPath = viewPath.substring(0, i);
 
+                                } else {
+                                    viewPath = "";
+                                }
+                                arrayList1 = viewUtils.getFileNameInPath(nameList, viewPath);
+                                fileItems = FXCollections.observableArrayList(arrayList1);
+                            } else {
+                                viewPath = viewPath + newValue.replace(viewPath, "");
+                                System.out.println(newValue);
+                                arrayList1 = viewUtils.getFileNameInPath(nameList, viewPath);
+                                fileItems = FXCollections.observableArrayList(arrayList1);
+                            }
+                        }
+                        listView.setItems(fileItems);
+                        arrayList1.clear();
+                    }
+                }
             });
             viewPaneExtract.setOnAction(actionEvent -> {
-                String extractPassword = null;
+
                 DirectoryChooser directoryChooser = new DirectoryChooser();
                 directoryChooser.setTitle("解压到");
                 File extractTo = directoryChooser.showDialog(viewStage);
-                boolean temp = ExtractUtils.isEncrypted(file.getPath());
-                if (temp) {
+                if (extractPassword==null||extractPassword.isEmpty()) {
                     extractPassword = textInputDialog();
                 }
                 if (extractTo == null) {
@@ -956,10 +964,10 @@ public class testOne extends Application {
                     try {
 
                         if (extractPassword == null || extractPassword.isEmpty()) {
-                            SevenZipExtractService sevenZipExtractService = new SevenZipExtractService(file.getPath(),extractTo.getPath());
+                            SevenZipExtractService sevenZipExtractService = new SevenZipExtractService(file.getPath(), extractTo.getPath());
                             sevenZipExtractService.start();
                         } else {
-                            SevenZipExtractService sevenZipExtractService = new SevenZipExtractService(file.getPath(),extractTo.getPath(),extractPassword);
+                            SevenZipExtractService sevenZipExtractService = new SevenZipExtractService(file.getPath(), extractTo.getPath(), extractPassword);
                             sevenZipExtractService.start();
                         }
 
@@ -967,6 +975,53 @@ public class testOne extends Application {
                         e.printStackTrace();
                     }
                 }
+            });
+            viewPaneAdd.setOnAction(actionEvent -> {
+                alertWarning("您添加的文件可能会替代某些文件（似乎是第一个），并且有可能导致部分文件预览不可见，请尽量不要使用");
+                FileChooser fileChooser = new FileChooser();
+                fileChooser.setTitle("选择要添加的文件");
+                File toAdd = fileChooser.showOpenDialog(viewStage);
+
+                if (extractPassword==null||extractPassword.isEmpty()) {
+                    extractPassword = textInputDialog();
+                }
+                try {
+
+                    if (extractPassword == null || extractPassword.isEmpty()) {
+                        SevenZipAddOrDeleteService sevenZipAddOrDeleteService = new SevenZipAddOrDeleteService(file.getPath(), toAdd);
+                        sevenZipAddOrDeleteService.start();
+                    } else {
+                        SevenZipAddOrDeleteService sevenZipAddOrDeleteService = new SevenZipAddOrDeleteService(file.getPath(), toAdd, extractPassword);
+                        sevenZipAddOrDeleteService.start();
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            });
+            viewPaneDelete.setOnAction(actionEvent -> {
+                alertWarning("由于技术问题，删除文件的功能已被禁用");
+                /*String filePathIn7z = listView.getSelectionModel().getSelectedItem();
+                System.out.println(filePathIn7z);
+                boolean temp = ExtractUtils.isEncrypted(file.getPath());
+                if (temp) {
+                    extractPassword = textInputDialog();
+                }
+                try {
+
+                    if (extractPassword == null || extractPassword.isEmpty()) {
+                        SevenZipAddOrDeleteService sevenZipAddOrDeleteService = new SevenZipAddOrDeleteService(file.getPath(),filePathIn7z);
+                        sevenZipAddOrDeleteService.start();
+                    } else {
+                        SevenZipAddOrDeleteService sevenZipAddOrDeleteService = new SevenZipAddOrDeleteService(file.getPath(), filePathIn7z, extractPassword);
+                        sevenZipAddOrDeleteService.start();
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                 */
             });
         }
     }
@@ -979,6 +1034,12 @@ public class testOne extends Application {
     }
     private void sevenZipList(File file,ListView listView){
         viewUtils.fileView(file.getPath(),nameList);
+        System.out.println(nameList);
+        fileItems = FXCollections.observableArrayList(onezip.CompressUtils.SevenZip.viewUtils.getFileNameInPath(nameList,""));
+        System.out.println(fileItems);
+    }
+    private void sevenZipList(File file,ListView listView,String password){
+        viewUtils.fileView(file.getPath(),nameList,password);
         System.out.println(nameList);
         fileItems = FXCollections.observableArrayList(onezip.CompressUtils.SevenZip.viewUtils.getFileNameInPath(nameList,""));
         System.out.println(fileItems);
@@ -1031,6 +1092,10 @@ public class testOne extends Application {
 // Set expandable Exception into the dialog pane.
         alert.getDialogPane().setExpandableContent(expContent);
         alert.initOwner(stage);
+        alert.showAndWait();
+    }
+    public static void alertWarning(String text){
+        Alert alert = new Alert(Alert.AlertType.WARNING,text);
         alert.showAndWait();
     }
     public static String textInputDialog(){
@@ -1249,7 +1314,7 @@ class SevenZipCompressService extends ScheduledService{
 
             @Override
             protected Integer call() throws Exception {
-                System.out.println(Thread.currentThread().getName()+"     "+toCompress+"    "+compressTo);
+                System.out.println(Thread.currentThread().getName());
                 if (type==1){
                     CompressUtils.compress(toCompress,compressTo);
                     return 1;
@@ -1271,5 +1336,103 @@ class SevenZipCompressService extends ScheduledService{
             }
         };
     }
+
+}
+
+class SevenZipAddOrDeleteService extends ScheduledService{
+    String sevenZipFile;
+    File fileToAdd;
+    String fileIn7zPath;
+    String password;
+    int type=0;//1->添加文件 2->删除文件
+
+    public SevenZipAddOrDeleteService(String sevenZipFile,File fileToAdd){
+        this.sevenZipFile=sevenZipFile;
+        this.fileToAdd=fileToAdd;
+        type=1;
+    }
+    public SevenZipAddOrDeleteService(String sevenZipFile,File fileToAdd,String password){
+        this.sevenZipFile=sevenZipFile;
+        this.fileToAdd=fileToAdd;
+        type=1;
+    }
+    public SevenZipAddOrDeleteService(String sevenZipFile,String fileIn7zPath){
+        this.sevenZipFile=sevenZipFile;
+        this.fileIn7zPath=fileIn7zPath;
+        type=2;
+    }
+    public SevenZipAddOrDeleteService(String sevenZipFile,String fileIn7zPath,String password){
+        this.sevenZipFile=sevenZipFile;
+        this.fileIn7zPath=fileIn7zPath;
+        type=2;
+    }
+    @Override
+    protected Task createTask() {
+        return new Task<Integer>() {
+
+            @Override
+            protected Integer call() throws Exception {
+                System.out.println(Thread.currentThread().getName());
+                if (type==1){
+                    if (password==null||password.isEmpty()){
+                        String[] argument={sevenZipFile,sevenZipFile,fileToAdd.getName(),new String(toByteArray(fileToAdd.getPath()))};
+                        AddOrDeleteUtils.main(argument);
+                    }else{
+                        String[] argument={sevenZipFile,sevenZipFile,fileToAdd.getName(),new String(toByteArray(fileToAdd.getPath())),password};
+                        AddOrDeleteUtils.encryptUtilsLoader(argument);
+                    }
+                    return 1;
+                }else if (type==2){
+                    if (password==null||password.isEmpty()){
+                        String[] argument={sevenZipFile,sevenZipFile,fileIn7zPath,"It's sorry to create sorry.txt in your 7z file due to some technological limits","sorry.txt"};
+                        AddOrDeleteUtils.main(argument);
+                    }else{
+                        String[] argument={sevenZipFile,sevenZipFile,fileIn7zPath,"It's sorry to create sorry.txt in your 7z file due to some technological limits","sorry.txt",password};
+                        AddOrDeleteUtils.encryptUtilsLoader(argument);
+                    }
+                    return 2;
+                }
+                return 0;
+
+            }
+
+            @Override
+            protected void updateValue(Integer value) {
+                if (value==0){
+                    testOne.alert("error:no model selected");
+                }else if (value==1||value==2){
+                    testOne.alertSuccess();
+                }
+                SevenZipAddOrDeleteService.this.cancel();
+            }
+        };
+    }
+
+    private static byte[] toByteArray(String filename) throws IOException {
+
+        FileChannel fc = null;
+        try {
+            fc = new RandomAccessFile(filename, "r").getChannel();
+            MappedByteBuffer byteBuffer = fc.map(FileChannel.MapMode.READ_ONLY, 0,
+                    fc.size()).load();
+            System.out.println(byteBuffer.isLoaded());
+            byte[] result = new byte[(int) fc.size()];
+            if (byteBuffer.remaining() > 0) {
+                // System.out.println("remain");
+                byteBuffer.get(result, 0, byteBuffer.remaining());
+            }
+            return result;
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw e;
+        } finally {
+            try {
+                fc.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
 
 }
