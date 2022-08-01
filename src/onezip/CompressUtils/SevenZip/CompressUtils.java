@@ -14,6 +14,6 @@ public class CompressUtils {
     public static void compress(ArrayList<File> arrayList,String sevenZipFilePath,String password){
         SevenZipJBindingJunitCompressArchiveStructure.Receiver(arrayList);
         String[] argument={sevenZipFilePath,password};
-        SevenZipJBindingJunitCompressNonGeneric7z.main(argument);
+        CompressWithPassword.main(argument);
     }
 }
