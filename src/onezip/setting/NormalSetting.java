@@ -3,26 +3,40 @@ package onezip.setting;
 import java.io.*;
 
 public class NormalSetting {
-    String viewSwitch;
+    static String viewSwitch;
+    static boolean isGet = false;
 
 
-    public Boolean getViewSwitch() {
-        if (viewSwitch=="ture"){
-            return true;
-        }else{
+    public static Boolean getViewSwitch() {
+        if (!isGet){
+            try {
+                getSetting();
+                isGet=true;
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+        if (viewSwitch.equals("false")){
             return false;
+        }else{
+            return true;
         }
     }
 
-    public void setViewSwitch(boolean Switch) {
+    public static void setViewSwitch(boolean Switch) {
         if (Switch){
             viewSwitch="true";
         }else{
             viewSwitch="false";
         }
+        try {
+            setSetting();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    private void getSetting() throws Exception{
+    private static void getSetting() throws Exception{
 
         //配置文件在临时目录下
 
@@ -55,7 +69,7 @@ public class NormalSetting {
         inputStream.close();
         bufferedReader.close();
     }
-    private void setSetting() throws IOException {
+    private static void setSetting() throws IOException {
         String string = viewSwitch;
         byte[] data = string.getBytes();
 

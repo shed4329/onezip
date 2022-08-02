@@ -246,18 +246,10 @@ public class zipUtils {
         //压缩等级
         if (level == 1) {
             zipParameters.setCompressionLevel(CompressionLevel.FASTEST);
-        } else if (level == 2) {
-            zipParameters.setCompressionLevel(CompressionLevel.FASTER);
         } else if (level == 3) {
             zipParameters.setCompressionLevel(CompressionLevel.FAST);
-        } else if (level == 4) {
-            zipParameters.setCompressionLevel(CompressionLevel.MEDIUM_FAST);
-        } else if (level == 5) {
-            zipParameters.setCompressionLevel(CompressionLevel.HIGHER);
         } else if (level == 6) {
             zipParameters.setCompressionLevel(CompressionLevel.MAXIMUM);
-        } else if (level == 7) {
-            zipParameters.setCompressionLevel(CompressionLevel.PRE_ULTRA);
         } else if (level == 8) {
             zipParameters.setCompressionLevel(CompressionLevel.ULTRA);
         } else {

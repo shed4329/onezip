@@ -26,13 +26,15 @@ import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
-import onezip.CompressUtils.SevenZip.AddOrDeleteUtils;
 import onezip.CompressUtils.zip.zipUtils;
-import onezip.FX.setting.FX_GUISetting;
-import onezip.setting.NormalSetting;
+import onezip.CompressUtils.SevenZip.AddOrDeleteUtils;
 import onezip.CompressUtils.SevenZip.viewUtils;
 import onezip.CompressUtils.SevenZip.ExtractUtils;
 import onezip.CompressUtils.SevenZip.CompressUtils;
+import onezip.FX.setting.FX_GUISetting;
+import onezip.setting.NormalSetting;
+
+import onezip.component.RARPane;
 
 import net.lingala.zip4j.exception.ZipException;
 
@@ -120,7 +122,7 @@ public class testOne extends Application {
         stage.setScene(scene);
         stage.setWidth(700);
         stage.setHeight(500);
-        stage.setTitle("OneZip version 0.04 channel(only for test)");
+        stage.setTitle("OneZip version 0.04 channel2(only for test)");
         stage.getIcons().add(new Image("img/ZIP.png"));
         stage.show();
 
@@ -319,10 +321,10 @@ public class testOne extends Application {
                 Dragboard dragboard = dragEvent.getDragboard();
                 List<File> files = dragboard.getFiles();
                 if (files.size()==1){
-                    if (files.get(0).getName().contains(".zip")||files.get(0).getName().contains(".7z")){
+                    if (files.get(0).getName().contains(".zip")||files.get(0).getName().contains(".7z")||files.get(0).getName().contains(".rar")){
                         extractPane(files.get(0));
                     }else{
-                        alert("（ErrorType：想多了你）只能处理zip压缩包");
+                        alert("（ErrorType：想多了你）只能处理zip,7z,rar压缩包");
                     }
                 }else if(files.size()>=2){
                     alert("不能贪多哟，一次只能添加一个压缩包");
@@ -1023,6 +1025,8 @@ public class testOne extends Application {
 
                  */
             });
+        } else if (file.getName().contains(".rar")) {
+            RARPane.main(new String[]{file.getPath()});
         }
     }
     private void list(File file,ListView listView) throws IOException {
