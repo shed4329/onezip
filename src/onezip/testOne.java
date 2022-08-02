@@ -63,11 +63,11 @@ public class testOne extends Application {
     String extractPassword = null;
     ListView compressListView = new ListView();
 
-    String cursorPath="";//ui自定义
+     String cursorPath="";//ui自定义
     FX_GUISetting fx_guiSetting= new FX_GUISetting();
-    Image cursorImage;
-    boolean cursorAble=false;
-    boolean deleteModel=false;
+    static Image cursorImage;
+    static boolean cursorAble=false;
+    static boolean deleteModel=false;
     ArrayList<String> arrayList1 = new ArrayList();
 
     NormalSetting normalSetting1 = new NormalSetting();
@@ -122,7 +122,7 @@ public class testOne extends Application {
         stage.setScene(scene);
         stage.setWidth(700);
         stage.setHeight(500);
-        stage.setTitle("OneZip version 0.04 channel2(only for test)");
+        stage.setTitle("OneZip version 0.04 channel3(only for test)");
         stage.getIcons().add(new Image("img/ZIP.png"));
         stage.show();
 
@@ -143,7 +143,7 @@ public class testOne extends Application {
         about.setOnAction(actionEvent -> {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.titleProperty().set("关于");
-            alert.headerTextProperty().set("OneZip\n版本号：0.04 channel2\n仅供测试");
+            alert.headerTextProperty().set("OneZip\n版本号：0.04 channel3\n仅供测试");
             alert.showAndWait();
         });
         setting.setOnAction(actionEvent -> {
@@ -754,16 +754,20 @@ public class testOne extends Application {
                         DirectoryChooser directoryChooser = new DirectoryChooser();
                         directoryChooser.setTitle("解压到");
                         File extractTo = directoryChooser.showDialog(viewStage);
-                        if (extractPassword==null||extractPassword.isEmpty()) {
-                            Alert alert = new Alert(Alert.AlertType.WARNING);
-                            alert.setTitle("警告");
-                            alert.setHeaderText("可能出现的问题");
-                            alert.setContentText("本文件已加密，若文件解压密码输入错误，将只会解压文件夹，并不会提示错误，而是提示‘成功’");
+                        try {
+                            if (zipUtils.isEncrypted(file)) {
+                                Alert alert = new Alert(Alert.AlertType.WARNING);
+                                alert.setTitle("警告");
+                                alert.setHeaderText("可能出现的问题");
+                                alert.setContentText("本文件已加密，若文件解压密码输入错误，将只会解压文件夹，并不会提示错误，而是提示‘成功’");
 
-                            alert.showAndWait();
+                                alert.showAndWait();
 
-                            extractPassword = textInputDialog();
+                                extractPassword = textInputDialog();
 
+                            }
+                        } catch (ZipException e) {
+                            throw new RuntimeException(e);
                         }
                         if (extractTo == null) {
                             alert("请选择解压位置");
@@ -957,7 +961,7 @@ public class testOne extends Application {
                 DirectoryChooser directoryChooser = new DirectoryChooser();
                 directoryChooser.setTitle("解压到");
                 File extractTo = directoryChooser.showDialog(viewStage);
-                if (extractPassword==null||extractPassword.isEmpty()) {
+                if (onezip.CompressUtils.SevenZip.ExtractUtils.isEncrypted(file.getPath())) {
                     extractPassword = textInputDialog();
                 }
                 if (extractTo == null) {
@@ -1048,6 +1052,15 @@ public class testOne extends Application {
         fileItems = FXCollections.observableArrayList(onezip.CompressUtils.SevenZip.viewUtils.getFileNameInPath(nameList,""));
         System.out.println(fileItems);
     }
+
+    public static boolean isCursorAble() {
+        return cursorAble;
+    }
+
+    public static Image getCursorImage() {
+        return cursorImage;
+    }
+
     public static void alert(String text){
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.titleProperty().set("错误");

@@ -13,7 +13,6 @@ import net.lingala.zip4j.progress.ProgressMonitor;
 import java.io.*;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import onezip.testOne;
 import onezip.ProcessFrame;
@@ -68,7 +67,7 @@ public class zipUtils {
         System.out.println("摘要"+"\n"+"要压缩的文件："+inputFiles+"生成的压缩包："+output.getName()+"(路径:"+output.getPath()+")"+"\n"+"用时："+(System.currentTimeMillis()-d1)+"ms");
     }
     public static void zipFolder(File folder, File output, int method, int level, boolean isEncrypt,String password) throws Exception{
-        long d1 = System.currentTimeMillis();//开始时间
+
 
         ZipFile zipFile = new ZipFile(output.getPath());//生成的压缩包
         ZipParameters zipParameters = new ZipParameters();//压缩参数
@@ -186,7 +185,7 @@ public class zipUtils {
         System.out.println("1");
         ProcessFrame processFrame = new ProcessFrame();
         System.out.println("2");
-        Platform.runLater(()->processFrame.newProgressFrame());
+        Platform.runLater(processFrame::newProgressFrame);
 
         System.out.println("m");
         System.out.println(progressMonitor.getState().toString());
@@ -197,6 +196,7 @@ public class zipUtils {
             System.out.println("Current file: " + progressMonitor.getFileName());
             System.out.println("Current task: " + progressMonitor.getCurrentTask());
             System.out.println("x");
+            //noinspection BusyWait
             Thread.sleep(50);
             System.out.println("/");
         }
