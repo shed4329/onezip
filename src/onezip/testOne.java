@@ -118,7 +118,6 @@ public class testOne extends Application {
             scene.setCursor(new ImageCursor(cursorImage));
             cursorAble=true;
         }
-
         stage.setScene(scene);
         stage.setWidth(700);
         stage.setHeight(500);
@@ -695,7 +694,6 @@ public class testOne extends Application {
                     if (cursorAble) {//自定义鼠标
                         viewScene.setCursor(new ImageCursor(cursorImage));
                     }
-
                     Stage viewStage = new Stage();
                     viewStage.setScene(viewScene);
                     viewStage.setWidth(800);
