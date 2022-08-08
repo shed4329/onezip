@@ -75,7 +75,18 @@ public class testOne extends Application {
     ArrayList<String> nameList =new ArrayList<>();//文件列表，预览使用
     ObservableList<String> fileItems;
     public static void main(String[] args) {
-        launch(args);
+        FX_GUISetting fxGuiSetting = new FX_GUISetting();
+        String string = null;
+        try {
+            string = fxGuiSetting.getBootTheme();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        if (string!=null||!string.isEmpty()||string.equals("Fluent")){
+            onezip.themes.fxJava.fluent.normalFrame.main(new String[]{});
+        }else {
+            launch(args);
+        }
     }
     public void start(Stage stage) throws Exception {
         Button compress = new Button("\n压缩");
