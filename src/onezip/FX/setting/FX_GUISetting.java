@@ -5,6 +5,8 @@ import java.io.*;
 public class FX_GUISetting {
     boolean setting;
     String cursorPath="";
+    String bootMode="";
+    String bootTheme="";
 
     public String getCursorPath() throws Exception {
         if (!setting){
@@ -15,6 +17,30 @@ public class FX_GUISetting {
 
     public void setCursorPath(String cursorPath) throws IOException {
         this.cursorPath = cursorPath;
+        setSetting();
+    }
+
+    public String getBootMode() throws Exception{
+        if (!setting){
+            getSetting();
+        }
+        return bootMode;
+    }
+
+    public void setBootMode(String bootMode) throws IOException{
+        this.bootMode = bootMode;
+        setSetting();
+    }
+
+    public String getBootTheme() throws Exception{
+        if (!setting){
+            getSetting();
+        }
+        return bootTheme;
+    }
+
+    public void setBootTheme(String bootTheme) throws IOException{
+        this.bootTheme = bootTheme;
         setSetting();
     }
 
@@ -44,17 +70,23 @@ public class FX_GUISetting {
         String lineText = "";
         int i=1;
         while ((lineText=bufferedReader.readLine())!=null){
+
             if (i==1){
                 lineText.replace("/u005C",File.separator);
                 lineText.replace("/",File.separator);
                 cursorPath=lineText;
+            }else if (i==2){
+                bootMode=lineText;
+            }else if (i==3){
+                bootTheme=lineText;
             }
+            i++;
         }
         inputStream.close();
         bufferedReader.close();
     }
     private void setSetting() throws IOException {
-        String string = cursorPath;
+        String string = cursorPath+"\n"+bootMode+"\n"+bootTheme;
         byte[] data = string.getBytes();
 
         String filePath = System.getProperty("java.io.tmpdir")+File.separator+"OneZip"+File.separator+"FX_GUISetting.txt";
