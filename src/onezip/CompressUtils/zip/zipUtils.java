@@ -59,7 +59,11 @@ public class zipUtils {
          */
         System.out.println("u");
         //zipFile.addFile(input,zipParameters);
-        zipFile.addFiles(inputFiles);
+        try {
+            zipFile.addFiles(inputFiles);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
         System.out.println("n");
         monitor(progressMonitor);
         System.out.println("java");

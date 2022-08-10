@@ -29,6 +29,8 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import jfxtras.styles.jmetro.JMetro;
 import jfxtras.styles.jmetro.Style;
+import onezip.Service.ZipScheduledService;
+import onezip.testOne;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -41,6 +43,8 @@ public class normalFrame extends Application {
     File archive;
     static boolean compressPaneStatus = true;//false->解压面板，ture->压缩面板
     ListView<String> compressListView = new ListView();
+    int compressFormatType = 0;//0=zip,1=7z
+    boolean compressIsPasswordEncrypted = false;
     ObservableList<String> compressFileNameList=FXCollections.observableArrayList();
     ListView<String> extractListView = new ListView();
     static int settingTimes = 0;
@@ -211,9 +215,24 @@ public class normalFrame extends Application {
                         if (t1){//if selected
                             compressChildStage.setHeight(530);
                             hBox0.setLayoutY(500);
+                            compressIsPasswordEncrypted=true;
                         }else{
                             compressChildStage.setHeight(408);
                             hBox0.setLayoutY(380);
+                            compressIsPasswordEncrypted=false;
+                        }
+                    }
+                });
+                choiceBox.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
+                    @Override
+                    public void changed(ObservableValue<? extends Number> observableValue, Number number, Number t1) {
+                        if (t1.intValue()==1){//0=zip,1=7z
+                            choiceBox2.getSelectionModel().selectFirst();
+                            choiceBox2.setDisable(true);
+                            compressFormatType=1;
+                        }else{
+                            choiceBox2.setDisable(false);
+                            compressFormatType=0;
                         }
                     }
                 });
@@ -221,6 +240,57 @@ public class normalFrame extends Application {
                     DirectoryChooser directoryChooser = new DirectoryChooser();
                     directoryChooser.setTitle("选择文件夹");
                     File folder = directoryChooser.showDialog(compressChildStage);
+                    if (folder!=null){
+                        textField.setText(folder.getPath());
+                    }
+                });
+                cancel.setOnAction(actionEvent2 -> {
+                    compressChildStage.close();
+                });
+                start.setOnAction(actionEvent2 -> {
+                    //检验环节
+                    String filePath = textField.getText();
+                    if (filePath==null||filePath.isEmpty()){
+                        testOne.alert("还没有选择保存路径");
+                    }else{
+                        String fileName = textField1.getText();
+                        if (fileName==null||fileName.isEmpty()){
+                            testOne.alert("请输入文件名");
+                        }else{
+                            int compressLevel = choiceBox2.getSelectionModel().getSelectedIndex();
+                            if (compressLevel==1){
+                                compressLevel=3;
+                            }else if (compressLevel==2){
+                                compressLevel=1;
+                            }else if (compressLevel==3){
+                                compressLevel=8;
+                            }
+                            if (compressIsPasswordEncrypted){//这边是加密区
+                                String password0 =  passwordField0.getText();
+                                String password1 =  passwordField1.getText();
+                                if (password0==null||password0.isEmpty()){
+                                    testOne.alert("密码不能为空");
+                                }else if (password1==null||password1.isEmpty()){
+                                    testOne.alert("密码不能为空");
+                                }else if (password0.equals(password1)){
+
+                                }else{
+                                    testOne.alert("密码不一致");
+                                }
+                            }else{
+                                if (compressFormatType==0){//zip
+                                    try {
+                                        ZipScheduledService zipScheduledService = new ZipScheduledService(1,compressLevel,0,fileArrayList,folderArrayList,new File(filePath+File.separator+fileName+".zip"),false,"");
+                                        zipScheduledService.start();
+                                    } catch (Exception e) {
+                                        throw new RuntimeException(e);
+                                    }
+                                }else{
+
+                                }
+                            }
+                        }
+                    }
                 });
             });
         });
