@@ -1,25 +1,32 @@
 package onezip.themes.fxJava.fluent;
 
 import javafx.application.Application;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.Event;
 import javafx.event.EventHandler;
+import javafx.geometry.Pos;
+import javafx.scene.Group;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.ListCell;
-import javafx.scene.control.ListView;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Border;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+import javafx.scene.text.Text;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import jfxtras.styles.jmetro.JMetro;
 import jfxtras.styles.jmetro.Style;
 
@@ -123,6 +130,98 @@ public class normalFrame extends Application {
                     System.out.println(compressFileNameList);
                     compressListView.setCellFactory((ListView<String> l) -> new ColorRectCell());
                 }
+            });
+            compressAll.setOnAction(actionEvent1 -> {
+                VBox vBox0 = new VBox();
+                Text text = new Text("\n压缩选项");
+                text.setFont(Font.font("Microsoft YaHei", FontWeight.BOLD,22));
+
+                Text text2 = new Text("目标文件夹");
+                HBox hBox2 = new HBox();
+                hBox2.setSpacing(10);
+                TextField textField = new TextField();
+                textField.setPrefWidth(400);
+                textField.setText(System.getProperty("user.home"));
+                textField.setEditable(false);
+                Button button = new Button("...");
+                hBox2.getChildren().addAll(textField,button);
+
+                Text text3 = new Text("文件名称");
+                TextField textField1 = new TextField();
+                //textField1.setPrefWidth(400);//好像直接上组件就与面板宽度一致
+
+                Text text4 = new Text("压缩格式");
+                ChoiceBox choiceBox = new ChoiceBox(FXCollections.observableArrayList("zip", "7z"));
+                choiceBox.getSelectionModel().selectFirst();
+                choiceBox.setPrefWidth(430);
+
+                Button button1 = new Button("高级");
+
+                Text text5 = new Text("压缩级别");
+                ChoiceBox choiceBox2 = new ChoiceBox(FXCollections.observableArrayList("正常","快速","最快","极限压缩"));
+                choiceBox2.getSelectionModel().selectFirst();
+
+                CheckBox checkBox = new CheckBox("使用密码加密");
+                Text text6 = new Text("密码");
+                PasswordField passwordField0 = new PasswordField();
+                Text text7 = new Text("确认密码");
+                PasswordField passwordField1 = new PasswordField();
+
+                vBox0.getChildren().addAll(text,text2,hBox2,text3,textField1,text4,choiceBox,button1,text5,choiceBox2,checkBox,text6,passwordField0,text7,passwordField1);
+                vBox0.setSpacing(10);
+
+                HBox hBox0 = new HBox();
+                Button start = new Button("确认");
+                Button cancel = new Button("取消");
+                start.setStyle("-fx-background-color:#87cefa");
+                start.setPrefWidth(200);
+                cancel.setPrefWidth(200);
+                hBox0.getChildren().addAll(start,cancel);
+                hBox0.setAlignment(Pos.BOTTOM_CENTER);
+                hBox0.setSpacing(10);
+                hBox0.setLayoutY(290);
+                Group group = new Group();
+                group.getChildren().addAll(vBox0,hBox0);
+
+                Scene compressChildScene = new Scene(group);
+                JMetro jMetro1 = new JMetro();
+                jMetro1.setScene(compressChildScene);
+                Stage compressChildStage = new Stage();
+                compressChildStage.setWidth(450);
+                compressChildStage.setHeight(317);
+                compressChildStage.initStyle(StageStyle.UNDECORATED);
+                compressChildStage.setScene(compressChildScene);
+                compressChildStage.show();
+                final boolean[] advanced = {false};
+                button1.setOnAction(actionEvent2 -> {
+                    if (advanced[0]){//已有高级页面
+                        compressChildStage.setHeight(317);
+                        hBox0.setLayoutY(290);
+                        advanced[0] =false;
+                    }else{//未进入
+                        compressChildStage.setHeight(408);
+                        hBox0.setLayoutY(380);
+                        advanced[0] =true;
+                        checkBox.setSelected(false);
+                    }
+                });
+                checkBox.selectedProperty().addListener(new ChangeListener<Boolean>() {
+                    @Override
+                    public void changed(ObservableValue<? extends Boolean> observableValue, Boolean aBoolean, Boolean t1) {
+                        if (t1){//if selected
+                            compressChildStage.setHeight(530);
+                            hBox0.setLayoutY(500);
+                        }else{
+                            compressChildStage.setHeight(408);
+                            hBox0.setLayoutY(380);
+                        }
+                    }
+                });
+                button.setOnAction(actionEvent2 -> {
+                    DirectoryChooser directoryChooser = new DirectoryChooser();
+                    directoryChooser.setTitle("选择文件夹");
+                    File folder = directoryChooser.showDialog(compressChildStage);
+                });
             });
         });
         extract.setOnAction(actionEvent -> {
