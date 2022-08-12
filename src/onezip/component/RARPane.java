@@ -16,6 +16,7 @@ import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import onezip.CompressUtils.RAR.UnCompressUtil;
+import onezip.Service.RARExtractService;
 import onezip.testOne;
 
 import java.io.File;
@@ -116,50 +117,4 @@ public class RARPane extends Application {
         cancel.setOnAction(actionEvent -> stage.close());
     }
 
-}
-@SuppressWarnings("rawtypes")
-class RARExtractService extends ScheduledService {
-    String RARFile;
-    String outputPath;
-    String password;
-
-    public RARExtractService(String RARFile, String outputPath) {
-        this.RARFile = RARFile;
-        this.outputPath = outputPath;
-    }
-
-    public RARExtractService(String RARFile, String outputPath, String password) {
-        this.RARFile = RARFile;
-        this.outputPath = outputPath;
-        this.password = password;
-    }
-
-    @SuppressWarnings("rawtypes")
-    @Override
-    protected Task createTask() {
-        return new Task<Integer>() {
-
-            @Override
-            protected Integer call() throws Exception {
-                System.out.println(Thread.currentThread().getName());
-
-                if (password == null || password.isEmpty()) {
-                    System.out.println(RARFile+" "+outputPath);
-                    UnCompressUtil.unRar5AndOver5(RARFile, outputPath);
-                } else {
-                    UnCompressUtil.unRar5AndOver5(RARFile, outputPath,password);
-                }
-                return 1;
-
-            }
-
-            @Override
-            protected void updateValue(Integer value) {
-                if (value == 0) {
-                    testOne.alert("error:no model selected");
-                }
-                RARExtractService.this.cancel();
-            }
-        };
-    }
 }

@@ -4,7 +4,9 @@ import javafx.concurrent.ScheduledService;
 import javafx.concurrent.Task;
 import onezip.CompressUtils.zip.zipUtils;
 import onezip.testOne;
+import onezip.themes.fxJava.fluent.Notification;
 
+import java.awt.*;
 import java.io.File;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
@@ -22,6 +24,7 @@ public class ZipScheduledService extends ScheduledService {
     String password;
     String extractPassword;
     Charset charset;
+    boolean fluentNotice = false;
     public ZipScheduledService(int type,int level,int method,ArrayList<File> inputFiles,ArrayList<File> inputFolders,File output,boolean isEncrypt,String password) throws Exception {//压缩文件调用
         System.out.println("zip service");
         this.type = type;
@@ -89,10 +92,22 @@ public class ZipScheduledService extends ScheduledService {
                     testOne.alert("错误！不能添加多个文件夹，稍后可以在【设置】->【通用】->【将多个文件夹复制到同一文件夹后添加到压缩文件中】");
                 }else{
                     testOne.alertSuccess();
+                    if (fluentNotice&&type==2){
+                        try {
+                            Notification notification = new Notification();
+                            notification.displayTray("完成", input.getName() + "已成功解压到" + output.getPath());
+                        } catch (AWTException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
                 }
                     ZipScheduledService.this.cancel();
 
             }
         };
+    }
+
+    public void setFluentNotice(boolean fluentNotice) {
+        this.fluentNotice = fluentNotice;
     }
 }

@@ -30,8 +30,9 @@ import onezip.CompressUtils.zip.zipUtils;
 import onezip.CompressUtils.SevenZip.AddOrDeleteUtils;
 import onezip.CompressUtils.SevenZip.viewUtils;
 import onezip.CompressUtils.SevenZip.ExtractUtils;
-import onezip.CompressUtils.SevenZip.CompressUtils;
 import onezip.FX.setting.FX_GUISetting;
+import onezip.Service.SevenZipCompressService;
+import onezip.Service.SevenZipExtractService;
 import onezip.setting.NormalSetting;
 import onezip.Service.ZipScheduledService;
 import onezip.component.RARPane;
@@ -1181,98 +1182,6 @@ class AddOrDeleteScheduledService extends ScheduledService{
                     testOne.alertSuccess();
                 }
                 AddOrDeleteScheduledService.this.cancel();
-            }
-        };
-    }
-
-}
-class SevenZipExtractService extends ScheduledService{
-    String toExtract;
-    String extractTo;
-    String password;
-    int type=0;
-    public SevenZipExtractService(String toExtract,String extractTo){
-        this.toExtract=toExtract;
-        this.extractTo=extractTo;
-        type=1;
-    }
-    public SevenZipExtractService(String toExtract,String extractTo,String password){
-        this.toExtract=toExtract;
-        this.extractTo=extractTo;
-        this.password=password;
-        type=2;
-    }
-    @Override
-    protected Task createTask() {
-        return new Task<Integer>() {
-
-            @Override
-            protected Integer call() throws Exception {
-                System.out.println(Thread.currentThread().getName());
-                if (type==1){
-                    ExtractUtils.extract(toExtract,extractTo);
-                    return 1;
-                }else if (type==2){
-                    ExtractUtils.extract(toExtract,extractTo,password);
-                    return 2;
-                }
-                return 0;
-            }
-
-            @Override
-            protected void updateValue(Integer value) {
-                if (value==0){
-                    testOne.alert("error:no model selected");
-                }else if (value==1||value==2){
-                    testOne.alertSuccess();
-                }
-                SevenZipExtractService.this.cancel();
-            }
-        };
-    }
-
-}
-class SevenZipCompressService extends ScheduledService{
-    ArrayList<File> toCompress=new ArrayList<>();
-    String compressTo;
-    String password;
-    int type=0;
-    public SevenZipCompressService(ArrayList<File> compressedFile,String compressTo){
-        toCompress.addAll(compressedFile);
-        this.compressTo=compressTo;
-        type=1;
-    }
-    public SevenZipCompressService(ArrayList<File> compressedFile,String compressTo,String password){
-        toCompress.addAll(compressedFile);
-        this.compressTo=compressTo;
-        this.password=password;
-        type=2;
-    }
-    @Override
-    protected Task createTask() {
-        return new Task<Integer>() {
-
-            @Override
-            protected Integer call() throws Exception {
-                System.out.println(Thread.currentThread().getName());
-                if (type==1){
-                    CompressUtils.compress(toCompress,compressTo);
-                    return 1;
-                }else if (type==2){
-                    CompressUtils.compress(toCompress,compressTo,password);
-                    return 2;
-                }
-                return 0;
-            }
-
-            @Override
-            protected void updateValue(Integer value) {
-                if (value==0){
-                    testOne.alert("error:no model selected");
-                }else if (value==1||value==2){
-                    testOne.alertSuccess();
-                }
-                SevenZipCompressService.this.cancel();
             }
         };
     }
