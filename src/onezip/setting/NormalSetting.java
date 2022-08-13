@@ -16,11 +16,7 @@ public class NormalSetting {
                 throw new RuntimeException(e);
             }
         }
-        if (viewSwitch.equals("false")){
-            return false;
-        }else{
-            return true;
-        }
+        return !viewSwitch.equals("false");
     }
 
     public static void setViewSwitch(boolean Switch) {
@@ -40,7 +36,7 @@ public class NormalSetting {
 
         //配置文件在临时目录下
 
-        FileInputStream inputStream=null;
+        FileInputStream inputStream;
         String tempDir = System.getProperty("java.io.tmpdir");//临时目录
         System.out.println(tempDir);
         String OneZipTempDir = tempDir+ File.separator+"OneZip";//OneZip临时目录
@@ -59,12 +55,12 @@ public class NormalSetting {
         }
 
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
-        String lineText = "";
+        String lineText;
         int i=1;
         while ((lineText=bufferedReader.readLine())!=null){
             if (i==1){
                viewSwitch=lineText;
-            }
+            };
         }
         inputStream.close();
         bufferedReader.close();

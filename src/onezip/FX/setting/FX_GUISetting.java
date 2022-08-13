@@ -3,12 +3,12 @@ package onezip.FX.setting;
 import java.io.*;
 
 public class FX_GUISetting {
-    boolean setting;
-    String cursorPath="";
-    String bootMode="";
-    String bootTheme="";
+    static boolean setting;
+    static String cursorPath="";
+    static String bootMode="";
+    static String bootTheme="";
 
-    public String getCursorPath() throws Exception {
+    public static String getCursorPath() throws Exception {
         if (!setting){
             getSetting();
         }
@@ -44,7 +44,7 @@ public class FX_GUISetting {
         setSetting();
     }
 
-    private void getSetting() throws Exception{
+    private static void getSetting() throws Exception{
         setting=true;
        //配置文件在临时目录下
 
@@ -85,7 +85,7 @@ public class FX_GUISetting {
         inputStream.close();
         bufferedReader.close();
     }
-    private void setSetting() throws IOException {
+    private static void setSetting() throws IOException {
         String string = cursorPath+"\n"+bootMode+"\n"+bootTheme;
         byte[] data = string.getBytes();
 

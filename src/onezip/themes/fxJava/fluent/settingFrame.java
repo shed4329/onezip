@@ -4,6 +4,7 @@ import javafx.application.Application;
 import javafx.application.HostServices;
 import javafx.collections.FXCollections;
 import javafx.geometry.Pos;
+import javafx.scene.ImageCursor;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
@@ -19,20 +20,26 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import jfxtras.styles.jmetro.JMetro;
 import jfxtras.styles.jmetro.Style;
+import onezip.FX.setting.FX_GUISetting;
+import onezip.setting.NormalSetting;
 import org.controlsfx.control.ToggleSwitch;
 
-import java.awt.*;
 import java.io.File;
+import java.io.IOException;
 import java.util.concurrent.atomic.AtomicBoolean;
+
+import static onezip.themes.fxJava.fluent.normalFrame.*;
 
 
 public class settingFrame extends Application {
+    FX_GUISetting fxGuiSetting = new FX_GUISetting();
     public static void main(String[] args) {
         launch(args);
     }
 
+    @SuppressWarnings("rawtypes")
     @Override
-    public void start(Stage stage) throws Exception {
+    public void start(Stage stage) {
         AnchorPane anchorPane = new AnchorPane();
 
         VBox vBox = new VBox();
@@ -84,7 +91,10 @@ public class settingFrame extends Application {
         anchorPane.getChildren().add(vBox);
         vBox.prefWidthProperty().bind(anchorPane.widthProperty());
         Scene scene = new Scene(anchorPane);
-
+        if (isCursorAble()){
+            Image cursorImage = new Image("file:"+cursorPath);
+            scene.setCursor(new ImageCursor(cursorImage));
+        }
         JMetro jMetro = new JMetro(Style.LIGHT);
         jMetro.setScene(scene);
 
@@ -163,35 +173,17 @@ public class settingFrame extends Application {
                 Hyperlink hyperlink5 = new Hyperlink("JMetro-A modern theme for JavaFX applications with light and dark style");
                 Hyperlink hyperlink6 = new Hyperlink("unrar5-A uncompress and compress tool(unCompress rar,rar5,zip)");
                 Hyperlink hyperlink7 = new Hyperlink("IntelliJ IDEA");
-                vBox2.getChildren().addAll(hyperlink1,hyperlink2,hyperlink3,hyperlink4,hyperlink5,hyperlink6,hyperlink7);
-                hyperlink1.setOnAction(actionEvent2 -> {
-                    HostServices host = getHostServices();
-                    host.showDocument("http://www.lingala.net/zip4j.html");
-                });
-                hyperlink2.setOnAction(actionEvent2 -> {
-                    HostServices host = getHostServices();
-                    host.showDocument("http://sevenzipjbind.sourceforge.net");
-                });
-                hyperlink3.setOnAction(actionEvent2 -> {
-                    HostServices host = getHostServices();
-                    host.showDocument("https://openjfx.cn");
-                });
-                hyperlink4.setOnAction(actionEvent2 -> {
-                    HostServices host = getHostServices();
-                    host.showDocument("https://openjfx.io");
-                });
-                hyperlink5.setOnAction(actionEvent2 -> {
-                    HostServices host = getHostServices();
-                    host.showDocument("https://pixelduke.com/java-javafx-theme-jmetro/");
-                });
-                hyperlink6.setOnAction(actionEvent2 -> {
-                    HostServices host = getHostServices();
-                    host.showDocument("https://github.com/sucat1997/unrar5#a-uncompress-and-compress-tooluncompress-rarrar5zip");
-                });
-                hyperlink7.setOnAction(actionEvent2 -> {
-                    HostServices host = getHostServices();
-                    host.showDocument("https://www.jetbrains.com/idea/");
-                });
+                Hyperlink hyperlink8 = new Hyperlink("iconfont");
+                vBox2.getChildren().addAll(hyperlink1,hyperlink2,hyperlink3,hyperlink4,hyperlink5,hyperlink6,hyperlink7,hyperlink8);
+                HostServices host = getHostServices();
+                hyperlink1.setOnAction(actionEvent2 -> host.showDocument("http://www.lingala.net/zip4j.html"));
+                hyperlink2.setOnAction(actionEvent2 -> host.showDocument("http://sevenzipjbind.sourceforge.net"));
+                hyperlink3.setOnAction(actionEvent2 -> host.showDocument("https://openjfx.cn"));
+                hyperlink4.setOnAction(actionEvent2 -> host.showDocument("https://openjfx.io"));
+                hyperlink5.setOnAction(actionEvent2 -> host.showDocument("https://pixelduke.com/java-javafx-theme-jmetro/"));
+                hyperlink6.setOnAction(actionEvent2 -> host.showDocument("https://github.com/sucat1997/unrar5#a-uncompress-and-compress-tooluncompress-rarrar5zip"));
+                hyperlink7.setOnAction(actionEvent2 -> host.showDocument("https://www.jetbrains.com/idea/"));
+                hyperlink8.setOnAction(actionEvent2 -> host.showDocument("https://www.iconfont.cn/"));
             });
 
         });
@@ -242,7 +234,14 @@ public class settingFrame extends Application {
                 vBox2.prefWidthProperty().bind(anchorPane.widthProperty().subtract(125));
                 Text text2 = new Text("选择鼠标图片");
                 HBox hBox = new HBox();
-                ImageView imageView5 = new ImageView("onezip/themes/fxJava/fluent/img/Cursor1.png");
+                ImageView imageView5;
+                if (cursorAble){
+                     imageView5= new ImageView("file:"+cursorPath);
+                     imageView5.setFitWidth(32);
+                     imageView5.setFitHeight(32);
+                }else {
+                    imageView5 = new ImageView("onezip/themes/fxJava/fluent/img/Cursor1.png");
+                }
                 ImageView imageView6 = new ImageView("onezip/themes/fxJava/fluent/img/macos default.png");
                 ImageView imageView7 = new ImageView("onezip/themes/fxJava/fluent/img/Windows11 lightPointer.png");
                 ImageView imageView8 = new ImageView("onezip/themes/fxJava/fluent/img/light Arrow.png");
@@ -252,7 +251,9 @@ public class settingFrame extends Application {
                 Button cursor4 = new Button("",imageView8);
                 hBox.getChildren().addAll(cursor1,cursor2,cursor3,cursor4);
                 Button explore = new Button("浏览");
-                vBox2.getChildren().addAll(text2,hBox,explore);
+                Text text3 = new Text("夜间模式");
+                ToggleSwitch toggleSwitch0 = new ToggleSwitch();
+                vBox2.getChildren().addAll(text2,hBox,explore,text3,toggleSwitch0);
                 vBox2.setSpacing(10);
                 anchorPane.getChildren().add(vBox2);
                 everBackGround.set(true);
@@ -267,14 +268,13 @@ public class settingFrame extends Application {
                         alert.setTitle("OK");
                         alert.setHeaderText("set cursor ok");
                         alert.setContentText("cursor image path:"+file.getPath());
-
                         alert.showAndWait();
-
                          */
                         try {
+                            fxGuiSetting.setCursorPath(file.getPath());
                             Notification notification = new Notification();
-                            notification.displayTray();
-                        } catch (AWTException e) {
+                            notification.displayTray("OK","已设置图片"+file.getName());
+                        } catch (Exception e) {
                             throw new RuntimeException(e);
                         }
                     }
@@ -304,6 +304,15 @@ public class settingFrame extends Application {
                         choiceBox2.setItems(FXCollections.observableArrayList("metal","radius","system","color"));
                     }
                 });
+                choiceBox2.getSelectionModel().selectedIndexProperty().addListener((observableValue, number, t1) -> {
+                    if (choiceBox.getSelectionModel().getSelectedIndex()==0&&t1.intValue()==0){
+                        try {
+                            fxGuiSetting.setBootTheme("normal");
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                });
                 everUIMode.set(true);
             });
 
@@ -325,9 +334,10 @@ public class settingFrame extends Application {
             vBox1.getChildren().addAll(home,text1,compressSetting,extractSetting,viewSetting);
             anchorPane.getChildren().addAll(vBox1);
             stage.setOpacity(0.85);
-            AtomicBoolean everCompress= new AtomicBoolean(false);
+            /*AtomicBoolean everCompress= new AtomicBoolean(false);
             AtomicBoolean everExtract= new AtomicBoolean(false);
-            AtomicBoolean everView= new AtomicBoolean(false);
+            AtomicBoolean everView= new AtomicBoolean(false);//以后再用吧
+             */
             compressSetting.setOnAction(actionEvent1 -> {
                 compressSetting.setStyle("-fx-background-color:#afd0ec");
                 extractSetting.setStyle("-fx-background-color:transparent");
@@ -344,11 +354,13 @@ public class settingFrame extends Application {
                 extractSetting.setStyle("-fx-background-color:transparent");
                 Text text2 = new Text("为节约资源关闭预览");
                 ToggleSwitch viewAbleSwitch = new ToggleSwitch();
+                viewAbleSwitch.setSelected(NormalSetting.getViewSwitch());
                 VBox vBox2 = new VBox();
                 vBox2.setLayoutX(125);
                 vBox2.prefWidthProperty().bind(anchorPane.widthProperty().subtract(125));
                 vBox2.getChildren().addAll(text2,viewAbleSwitch);
                 anchorPane.getChildren().add(vBox2);
+                viewAbleSwitch.selectedProperty().addListener((observableValue, aBoolean, t1) -> NormalSetting.setViewSwitch(t1));
             });
         });
         stage.setOnCloseRequest(event -> normalFrame.setSettingTime(0));

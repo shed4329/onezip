@@ -1,13 +1,12 @@
 package onezip.themes.fxJava.fluent;
 
 import javafx.application.Application;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
+import javafx.scene.ImageCursor;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
@@ -26,9 +25,9 @@ import javafx.stage.*;
 
 import jfxtras.styles.jmetro.JMetro;
 import jfxtras.styles.jmetro.Style;
-import net.lingala.zip4j.exception.ZipException;
 
 import onezip.CompressUtils.zip.zipUtils;
+import onezip.FX.setting.FX_GUISetting;
 import onezip.Service.RARExtractService;
 import onezip.Service.SevenZipCompressService;
 import onezip.Service.SevenZipExtractService;
@@ -37,9 +36,11 @@ import onezip.testOne;
 
 import java.io.File;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
 
 
 public class normalFrame extends Application {
@@ -47,6 +48,7 @@ public class normalFrame extends Application {
     ArrayList<File> folderArrayList = new ArrayList<>();
     File archive;
     static boolean compressPaneStatus = true;//false->解压面板，ture->压缩面板
+    @SuppressWarnings("rawtypes")
     ListView<String> compressListView = new ListView();
     int compressFormatType = 0;//0=zip,1=7z
     boolean compressIsPasswordEncrypted = false;
@@ -54,8 +56,20 @@ public class normalFrame extends Application {
     ListView<String> extractListView = new ListView();
     static int settingTimes = 0;
     Button extractStart = new Button("确定");
+    static String cursorPath;
+    static boolean cursorAble;
     PasswordField extractPasswordField = new PasswordField();
     public static void main(String[] args) {
+        FX_GUISetting fxGuiSetting = new FX_GUISetting();
+        try {
+            String str=fxGuiSetting.getCursorPath();
+            if (str!=null&& !str.isEmpty()){
+                cursorPath=str;
+                cursorAble=true;
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
         launch(args);
     }
 
@@ -64,7 +78,7 @@ public class normalFrame extends Application {
     }
 
     @Override
-    public void start(Stage stage) throws Exception {
+    public void start(Stage stage) {
         Button compress = new Button("压缩",new ImageView("onezip/themes/fxJava/fluent/img/compressNormal.png"));
         Button extract = new Button("解压",new ImageView("onezip/themes/fxJava/fluent/img/extractNormal.png"));
         Button space = new Button("");
@@ -94,6 +108,10 @@ public class normalFrame extends Application {
         Scene scene = new Scene(anchorPane);
         JMetro jMetro = new JMetro(Style.LIGHT);
         jMetro.setScene(scene);
+        if (cursorAble){
+            Image cursorImage = new Image("file:"+cursorPath);
+            scene.setCursor(new ImageCursor(cursorImage));
+        }
         stage.setHeight(600);
         stage.setWidth(900);
         stage.setTitle("OneZip");
@@ -170,6 +188,7 @@ public class normalFrame extends Application {
                     Button button1 = new Button("高级");
 
                     Text text5 = new Text("压缩级别");
+                    //noinspection rawtypes
                     ChoiceBox choiceBox2 = new ChoiceBox(FXCollections.observableArrayList("正常", "快速", "最快", "极限压缩"));
                     choiceBox2.getSelectionModel().selectFirst();
 
@@ -198,6 +217,10 @@ public class normalFrame extends Application {
                     Scene compressChildScene = new Scene(group);
                     JMetro jMetro1 = new JMetro();
                     jMetro1.setScene(compressChildScene);
+                    if (cursorAble){
+                        Image cursorImage = new Image("file:"+cursorPath);
+                        compressChildScene.setCursor(new ImageCursor(cursorImage));
+                    }
                     Stage compressChildStage = new Stage();
                     compressChildStage.setWidth(450);
                     compressChildStage.setHeight(317);
@@ -217,31 +240,25 @@ public class normalFrame extends Application {
                             checkBox.setSelected(false);
                         }
                     });
-                    checkBox.selectedProperty().addListener(new ChangeListener<Boolean>() {
-                        @Override
-                        public void changed(ObservableValue<? extends Boolean> observableValue, Boolean aBoolean, Boolean t1) {
-                            if (t1) {//if selected
-                                compressChildStage.setHeight(530);
-                                hBox0.setLayoutY(500);
-                                compressIsPasswordEncrypted = true;
-                            } else {
-                                compressChildStage.setHeight(408);
-                                hBox0.setLayoutY(380);
-                                compressIsPasswordEncrypted = false;
-                            }
+                    checkBox.selectedProperty().addListener((observableValue, aBoolean, t1) -> {
+                        if (t1) {//if selected
+                            compressChildStage.setHeight(530);
+                            hBox0.setLayoutY(500);
+                            compressIsPasswordEncrypted = true;
+                        } else {
+                            compressChildStage.setHeight(408);
+                            hBox0.setLayoutY(380);
+                            compressIsPasswordEncrypted = false;
                         }
                     });
-                    choiceBox.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
-                        @Override
-                        public void changed(ObservableValue<? extends Number> observableValue, Number number, Number t1) {
-                            if (t1.intValue() == 1) {//0=zip,1=7z
-                                choiceBox2.getSelectionModel().selectFirst();
-                                choiceBox2.setDisable(true);
-                                compressFormatType = 1;
-                            } else {
-                                choiceBox2.setDisable(false);
-                                compressFormatType = 0;
-                            }
+                    choiceBox.getSelectionModel().selectedIndexProperty().addListener((observableValue, number, t1) -> {
+                        if (t1.intValue() == 1) {//0=zip,1=7z
+                            choiceBox2.getSelectionModel().selectFirst();
+                            choiceBox2.setDisable(true);
+                            compressFormatType = 1;
+                        } else {
+                            choiceBox2.setDisable(false);
+                            compressFormatType = 0;
                         }
                     });
                     button.setOnAction(actionEvent2 -> {
@@ -252,9 +269,7 @@ public class normalFrame extends Application {
                             textField.setText(folder.getPath());
                         }
                     });
-                    cancel.setOnAction(actionEvent2 -> {
-                        compressChildStage.close();
-                    });
+                    cancel.setOnAction(actionEvent2 -> compressChildStage.close());
                     start.setOnAction(actionEvent2 -> {
                         //检验环节
                         String filePath = textField.getText();
@@ -363,7 +378,7 @@ public class normalFrame extends Application {
                             if (onezip.CompressUtils.zip.zipUtils.isEncrypted(archive)){
                                 extractStart.setOnAction(actionEvent2 -> {
                                     String str = extractPasswordField.getText();
-                                    if (str!=null&&str.isEmpty()==false) {
+                                    if (str!=null&& !str.isEmpty()) {
                                         try {
                                             ZipScheduledService zipScheduledService = new ZipScheduledService(2,archive,directory,Charset.forName("gbk"),str);
                                             zipScheduledService.start();
@@ -378,8 +393,6 @@ public class normalFrame extends Application {
                                 zipUtils.unzip(archive,directory, Charset.forName("gbk"));
                                 notification.displayTray("完成",archive.getName()+"已成功解压到"+directory.getPath());
                             }
-                        } catch (ZipException e) {
-                            throw new RuntimeException(e);
                         } catch (Exception e) {
                             throw new RuntimeException(e);
                         }
@@ -388,7 +401,7 @@ public class normalFrame extends Application {
                         if (onezip.CompressUtils.SevenZip.ExtractUtils.isEncrypted(archive.getPath())) {
                             extractStart.setOnAction(actionEvent2 -> {
                                 String str = extractPasswordField.getText();
-                                if (str!=null&&str.isEmpty()==false) {
+                                if (str!=null&& !str.isEmpty()) {
                                     SevenZipExtractService sevenZipExtractService = new SevenZipExtractService(archive.getPath(), directory.getPath(), str);
                                     sevenZipExtractService.setFluentNotice(true);
                                     sevenZipExtractService.start();
@@ -405,10 +418,11 @@ public class normalFrame extends Application {
                         alert.setHeaderText("该文件是否加密？");
                         alert.setContentText("由于技术原因，我们无法确认这个压缩包是否加密，如果您认为该压缩包已加密，请点击确定，若没有加密，请点击取消");
                         Optional<ButtonType> result = alert.showAndWait();
+                        //noinspection OptionalGetWithoutIsPresent
                         if (result.get()==ButtonType.OK){
                             extractStart.setOnAction(actionEvent2 -> {
                                 String str = extractPasswordField.getText();
-                                if (str!=null&&str.isEmpty()==false) {
+                                if (str!=null&& !str.isEmpty()) {
                                     RARExtractService rarExtractService = new RARExtractService(archive.getPath(), directory.getPath(),str);
                                     rarExtractService.setFluentNotice(true);
                                     rarExtractService.start();
@@ -423,21 +437,18 @@ public class normalFrame extends Application {
                     }
                 }
             });
-            addFile.setOnAction(actionEvent1 -> {
-                testOne.alertWarning("sorry,该功能尚未开放");
-            });
-            deleteFile.setOnAction(actionEvent1 -> {
-                testOne.alertWarning("sorry,该功能尚未开放");
-            });
+            addFile.setOnAction(actionEvent1 -> testOne.alertWarning("sorry,该功能尚未开放"));
+            deleteFile.setOnAction(actionEvent1 -> testOne.alertWarning("sorry,该功能尚未开放"));
             comment.setOnAction(actionEvent1 -> {
                 if (archive!=null&&archive.getName().contains(".zip")){
                     try {
                         String zipComment = zipUtils.getComment(archive);
-                        String UTF_8Comment = new String(zipComment.getBytes(), "UTF-8");
+                        String UTF_8Comment = new String(zipComment.getBytes(), StandardCharsets.UTF_8);
                         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
                         alert.setHeaderText("是否编辑注释？");
                         alert.setContentText("文件注释: "+UTF_8Comment);
                         Optional<ButtonType> result = alert.showAndWait();
+                        //noinspection OptionalGetWithoutIsPresent
                         if (result.get()==ButtonType.OK){
                             Alert alert2 = new Alert(Alert.AlertType.WARNING);
                             alert2.setTitle("警告");
@@ -497,10 +508,12 @@ public class normalFrame extends Application {
             if (files.size()==1&&archive==null){
                 File file = files.get(0);
                 String str =file.getName();
-                if (str.contains(".zip")||str.contains(".7z")||str.contains(".rar"))
-                archive=file;
-                extractListView.setItems(FXCollections.observableArrayList(file.getName()));
-                extractListView.setCellFactory((ListView<String> l) -> new extractFormatIconCell());
+
+                if (str.contains(".zip")||str.contains(".7z")||str.contains(".rar")) {
+                    archive = file;
+                    extractListView.setItems(FXCollections.observableArrayList(file.getName()));
+                    extractListView.setCellFactory((ListView<String> l) -> new extractFormatIconCell());
+                }
             }
         });
         compress.fire();//要添加监听器之后使用才有效
@@ -544,9 +557,7 @@ public class normalFrame extends Application {
         extractChildrenStage.initOwner(stage);
         extractChildrenStage.initModality(Modality.WINDOW_MODAL);
         extractChildrenStage.show();
-        cancel.setOnAction(actionEvent2 -> {
-            extractChildrenStage.close();
-        });
+        cancel.setOnAction(actionEvent2 -> extractChildrenStage.close());
     }
     public static String commentInputDialog(){
         TextInputDialog dialog = new TextInputDialog();
@@ -556,9 +567,7 @@ public class normalFrame extends Application {
 
         Optional<String> result = dialog.showAndWait();
         final String[] str = new String[1];
-        result.ifPresent(s -> {
-            str[0] =s;
-        });
+        result.ifPresent(s -> str[0] =s);
         System.out.println(str[0]);
         return str[0];
     }
@@ -601,7 +610,7 @@ public class normalFrame extends Application {
                 }else{
                     setGraphic(new ImageView("onezip/themes/fxJava/fluent/img/format/unknown.png"));
                 }
-                setText(item.toString());
+                setText(item);
             }else{
                 setGraphic(null);
             }
@@ -622,10 +631,14 @@ public class normalFrame extends Application {
                 }else{
                     setGraphic(new ImageView("onezip/themes/fxJava/fluent/img/format/rarFormat.png"));
                 }
-                setText(item.toString());
+                setText(item);
             }else{
                 setGraphic(null);
             }
         }
+    }
+
+    public static boolean isCursorAble() {
+        return cursorAble;
     }
 }

@@ -5,7 +5,6 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.ScheduledService;
 import javafx.concurrent.Task;
-import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.ImageCursor;
@@ -13,7 +12,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TransferMode;
@@ -70,22 +68,21 @@ public class testOne extends Application {
     static boolean cursorAble=false;
     static boolean deleteModel=false;
     ArrayList<String> arrayList1 = new ArrayList();
-
     NormalSetting normalSetting1 = new NormalSetting();
-    boolean isView=true;
     ArrayList<String> nameList =new ArrayList<>();//文件列表，预览使用
     ObservableList<String> fileItems;
     public static void main(String[] args) {
         FX_GUISetting fxGuiSetting = new FX_GUISetting();
-        String string = null;
+        String string;
         try {
             string = fxGuiSetting.getBootTheme();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-        if (string!=null||!string.isEmpty()||string.equals("Fluent")){
+        if (string!=null&&!string.isEmpty()&&string.equals("Fluent")){
             onezip.themes.fxJava.fluent.normalFrame.main(new String[]{});
         }else {
+            System.out.println("here");
             launch(args);
         }
     }
@@ -137,13 +134,11 @@ public class testOne extends Application {
         stage.getIcons().add(new Image("img/ZIP.png"));
         stage.show();
 
-        compress.setOnAction(actionEvent -> {
-            compressPane();
-        });
+        compress.setOnAction(actionEvent -> compressPane());
         extract.setOnAction(actionEvent -> {
             FileChooser fileChooser = new FileChooser();
             fileChooser.setTitle("选择压缩包");
-            fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("压缩文件", "*.zip"),new FileChooser.ExtensionFilter("压缩文件","*.7z"));
+            fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("压缩文件", "*.zip","*.7z","*.rar"));
             File file =fileChooser.showOpenDialog(stage);
             if (file==null){
                 alert("文件不能为空");
@@ -206,19 +201,34 @@ public class testOne extends Application {
                 }
                 pictureTextField.setEditable(false);
                 pictureTextField.setPrefWidth(500);
-                Group cursorSetting = new Group();
+                Group group1 = new Group();
                 Button explore = new Button("浏览");
-                cursorSetting.getChildren().addAll(pictureTextField,explore,cursorText);
+                Text themesText= new Text("主题");
+                ChoiceBox choiceBox = new ChoiceBox();
+                choiceBox.setItems(FXCollections.observableArrayList("normal","fluent"));
+                group1.getChildren().addAll(pictureTextField,explore,cursorText,themesText,choiceBox);
+                themesText.setLayoutY(80);
+                choiceBox.setLayoutY(90);
                 explore.setLayoutY(15);
                 explore.setLayoutX(510);
                 pictureTextField.setLayoutY(15);
 
+
                 Button apply = new Button("应用");
                 anchorPane.getChildren().clear();
-                anchorPane.getChildren().addAll(cursorSetting,apply);
-                AnchorPane.setTopAnchor(cursorSetting,10.0);
+                anchorPane.getChildren().addAll(group1,apply);
+                AnchorPane.setTopAnchor(group1,10.0);
                 anchorPane.setPrefSize(550,450);
                 AnchorPane.setBottomAnchor(apply,10.0);
+                choiceBox.getSelectionModel().selectedIndexProperty().addListener((observableValue, number, t1) -> {
+                    if (t1.intValue()==1){//0->normal 1->fluent
+                        try {
+                            fx_guiSetting.setBootTheme("Fluent");
+                        } catch (IOException ex) {
+                            throw new RuntimeException(ex);
+                        }
+                    }
+                });
                 explore.setOnAction(event->{
                     FileChooser fileChooser = new FileChooser();//选择文件
                     fileChooser.setTitle("选择图片");
@@ -268,13 +278,13 @@ public class testOne extends Application {
 
                     if (checkBox.isSelected()){
                         try {
-                            normalSetting1.setViewSwitch(true);
+                            NormalSetting.setViewSwitch(true);
                         } catch (Exception exc) {
                             exc.printStackTrace();
                         }
                     }else{
                         try {
-                            normalSetting1.setViewSwitch(false);
+                            NormalSetting.setViewSwitch(false);
                         } catch (Exception exc) {
                             exc.printStackTrace();
                         }
@@ -290,58 +300,45 @@ public class testOne extends Application {
             });
 
         });
-        compress.setOnDragOver(new EventHandler<DragEvent>() {
-            @Override
-            public void handle(DragEvent event) {
-                if (event.getGestureSource() != compress) {
-                    event.acceptTransferModes(TransferMode.ANY);
-                }
+        compress.setOnDragOver(event -> {
+            if (event.getGestureSource() != compress) {
+                event.acceptTransferModes(TransferMode.ANY);
             }
         });
-        compress.setOnDragDropped(new EventHandler<DragEvent>() {
-            @Override
-            public void handle(DragEvent dragEvent) {
-                Dragboard dragboard = dragEvent.getDragboard();
-                List<File> files = dragboard.getFiles();
-                System.out.println(files);
-                for (File file:files){
-                    if (file.isDirectory()){
-                        compressedFolders.add(file);
-                    }else{
-                        compressedFiles.add(file);
-                    }
-                    listFiles.add(file.getPath());
-                    compressListView.setItems(FXCollections.observableArrayList(listFiles));
-                }
-                compressPane();
-
-            }
-        });
-        extract.setOnDragOver(new EventHandler<DragEvent>() {
-
-            @Override
-            public void handle(DragEvent event) {
-                if (event.getGestureSource() != extract) {
-                    event.acceptTransferModes(TransferMode.ANY);
-                }
-            }
-        });
-        extract.setOnDragDropped(new EventHandler<DragEvent>() {
-            @Override
-            public void handle(DragEvent dragEvent) {
-                Dragboard dragboard = dragEvent.getDragboard();
-                List<File> files = dragboard.getFiles();
-                if (files.size()==1){
-                    if (files.get(0).getName().contains(".zip")||files.get(0).getName().contains(".7z")||files.get(0).getName().contains(".rar")){
-                        extractPane(files.get(0));
-                    }else{
-                        alert("（ErrorType：想多了你）只能处理zip,7z,rar压缩包");
-                    }
-                }else if(files.size()>=2){
-                    alert("不能贪多哟，一次只能添加一个压缩包");
+        compress.setOnDragDropped(dragEvent -> {
+            Dragboard dragboard = dragEvent.getDragboard();
+            List<File> files = dragboard.getFiles();
+            System.out.println(files);
+            for (File file:files){
+                if (file.isDirectory()){
+                    compressedFolders.add(file);
                 }else{
-                    alert("没有选中文件");
+                    compressedFiles.add(file);
                 }
+                listFiles.add(file.getPath());
+                compressListView.setItems(FXCollections.observableArrayList(listFiles));
+            }
+            compressPane();
+
+        });
+        extract.setOnDragOver(event -> {
+            if (event.getGestureSource() != extract) {
+                event.acceptTransferModes(TransferMode.ANY);
+            }
+        });
+        extract.setOnDragDropped(dragEvent -> {
+            Dragboard dragboard = dragEvent.getDragboard();
+            List<File> files = dragboard.getFiles();
+            if (files.size()==1){
+                if (files.get(0).getName().contains(".zip")||files.get(0).getName().contains(".7z")||files.get(0).getName().contains(".rar")){
+                    extractPane(files.get(0));
+                }else{
+                    alert("（ErrorType：想多了你）只能处理zip,7z,rar压缩包");
+                }
+            }else if(files.size()>=2){
+                alert("不能贪多哟，一次只能添加一个压缩包");
+            }else{
+                alert("没有选中文件");
             }
         });
     }
@@ -591,30 +588,24 @@ public class testOne extends Application {
             }
 
         });
-        compressListView.setOnDragOver(new EventHandler<DragEvent>() {
-            @Override
-            public void handle(DragEvent event) {
-                if (event.getGestureSource() != compressListView) {
-                    event.acceptTransferModes(TransferMode.ANY);
-                }
+        compressListView.setOnDragOver(event -> {
+            if (event.getGestureSource() != compressListView) {
+                event.acceptTransferModes(TransferMode.ANY);
             }
         });
-        compressListView.setOnDragDropped(new EventHandler<DragEvent>() {
-            @Override
-            public void handle(DragEvent dragEvent) {
-                Dragboard dragboard = dragEvent.getDragboard();
-                List<File> files = dragboard.getFiles();
-                System.out.println(files);
-                for (File file:files){
-                    if (!listFiles.contains(file.getPath())) {
-                        if (file.isDirectory()) {
-                            compressedFolders.add(file);
-                        } else {
-                            compressedFiles.add(file);
-                        }
-                        listFiles.add(file.getPath());
-                        compressListView.setItems(FXCollections.observableArrayList(listFiles));
+        compressListView.setOnDragDropped(dragEvent -> {
+            Dragboard dragboard = dragEvent.getDragboard();
+            List<File> files = dragboard.getFiles();
+            System.out.println(files);
+            for (File file:files){
+                if (!listFiles.contains(file.getPath())) {
+                    if (file.isDirectory()) {
+                        compressedFolders.add(file);
+                    } else {
+                        compressedFiles.add(file);
                     }
+                    listFiles.add(file.getPath());
+                    compressListView.setItems(FXCollections.observableArrayList(listFiles));
                 }
             }
         });
@@ -672,7 +663,7 @@ public class testOne extends Application {
                         normalSet = (!normalSetting1.getViewSwitch());
                         if (normalSet) {
                             System.out.println(normalSetting1.getViewSwitch());
-                            list(file, listView);
+                            list(file);
                         } else {
                             fileItems = FXCollections.observableArrayList("预览已关闭");
                             System.out.println("预览已关闭");
@@ -686,7 +677,7 @@ public class testOne extends Application {
                     } catch (Exception e) {
                         e.printStackTrace();
                         try {
-                            list(file, listView);
+                            list(file);
                         } catch (IOException ex) {
                             ex.printStackTrace();
                         }
@@ -845,7 +836,7 @@ public class testOne extends Application {
                             alert.setContentText("1.这可能会导致其他解压软件打开该压缩文件时中文乱码\n2.由于本功能存在一定问题，即使提示‘成功’也有可能未删除文件（诈骗功能）");
 
                             alert.showAndWait();
-                            String str = new String(viewPath.replace("\\", "/") + listItemName.substring(0, listItemName.length()));
+                            String str = (viewPath.replace("\\", "/") + listItemName.substring(0, listItemName.length()));
                             System.out.println("str:" + str);
                             AddOrDeleteScheduledService addOrDeleteScheduledService = new AddOrDeleteScheduledService(str, file);
                             addOrDeleteScheduledService.start();
@@ -890,9 +881,9 @@ public class testOne extends Application {
                     System.out.println(normalSetting1.getViewSwitch());
                     if (ExtractUtils.isEncrypted(file.getPath())){
                         extractPassword = textInputDialog();
-                        sevenZipList(file,listView,extractPassword);
+                        sevenZipList(file, extractPassword);
                     }else {
-                        sevenZipList(file, listView);
+                        sevenZipList(file);
                     }
                 } else {
                     fileItems = FXCollections.observableArrayList("预览已关闭");
@@ -902,7 +893,7 @@ public class testOne extends Application {
             } catch (Exception e) {
                 e.printStackTrace();
                 System.out.println("3");
-                sevenZipList(file, listView);
+                sevenZipList(file);
             }
 
 
@@ -944,7 +935,7 @@ public class testOne extends Application {
                             System.out.println(arrayList1);
                             fileItems = FXCollections.observableArrayList(arrayList1);
                         } else {
-                            if (newValue == "..") {
+                            if (newValue.equals("..")) {
                                 if (viewPath.contains("\\")) {
                                     int i = viewPath.lastIndexOf("\\");
                                     viewPath = viewPath.substring(0, i);
@@ -1043,20 +1034,20 @@ public class testOne extends Application {
             RARPane.main(new String[]{file.getPath()});
         }
     }
-    private void list(File file,ListView listView) throws IOException {
+    private void list(File file) throws IOException {
         zipUtils.list(file,nameList);
 
         fileItems = FXCollections.observableArrayList(zipUtils.viewInPath(nameList,""));
         System.out.println(fileItems);
 
     }
-    private void sevenZipList(File file,ListView listView){
+    private void sevenZipList(File file){
         viewUtils.fileView(file.getPath(),nameList);
         System.out.println(nameList);
         fileItems = FXCollections.observableArrayList(onezip.CompressUtils.SevenZip.viewUtils.getFileNameInPath(nameList,""));
         System.out.println(fileItems);
     }
-    private void sevenZipList(File file,ListView listView,String password){
+    private void sevenZipList(File file, String password){
         viewUtils.fileView(file.getPath(),nameList,password);
         System.out.println(nameList);
         fileItems = FXCollections.observableArrayList(onezip.CompressUtils.SevenZip.viewUtils.getFileNameInPath(nameList,""));
@@ -1193,7 +1184,7 @@ class SevenZipAddOrDeleteService extends ScheduledService{
     File fileToAdd;
     String fileIn7zPath;
     String password;
-    int type=0;//1->添加文件 2->删除文件
+    int type;//1->添加文件 2->删除文件
 
     public SevenZipAddOrDeleteService(String sevenZipFile,File fileToAdd){
         this.sevenZipFile=sevenZipFile;
@@ -1205,7 +1196,7 @@ class SevenZipAddOrDeleteService extends ScheduledService{
         this.fileToAdd=fileToAdd;
         type=1;
     }
-    public SevenZipAddOrDeleteService(String sevenZipFile,String fileIn7zPath){
+    /*public SevenZipAddOrDeleteService(String sevenZipFile,String fileIn7zPath){
         this.sevenZipFile=sevenZipFile;
         this.fileIn7zPath=fileIn7zPath;
         type=2;
@@ -1215,6 +1206,7 @@ class SevenZipAddOrDeleteService extends ScheduledService{
         this.fileIn7zPath=fileIn7zPath;
         type=2;
     }
+     */
     @Override
     protected Task createTask() {
         return new Task<Integer>() {

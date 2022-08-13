@@ -5,7 +5,7 @@ import java.awt.TrayIcon.MessageType;
 
 public class Notification {
 
-    public void displayTray() throws AWTException {
+    /*public void displayTray() throws AWTException {
         //Obtain only one instance of the SystemTray object
         SystemTray tray = SystemTray.getSystemTray();
 
@@ -31,6 +31,7 @@ public class Notification {
 
         tray.remove(trayIcon);
     }
+     */
     public void displayTray(String title,String text) throws AWTException {
         //Obtain only one instance of the SystemTray object
         SystemTray tray = SystemTray.getSystemTray();
