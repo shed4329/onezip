@@ -5,11 +5,16 @@ import javafx.concurrent.Task;
 import onezip.CompressUtils.zip.zipUtils;
 import onezip.testOne;
 import onezip.themes.fxJava.fluent.Notification;
+import onezip.tool.alertAssistant;
+import onezip.tool.taskProgress;
 
 import java.awt.*;
 import java.io.File;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+
+import static onezip.component.oneAlert.alert;
+import static onezip.component.oneAlert.alertSuccess;
 
 public class ZipScheduledService extends ScheduledService {
     int type;
@@ -25,6 +30,7 @@ public class ZipScheduledService extends ScheduledService {
     String extractPassword;
     Charset charset;
     boolean fluentNotice = false;
+    private int mode=2;//模式，确定应该执行何种操作
     public ZipScheduledService(int type,int level,int method,ArrayList<File> inputFiles,ArrayList<File> inputFolders,File output,boolean isEncrypt,String password) throws Exception {//压缩文件调用
         System.out.println("zip service");
         this.type = type;
@@ -50,13 +56,14 @@ public class ZipScheduledService extends ScheduledService {
         this.extractPassword=extractPassword;
     }
     @Override
-    protected Task<Integer> createTask() {
-        return new Task<Integer>() {
+    protected Task<Number> createTask() {
+        return new Task<Number>() {
             @Override
-            protected Integer call() throws Exception {//非UI线程处理,避免压缩包过大卡死
+            protected Number call() throws Exception {//非UI线程处理,避免压缩包过大卡死
                 System.out.println(Thread.currentThread().getName());
                 System.out.println(inputFiles);
                 System.out.println(inputFolders);
+                taskProgress progress = new taskProgress();
                 if (type==1){//压缩
                     if (inputFiles!=null&&inputFiles.size()!=0){
                         System.out.println(inputFiles);
@@ -69,7 +76,7 @@ public class ZipScheduledService extends ScheduledService {
                             System.out.println("zipUtils.zipFolder();");
                             zipUtils.zipFolder(inputFolders.get(0),output,method,level,isEncrypt,password);
                         }else{
-                            return 0;
+                            mode=0;
                         }
 
                         System.out.println(inputFolders);
@@ -77,21 +84,21 @@ public class ZipScheduledService extends ScheduledService {
 
                 }else  if(type ==2){//解压
                     if (extractPassword==null||extractPassword.length()==0){
-                        zipUtils.unzip(input,output,charset);
+                        zipUtils.unzip(input,output,charset,progress);
                     }else{
-                        zipUtils.unzip(input,output,charset,extractPassword);
+                        zipUtils.unzip(input,output,charset,extractPassword,progress);
                     }
                 }
-
-                return -1;
+                mode = -1;
+                return progress.getProgress();
             }
 
             @Override
-            protected void updateValue(Integer value) {
-                if (value==0){
-                    testOne.alert("错误！不能添加多个文件夹，稍后可以在【设置】->【通用】->【将多个文件夹复制到同一文件夹后添加到压缩文件中】");
+            protected void updateValue(Number value) {
+                if (mode==0){
+                    alert("错误！不能添加多个文件夹，稍后可以在【设置】->【通用】->【将多个文件夹复制到同一文件夹后添加到压缩文件中】");
                 }else{
-                    testOne.alertSuccess();
+                    alertAssistant.alertSuccess();
                     if (fluentNotice&&type==2){
                         try {
                             Notification notification = new Notification();

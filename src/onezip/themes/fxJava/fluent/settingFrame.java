@@ -2,6 +2,8 @@ package onezip.themes.fxJava.fluent;
 
 import javafx.application.Application;
 import javafx.application.HostServices;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.geometry.Pos;
 import javafx.scene.ImageCursor;
@@ -42,6 +44,7 @@ public class settingFrame extends Application {
     public void start(Stage stage) {
         AnchorPane anchorPane = new AnchorPane();
 
+
         VBox vBox = new VBox();
         Text text = new Text("OneZip设置");
         text.setFont(Font.font("Microsoft YaHei", FontWeight.LIGHT,20));
@@ -59,29 +62,38 @@ public class settingFrame extends Application {
         ImageView imageView = new ImageView(universalImg);
         //给按钮设置图标
         buttonUniversal.setGraphic(imageView);
-        buttonUniversal.setStyle("-fx-background-color:#ffffff");
+
 
         Button buttonLanguage = new Button("语言\n简体中文，繁體中文，English   ");
         Image languageImg = new Image("onezip/themes/fxJava/fluent/img/language.png");
         ImageView imageView2 = new ImageView(languageImg);
         //给按钮设置图标
         buttonLanguage.setGraphic(imageView2);
-        buttonLanguage.setStyle("-fx-background-color:#ffffff");
+
 
         Button buttonPersonalize = new Button("个性化\n应用内鼠标偏好设置，背景设置");
         Image personalizeImg = new Image("onezip/themes/fxJava/fluent/img/personalize.png");
         ImageView imageView3 = new ImageView(personalizeImg);
         //给按钮设置图标
         buttonPersonalize.setGraphic(imageView3);
-        buttonPersonalize.setStyle("-fx-background-color:#ffffff");
+
         Button buttonAbout = new Button("关于\n关于OneZip,鸣谢                      ");
         Image aboutImg = new Image("onezip/themes/fxJava/fluent/img/about.png");
         ImageView imageView4 = new ImageView(aboutImg);
         //给按钮设置图标
         buttonAbout.setGraphic(imageView4);
-        buttonAbout.setStyle("-fx-background-color:#ffffff");
-
-
+        if (isDarkMode){
+            buttonAbout.setStyle("-fx-background-color:#333333");
+            buttonLanguage.setStyle("-fx-background-color:#333333");
+            buttonPersonalize.setStyle("-fx-background-color:#333333");
+            buttonAbout.setStyle("-fx-background-color:#333333");
+            anchorPane.setStyle("-fx-background-color:#333333");
+        }else{
+            buttonUniversal.setStyle("-fx-background-color:#ffffff");
+            buttonLanguage.setStyle("-fx-background-color:#ffffff");
+            buttonPersonalize.setStyle("-fx-background-color:#ffffff");
+            buttonAbout.setStyle("-fx-background-color:#ffffff");
+        }
         flowPane.setAlignment(Pos.TOP_CENTER);
         flowPane.getChildren().addAll(buttonUniversal,buttonPersonalize,buttonLanguage,buttonAbout);
 
@@ -96,6 +108,9 @@ public class settingFrame extends Application {
             scene.setCursor(new ImageCursor(cursorImage));
         }
         JMetro jMetro = new JMetro(Style.LIGHT);
+        if (isDarkMode){//读取normalFrame是否启用了夜间模式，设置界面一定由normalFrame进入，normalFrame一定确定了是否使用暗黑模式
+            jMetro.setStyle(Style.DARK);
+        }
         jMetro.setScene(scene);
 
 
@@ -253,6 +268,7 @@ public class settingFrame extends Application {
                 Button explore = new Button("浏览");
                 Text text3 = new Text("夜间模式");
                 ToggleSwitch toggleSwitch0 = new ToggleSwitch();
+                toggleSwitch0.setSelected(isDarkMode);
                 vBox2.getChildren().addAll(text2,hBox,explore,text3,toggleSwitch0);
                 vBox2.setSpacing(10);
                 anchorPane.getChildren().add(vBox2);
@@ -277,6 +293,21 @@ public class settingFrame extends Application {
                         } catch (Exception e) {
                             throw new RuntimeException(e);
                         }
+                    }
+                });
+                toggleSwitch0.selectedProperty().addListener(new ChangeListener<Boolean>() {
+                    @Override
+                    public void changed(ObservableValue<? extends Boolean> observableValue, Boolean aBoolean, Boolean t1) {
+                        try {
+                            if (isDarkMode){
+                                FX_GUISetting.setDarkMode("");
+                            }else{
+                                FX_GUISetting.setDarkMode("true");
+                            }
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                        onezip.themes.fxJava.fluent.component.oneFluentAlert.alertInfo("夜间模式","您的改动将在重启应用后生效");
                     }
                 });
             });

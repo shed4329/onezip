@@ -33,6 +33,8 @@ import onezip.Service.SevenZipCompressService;
 import onezip.Service.SevenZipExtractService;
 import onezip.Service.ZipScheduledService;
 import onezip.testOne;
+import onezip.themes.fxJava.fluent.component.oneFluentAlert;
+import onezip.tool.taskProgress;
 
 import java.io.File;
 import java.nio.charset.Charset;
@@ -41,6 +43,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static onezip.themes.fxJava.fluent.component.oneFluentAlert.alertError;
+import static onezip.themes.fxJava.fluent.component.oneFluentAlert.alertWarning;
 
 
 public class normalFrame extends Application {
@@ -58,6 +62,7 @@ public class normalFrame extends Application {
     Button extractStart = new Button("确定");
     static String cursorPath;
     static boolean cursorAble;
+    static boolean isDarkMode;
     PasswordField extractPasswordField = new PasswordField();
     public static void main(String[] args) {
         FX_GUISetting fxGuiSetting = new FX_GUISetting();
@@ -79,6 +84,13 @@ public class normalFrame extends Application {
 
     @Override
     public void start(Stage stage) {
+        try {
+            if (!FX_GUISetting.isIsdarkMode().isEmpty()) {
+                isDarkMode = true;
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
         Button compress = new Button("压缩",new ImageView("onezip/themes/fxJava/fluent/img/compressNormal.png"));
         Button extract = new Button("解压",new ImageView("onezip/themes/fxJava/fluent/img/extractNormal.png"));
         Button space = new Button("");
@@ -105,9 +117,19 @@ public class normalFrame extends Application {
 
         AnchorPane anchorPane = new AnchorPane();
         anchorPane.getChildren().addAll(bar,contentPane);
+
         Scene scene = new Scene(anchorPane);
+
+        if (isDarkMode) {
+            anchorPane.setStyle("-fx-background-color:#333333");
+            oneFluentAlert.setIsDarkMode(true);//对话框适配夜间模式
+        }
         JMetro jMetro = new JMetro(Style.LIGHT);
+        if (isDarkMode){
+            jMetro.setStyle(Style.DARK);
+        }
         jMetro.setScene(scene);
+
         if (cursorAble){
             Image cursorImage = new Image("file:"+cursorPath);
             scene.setCursor(new ImageCursor(cursorImage));
@@ -125,11 +147,20 @@ public class normalFrame extends Application {
             contentPane.getChildren().add(compressListView);
 
             Button addFile = new Button("添加文件",new ImageView("onezip/themes/fxJava/fluent/img/addFile.png"));
-            addFile.setStyle("-fx-background-color:#ffffff");
+
             Button addFolder = new Button("添加文件夹",new ImageView("onezip/themes/fxJava/fluent/img/addFolder.png"));
-            addFolder.setStyle("-fx-background-color:#ffffff");
-            Button compressAll = new Button("全部压缩",new ImageView("onezip/themes/fxJava/fluent/img/compressLine.png"));
-            compressAll.setStyle("-fx-background-color:#ffffff");
+
+            Button compressAll = new Button("全部压缩",new ImageView("onezip/themes/fxJava/fluent/img/compression.png"));
+
+            if (isDarkMode){//适配黑暗模式
+                addFile.setStyle("-fx-background-color:#333333");
+                addFolder.setStyle("-fx-background-color:#333333");
+                compressAll.setStyle("-fx-background-color:#333333");
+            }else{
+                addFile.setStyle("-fx-background-color:#ffffff");
+                addFolder.setStyle("-fx-background-color:#ffffff");
+                compressAll.setStyle("-fx-background-color:#ffffff");
+            }
 
             hBox.getChildren().addAll(addFile,addFolder,compressAll);
             compress.setGraphic(new ImageView("onezip/themes/fxJava/fluent/img/compressSelect.png"));
@@ -216,6 +247,7 @@ public class normalFrame extends Application {
 
                     Scene compressChildScene = new Scene(group);
                     JMetro jMetro1 = new JMetro();
+
                     jMetro1.setScene(compressChildScene);
                     if (cursorAble){
                         Image cursorImage = new Image("file:"+cursorPath);
@@ -274,11 +306,11 @@ public class normalFrame extends Application {
                         //检验环节
                         String filePath = textField.getText();
                         if (filePath == null || filePath.isEmpty()) {
-                            testOne.alert("还没有选择保存路径");
+                            alertError("还没有选择保存路径");
                         } else {
                             String fileName = textField1.getText();
                             if (fileName == null || fileName.isEmpty()) {
-                                testOne.alert("请输入文件名");
+                                alertError("请输入文件名");
                             } else {
                                 int compressLevel = choiceBox2.getSelectionModel().getSelectedIndex();
                                 if (compressLevel == 1) {
@@ -292,9 +324,9 @@ public class normalFrame extends Application {
                                     String password0 = passwordField0.getText();
                                     String password1 = passwordField1.getText();
                                     if (password0 == null || password0.isEmpty()) {
-                                        testOne.alert("密码不能为空");
+                                        alertError("密码不能为空");
                                     } else if (password1 == null || password1.isEmpty()) {
-                                        testOne.alert("密码不能为空");
+                                        alertError("密码不能为空");
                                     } else if (password0.equals(password1)) {
                                         if (compressFormatType == 0) {//zip
                                             try {
@@ -311,7 +343,7 @@ public class normalFrame extends Application {
                                             sevenZipCompressService.start();
                                         }
                                     } else {
-                                        testOne.alert("密码不一致");
+                                        alertError("密码不一致");
                                     }
                                 } else {
                                     if (compressFormatType == 0) {//zip
@@ -342,15 +374,28 @@ public class normalFrame extends Application {
             contentPane.getChildren().add(extractListView);
 
             Button addArchive = new Button("添加压缩文件",new ImageView("onezip/themes/fxJava/fluent/img/addFolder.png"));
-            addArchive.setStyle("-fx-background-color:#ffffff");
+
             Button extractAll = new Button("全部解压",new ImageView("onezip/themes/fxJava/fluent/img/extractLine.png"));
-            extractAll.setStyle("-fx-background-color:#ffffff");
+
             Button addFile = new Button("添加文件",new ImageView("onezip/themes/fxJava/fluent/img/addFile.png"));
-            addFile.setStyle("-fx-background-color:#ffffff");
+
             Button deleteFile = new Button("删除文件",new ImageView("onezip/themes/fxJava/fluent/img/delete.png"));
-            deleteFile.setStyle("-fx-background-color:#ffffff");
+
             Button comment = new Button("注释",new ImageView("onezip/themes/fxJava/fluent/img/comment.png"));
-            comment.setStyle("-fx-background-color:#ffffff");
+
+            if (isDarkMode) {
+                addArchive.setStyle("-fx-background-color:#333333");
+                extractAll.setStyle("-fx-background-color:#333333");
+                addFile.setStyle("-fx-background-color:#333333");
+                deleteFile.setStyle("-fx-background-color:#333333");
+                comment.setStyle("-fx-background-color:#333333");
+            }else{
+                addArchive.setStyle("-fx-background-color:#ffffff");
+                extractAll.setStyle("-fx-background-color:#ffffff");
+                addFile.setStyle("-fx-background-color:#ffffff");
+                deleteFile.setStyle("-fx-background-color:#ffffff");
+                comment.setStyle("-fx-background-color:#ffffff");
+            }
 
             hBox.getChildren().addAll(addArchive,extractAll,addFile,deleteFile,comment);
             extract.setGraphic(new ImageView("onezip/themes/fxJava/fluent/img/extractSelect.png"));
@@ -390,7 +435,9 @@ public class normalFrame extends Application {
                                 });
                                 extractPasswordProtectedPane(stage);
                             }else{
-                                zipUtils.unzip(archive,directory, Charset.forName("gbk"));
+                                ZipScheduledService zipScheduledService = new ZipScheduledService(2,archive,directory,Charset.forName("gbk"));
+                                zipScheduledService.start();
+                                //zipUtils.unzip(archive,directory, Charset.forName("gbk"),new taskProgress());
                                 notification.displayTray("完成",archive.getName()+"已成功解压到"+directory.getPath());
                             }
                         } catch (Exception e) {
@@ -437,8 +484,8 @@ public class normalFrame extends Application {
                     }
                 }
             });
-            addFile.setOnAction(actionEvent1 -> testOne.alertWarning("sorry,该功能尚未开放"));
-            deleteFile.setOnAction(actionEvent1 -> testOne.alertWarning("sorry,该功能尚未开放"));
+            addFile.setOnAction(actionEvent1 -> alertWarning("sorry,该功能尚未开放"));
+            deleteFile.setOnAction(actionEvent1 -> alertWarning("sorry,该功能尚未开放"));
             comment.setOnAction(actionEvent1 -> {
                 if (archive!=null&&archive.getName().contains(".zip")){
                     try {
@@ -578,37 +625,42 @@ public class normalFrame extends Application {
             //Rectangle rect = new Rectangle(100, 20);//创建一个矩形
             if (item != null) {
                 System.out.println(item);
-                //rect.setFill(Color.web(item));//填充矩形对象颜色
-                if (item.contains("\\")){
-                    setGraphic(new ImageView("onezip/themes/fxJava/fluent/img/format/folder.png"));
-                }else if (item.contains(".exe")) {
-                    setGraphic(new ImageView("onezip/themes/fxJava/fluent/img/format/exe.png"));
-                } else if (item.contains(".doc") || item.contains(".docx") || item.contains("dot") || item.contains(".docm") || item.contains(".dotx") || item.contains(".dotm")) {
-                    setGraphic(new ImageView("onezip/themes/fxJava/fluent/img/format/doc.png"));//设置ListCell对象的图形外观
-                } else if (item.contains(".ppt") || item.contains(".pptx") || item.contains(".pptm") || item.contains(".pps") || item.contains(".ppsx") || item.contains(".potx")) {
-                    setGraphic(new ImageView("onezip/themes/fxJava/fluent/img/format/ppt.png"));//设置ListCell对象的图形外观
-                } else if (item.contains(".xls") || item.contains(".xlsb") || item.contains(".xlsm") || item.contains(".xlsx") || item.contains(".xlt") || item.contains(".xltm") || item.contains(".xltx")) {
-                    setGraphic(new ImageView("onezip/themes/fxJava/fluent/img/format/xls.png"));
-                } else if (item.contains(".mp4") || item.contains(".mkv") || item.contains(".mpeg") || item.contains(".flv") || item.contains(".mov") || item.contains(".avi")) {
-                    setGraphic(new ImageView("onezip/themes/fxJava/fluent/img/format/mp4.png"));
-                } else if (item.contains(".mp3") || item.contains(".m3u8") || item.contains(".mid") || item.contains(".midi") || item.contains(".m4a") || item.contains(".flac") || item.contains(".mp2")) {
-                    setGraphic(new ImageView("onezip/themes/fxJava/fluent/img/format/mp3.png"));
-                } else if (item.contains(".png") || item.contains(".bmp") || item.contains(".jpeg") || item.contains(".jpg") || item.contains(".gif") || item.contains(".webp")) {
-                    setGraphic(new ImageView("onezip/themes/fxJava/fluent/img/format/png.png"));
-                } else if (item.contains(".txt") || item.contains(".rtf")) {
-                    setGraphic(new ImageView("onezip/themes/fxJava/fluent/img/format/txt.png"));
-                } else if (item.contains(".pdf")) {
-                    setGraphic(new ImageView("onezip/themes/fxJava/fluent/img/format/pdf.png"));
-                } else if(item.contains(".zip")||item.contains(".7z")||item.contains(".rar")||item.contains(".tar")||item.contains(".gz")||item.contains(".bz2")||item.contains(".lz4")){
-                    setGraphic(new ImageView("onezip/themes/fxJava/fluent/img/format/zip.png"));
-                }else if (item.contains(".java") || item.contains(".jar")) {
-                    setGraphic(new ImageView("onezip/themes/fxJava/fluent/img/format/java.png"));
-                } else if (item.contains(".md") || item.contains(".markdown")) {
-                    setGraphic(new ImageView("onezip/themes/fxJava/fluent/img/format/markdown.png"));
-                }else if (item.contains(".html")||item.contains(".py")||item.contains(".h")||item.contains(".c")||item.contains(".php")||item.contains(".cc")||item.contains(".cpp")||item.contains(".R")||item.contains(".go")||item.contains(".cxx")||item.contains(".py3")||item.contains(".vb")||item.contains(".js")||item.contains(".asm")||item.contains(".s")||item.contains(".S")){
-                    setGraphic(new ImageView("onezip/themes/fxJava/fluent/img/format/code.png"));
+                if (!item.contains(".")){
+                    if (item.contains("\\")){
+                        setGraphic(new ImageView("onezip/themes/fxJava/fluent/img/format/folder.png"));
+                    }
                 }else{
-                    setGraphic(new ImageView("onezip/themes/fxJava/fluent/img/format/unknown.png"));
+                    String s = item.substring(item.lastIndexOf("."));
+                    //rect.setFill(Color.web(item));//填充矩形对象颜色
+                    if (s.equals(".exe")) {
+                        setGraphic(new ImageView("onezip/themes/fxJava/fluent/img/format/exe.png"));
+                    } else if (s.equals(".doc") || s.equals(".docx") || s.equals("dot") || s.equals(".docm") || s.equals(".dotx") || s.equals(".dotm")) {
+                        setGraphic(new ImageView("onezip/themes/fxJava/fluent/img/format/doc.png"));//设置ListCell对象的图形外观
+                    } else if (s.equals(".ppt") || s.equals(".pptx") ||s.equals(".pptm") || s.equals(".pps") || s.equals(".ppsx") || s.equals(".potx")) {
+                        setGraphic(new ImageView("onezip/themes/fxJava/fluent/img/format/ppt.png"));//设置ListCell对象的图形外观
+                    } else if (item.contains(".xls") || item.contains(".xlsb") || item.contains(".xlsm") || item.contains(".xlsx") || item.contains(".xlt") || item.contains(".xltm") || item.contains(".xltx")) {
+                        setGraphic(new ImageView("onezip/themes/fxJava/fluent/img/format/xls.png"));
+                    } else if (item.contains(".mp4") || item.contains(".mkv") || item.contains(".mpeg") || item.contains(".flv") || item.contains(".mov") || item.contains(".avi")) {
+                        setGraphic(new ImageView("onezip/themes/fxJava/fluent/img/format/mp4.png"));
+                    } else if (item.contains(".mp3") || item.contains(".m3u8") || item.contains(".mid") || item.contains(".midi") || item.contains(".m4a") || item.contains(".flac") || item.contains(".mp2")) {
+                        setGraphic(new ImageView("onezip/themes/fxJava/fluent/img/format/mp3.png"));
+                    } else if (item.contains(".png") || item.contains(".bmp") || item.contains(".jpeg") || item.contains(".jpg") || item.contains(".gif") || item.contains(".webp")) {
+                        setGraphic(new ImageView("onezip/themes/fxJava/fluent/img/format/png.png"));
+                    } else if (item.contains(".txt") || item.contains(".rtf")) {
+                        setGraphic(new ImageView("onezip/themes/fxJava/fluent/img/format/txt.png"));
+                    } else if (item.contains(".pdf")) {
+                        setGraphic(new ImageView("onezip/themes/fxJava/fluent/img/format/pdf.png"));
+                    } else if(item.contains(".zip")||item.contains(".7z")||item.contains(".rar")||item.contains(".tar")||item.contains(".gz")||item.contains(".bz2")||item.contains(".lz4")){
+                        setGraphic(new ImageView("onezip/themes/fxJava/fluent/img/format/zip.png"));
+                    }else if (item.contains(".java") || item.contains(".jar")) {
+                        setGraphic(new ImageView("onezip/themes/fxJava/fluent/img/format/java.png"));
+                    } else if (item.contains(".md") || item.contains(".markdown")) {
+                        setGraphic(new ImageView("onezip/themes/fxJava/fluent/img/format/markdown.png"));
+                    }else if (item.contains(".html")||item.contains(".py")||item.contains(".h")||item.contains(".c")||item.contains(".php")||item.contains(".cc")||item.contains(".cpp")||item.contains(".R")||item.contains(".go")||item.contains(".cxx")||item.contains(".py3")||item.contains(".vb")||item.contains(".js")||item.contains(".asm")||item.contains(".s")||item.contains(".S")){
+                        setGraphic(new ImageView("onezip/themes/fxJava/fluent/img/format/code.png"));
+                    }else{
+                        setGraphic(new ImageView("onezip/themes/fxJava/fluent/img/format/unknown.png"));
+                    }
                 }
                 setText(item);
             }else{

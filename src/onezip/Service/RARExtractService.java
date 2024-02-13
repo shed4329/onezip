@@ -3,11 +3,13 @@ package onezip.Service;
 import javafx.concurrent.ScheduledService;
 import javafx.concurrent.Task;
 import onezip.CompressUtils.RAR.UnCompressUtil;
-import onezip.testOne;
 import onezip.themes.fxJava.fluent.Notification;
 
 import java.awt.*;
 import java.io.File;
+
+import static onezip.component.oneAlert.alert;
+import static onezip.component.oneAlert.alertSuccess;
 
 @SuppressWarnings("rawtypes")
 public class RARExtractService extends ScheduledService {
@@ -49,10 +51,10 @@ public class RARExtractService extends ScheduledService {
             @Override
             protected void updateValue(Integer value) {
                 if (value == 0) {
-                    testOne.alert("error:no model selected");
+                    alert("error:no model selected");
                 }else{
                     if (fluentNotice) {
-                        testOne.alertSuccess();
+                        alertSuccess();
                         try {
                             Notification notification = new Notification();
                             notification.displayTray("完成", new File(RARFile).getName() + "已成功解压到" + outputPath);

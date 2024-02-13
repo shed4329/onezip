@@ -9,6 +9,9 @@ import onezip.themes.fxJava.fluent.Notification;
 import java.awt.*;
 import java.io.File;
 
+import static onezip.component.oneAlert.alert;
+import static onezip.component.oneAlert.alertSuccess;
+
 public class SevenZipExtractService extends ScheduledService {
     String toExtract;
     String extractTo;
@@ -46,7 +49,7 @@ public class SevenZipExtractService extends ScheduledService {
             @Override
             protected void updateValue(Integer value) {
                 if (value==0){
-                    testOne.alert("error:no model selected");
+                    alert("error:no model selected");
                 }else if (value==1||value==2){
                     if (fluentNotice) {
                         try {
@@ -56,7 +59,7 @@ public class SevenZipExtractService extends ScheduledService {
                             throw new RuntimeException(e);
                         }
                     }
-                    testOne.alertSuccess();
+                    alertSuccess();
                 }
                 SevenZipExtractService.this.cancel();
             }

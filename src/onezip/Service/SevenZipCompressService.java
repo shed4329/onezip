@@ -8,6 +8,9 @@ import onezip.testOne;
 import java.io.File;
 import java.util.ArrayList;
 
+import static onezip.component.oneAlert.alert;
+import static onezip.component.oneAlert.alertSuccess;
+
 public class SevenZipCompressService extends ScheduledService {
     ArrayList<File> toCompress=new ArrayList<>();
     String compressTo;
@@ -44,9 +47,9 @@ public class SevenZipCompressService extends ScheduledService {
             @Override
             protected void updateValue(Integer value) {
                 if (value==0){
-                    testOne.alert("error:no model selected");
+                    alert("error:no model selected");
                 }else if (value==1||value==2){
-                    testOne.alertSuccess();
+                    alertSuccess();
                 }
                 SevenZipCompressService.this.cancel();
             }
