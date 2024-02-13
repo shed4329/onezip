@@ -2,17 +2,33 @@ package onezip.FX.setting;
 
 import java.io.*;
 
+import onezip.tool.ThemeType;
+import onezip.tool.themeAssistant;
+
 public class FX_GUISetting {
     static boolean setting;
     static String cursorPath="";
     static String bootMode="";
     static String bootTheme="";
+    static String isdarkMode = "";
 
     public static String getCursorPath() throws Exception {
         if (!setting){
             getSetting();
         }
         return cursorPath;
+    }
+
+    public static String isIsdarkMode() throws Exception{
+        if (!setting){
+            getSetting();
+        }
+        return isdarkMode;
+    }
+
+    public static void setDarkMode(String isdarkMode) throws IOException{
+        FX_GUISetting.isdarkMode = isdarkMode;
+        setSetting();
     }
 
     public void setCursorPath(String cursorPath) throws IOException {
@@ -35,6 +51,9 @@ public class FX_GUISetting {
     public String getBootTheme() throws Exception{
         if (!setting){
             getSetting();
+        }
+        if (bootTheme.equals("fluent")){
+            themeAssistant.setThemeType(ThemeType.Fluent);
         }
         return bootTheme;
     }
@@ -79,6 +98,8 @@ public class FX_GUISetting {
                 bootMode=lineText;
             }else if (i==3){
                 bootTheme=lineText;
+            } else if (i==4) {
+                isdarkMode= lineText;
             }
             i++;
         }
@@ -86,7 +107,7 @@ public class FX_GUISetting {
         bufferedReader.close();
     }
     private static void setSetting() throws IOException {
-        String string = cursorPath+"\n"+bootMode+"\n"+bootTheme;
+        String string = cursorPath+"\n"+bootMode+"\n"+bootTheme+"\n"+isdarkMode;
         byte[] data = string.getBytes();
 
         String filePath = System.getProperty("java.io.tmpdir")+File.separator+"OneZip"+File.separator+"FX_GUISetting.txt";
