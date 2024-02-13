@@ -18,7 +18,7 @@ public class viewUtils {
         System.out.println("\033[46m"+"CompressUtils.sevenZip.viewUtils getFileNameInPath\n\n\n\n"+"\033[m");//IDEA输出颜色，多空几行，明显一点
         System.out.println(fileList);
         //System.out.println(fileList.size());
-        ArrayList<String> filesInPathList = new ArrayList<>();
+        ArrayList<String> filesInPathList = new ArrayList<String>();
         if (!path.equals("")){//根目录不应显示..
             filesInPathList.add("..");
         }

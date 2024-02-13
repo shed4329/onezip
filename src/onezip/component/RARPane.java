@@ -21,6 +21,8 @@ import onezip.testOne;
 
 import java.io.File;
 
+import static onezip.component.oneAlert.*;
+
 
 public class RARPane extends Application {
     static String RARFile;
@@ -90,8 +92,8 @@ public class RARPane extends Application {
             assert files != null;
             System.out.println(files.length+" "+files2.length);
             if (files.length==files2.length) {//好像加密RAR没有密码打开的话不会报错，什么也不做，只有曲线救国
-                testOne.alertWarning("如果您认为该压缩包没有加密，请点击取消");
-                password=testOne.textInputDialog();
+                alertWarning("如果您认为该压缩包没有加密，请点击取消");
+                password=textInputDialog();
                 RARExtractService rarExtractService2 = new RARExtractService(RARFile, directory.getPath(), password);
                 rarExtractService2.start();
             }
@@ -103,7 +105,7 @@ public class RARPane extends Application {
             if (UnCompressUtil.isIsSuccessful()) {
                 progressBar1.setProgress(1);
                 status.setText("解压成功");
-                testOne.alertSuccess();
+                alertSuccess();
             }else{
                 progressBar1.setStyle("-fx-accent:#FF4500");
 

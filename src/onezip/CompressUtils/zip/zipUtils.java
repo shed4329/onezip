@@ -16,6 +16,10 @@ import java.util.ArrayList;
 
 import onezip.testOne;
 import onezip.ProcessFrame;
+import onezip.themes.fxJava.fluent.component.FluentProcessFrame;
+import onezip.tool.taskProgress;
+
+import static onezip.component.oneAlert.alertException;
 
 public class zipUtils {
     /*
@@ -101,7 +105,7 @@ public class zipUtils {
         //System.out.println("摘要"+"\n"+"要压缩的文件："+inputFolders+"生成的压缩包："+output.getName()+"(路径:"+output.getPath()+")"+"\n"+"用时："+(System.currentTimeMillis()-d1)+"ms");
     }
 
-    public static void unzip(File input, File output, Charset charset) throws Exception{
+    public static void unzip(File input, File output, Charset charset, taskProgress progress) throws Exception{
         long d1 = System.currentTimeMillis();//开始时间
 
         ZipFile zipFile = new ZipFile(input);
@@ -116,7 +120,7 @@ public class zipUtils {
         System.out.println("摘要"+"\n"+"要解压的文件："+input.getName()+"(路径:"+input.getPath()+")"+"\n"+"解压到："+output.getName()+"(路径:"+output.getPath()+")"+"\n"+"用时："+(System.currentTimeMillis()-d1)+"ms");
     }
 
-    public static void unzip(File input, File output,Charset charset,String password) throws Exception{
+    public static void unzip(File input, File output,Charset charset,String password,taskProgress progress) throws Exception{
         long d1 = System.currentTimeMillis();//开始时间
 
         ZipFile zipFile = new ZipFile(input,password.toCharArray());
@@ -167,7 +171,7 @@ public class zipUtils {
             deleteUtils.main(argument);
         } catch (ZipException e) {
             e.printStackTrace();
-            testOne.alertException(e);
+            alertException(e);
             return 12;
         }
         File folder = zip.getParentFile();
@@ -186,9 +190,9 @@ public class zipUtils {
     }
 
     private static void monitor(ProgressMonitor progressMonitor) throws InterruptedException {
-        System.out.println("1");
-        ProcessFrame processFrame = new ProcessFrame();
-        System.out.println("2");
+
+        //ProcessFrame processFrame = new ProcessFrame();
+        FluentProcessFrame processFrame = new FluentProcessFrame();
         Platform.runLater(processFrame::newProgressFrame);
 
         System.out.println("m");
@@ -204,12 +208,17 @@ public class zipUtils {
             Thread.sleep(50);
             System.out.println("/");
         }
-        Platform.runLater(()->processFrame.close());
+        //Platform.runLater(()->processFrame.close());
     }
 
-    public static void setComment(String comment,File zip) throws ZipException {
+    public static void setComment(String comment,File zip)  {
         ZipFile zipFile = new ZipFile(zip);
-        zipFile.setComment(comment);
+        try {
+            zipFile.setComment(comment);
+        } catch (ZipException e) {
+            alertException(e);
+            throw new RuntimeException(e);
+        }
     }
     public static String getComment(File zip) throws ZipException{
         ZipFile zipFile = new ZipFile(zip);
