@@ -5,6 +5,8 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.ScheduledService;
 import javafx.concurrent.Task;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.ImageCursor;
@@ -47,6 +49,11 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+import onezip.component.oneAlert;
+import onezip.tool.tool;
+
+import static onezip.component.oneAlert.textInputDialog;
+
 
 public class testOne extends Application {
     File zipTo;
@@ -70,6 +77,10 @@ public class testOne extends Application {
     ArrayList<String> arrayList1 = new ArrayList();
     NormalSetting normalSetting1 = new NormalSetting();
     ArrayList<String> nameList =new ArrayList<>();//文件列表，预览使用
+    static int argType;
+    static String bootArg;
+    static String charsetNameForDecoding;
+
     ObservableList<String> fileItems;
     public static void main(String[] args) {
         FX_GUISetting fxGuiSetting = new FX_GUISetting();
@@ -79,6 +90,11 @@ public class testOne extends Application {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+        //if user drag a file to the application shortcut,Windows will boot the file with a parameter,the file's absolute path,so check the arg to choose the initial pane
+        if (args.length==1){
+            argType = tool.isFileAnArchive(args[0]);
+            bootArg = args[0];
+        }
         if (string!=null&&!string.isEmpty()&&string.equals("Fluent")){
             onezip.themes.fxJava.fluent.normalFrame.main(new String[]{});
         }else {
@@ -86,261 +102,287 @@ public class testOne extends Application {
             launch(args);
         }
     }
+
     public void start(Stage stage) throws Exception {
-        Button compress = new Button("\n压缩");
-        compress.setStyle("-fx-background-color:#ffffff");
-        Image compressImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("img/new.png")));
-        compress.setGraphic(new ImageView(compressImage));
-        compress.setPrefSize(135,135);
-        Button extract = new Button("解压");
-        Image extractImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("img/open.png")));
-        extract.setGraphic(new ImageView(extractImage));
-        extract.setStyle("-fx-background-color:#ffffff");
-        extract.setPrefSize(135,135);
-        Button setting = new Button("设置");
-        Image settingImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("img/setting.png")));
-        setting.setGraphic(new ImageView(settingImage));
-        setting.setStyle("-fx-background-color:#ffffff");
-        setting.setPrefSize(135,135);
-        Button about = new Button("关于");
-        Image aboutImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("img/about.png")));
-        about.setGraphic(new ImageView(aboutImage));
-        about.setStyle("-fx-background-color:#ffffff");
-        about.setPrefSize(135,135);
-
-
-        GridPane gridPane = new GridPane();
-
-        gridPane.add(compress,0,0);
-        gridPane.add(extract,1,0);
-        gridPane.add(setting,0,1);
-        gridPane.add(about,1,1);
-
-        gridPane.setHgap(25);
-        gridPane.setVgap(25);
-        gridPane.setAlignment(Pos.CENTER);
-        gridPane.styleProperty().set("-fx-background-color:#1f88db");
-
-        Scene scene = new Scene(gridPane);
-        if (!fx_guiSetting.getCursorPath().isEmpty()){
-            cursorImage = new Image("file:"+fx_guiSetting.getCursorPath());
-            scene.setCursor(new ImageCursor(cursorImage));
-            cursorAble=true;
-        }
-        stage.setScene(scene);
-        stage.setWidth(700);
-        stage.setHeight(500);
-        stage.setTitle("OneZip version 0.04 channel3(only for test)");
-        stage.getIcons().add(new Image("img/ZIP.png"));
-        stage.show();
-
-        compress.setOnAction(actionEvent -> compressPane());
-        extract.setOnAction(actionEvent -> {
-            FileChooser fileChooser = new FileChooser();
-            fileChooser.setTitle("选择压缩包");
-            fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("压缩文件", "*.zip","*.7z","*.rar"));
-            File file =fileChooser.showOpenDialog(stage);
-            if (file==null){
-                alert("文件不能为空");
-            }else {
-                extractPane(file);
+        if (argType != 0){
+            if (argType == tool.FILE_IS_ARCHIVE){
+                extractPane(new File(bootArg));
+            } else if (argType == tool.FILE_IS_NOT_ARCHIVE) {
+                compressPane();
             }
-        });
-        about.setOnAction(actionEvent -> {
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.titleProperty().set("关于");
-            alert.headerTextProperty().set("OneZip\n版本号：0.04 channel3\n仅供测试");
-            alert.showAndWait();
-        });
-        setting.setOnAction(actionEvent -> {
-            Group group = new Group();
+        }else {
+            Button compress = new Button("\n压缩");
+            compress.setStyle("-fx-background-color:#ffffff");
+            Image compressImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("img/new.png")));
+            compress.setGraphic(new ImageView(compressImage));
+            compress.setPrefSize(135, 135);
+            Button extract = new Button("解压");
+            Image extractImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("img/open.png")));
+            extract.setGraphic(new ImageView(extractImage));
+            extract.setStyle("-fx-background-color:#ffffff");
+            extract.setPrefSize(135, 135);
+            Button setting = new Button("设置");
+            Image settingImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("img/setting.png")));
+            setting.setGraphic(new ImageView(settingImage));
+            setting.setStyle("-fx-background-color:#ffffff");
+            setting.setPrefSize(135, 135);
+            Button about = new Button("关于");
+            Image aboutImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("img/about.png")));
+            about.setGraphic(new ImageView(aboutImage));
+            about.setStyle("-fx-background-color:#ffffff");
+            about.setPrefSize(135, 135);
 
-            VBox vBox = new VBox();
 
-            group.getChildren().add(vBox);
+            GridPane gridPane = new GridPane();
 
-            Button normalSetting = new Button("常规");
-            normalSetting.setPrefSize(125,35);
-            normalSetting.setStyle("-fx-background-color:#4a9fe1");
-            Separator separator1 =new Separator();
-            Button uiSetting = new Button("外观");
-            uiSetting.setPrefSize(125,35);
-            uiSetting.setStyle("-fx-background-color:#4a9fe1");
-            Separator separator2 =new Separator();
-            Button languageSetting = new Button("语言");
-            languageSetting.setPrefSize(125,35);
-            languageSetting.setStyle("-fx-background-color:#4a9fe1");
+            gridPane.add(compress, 0, 0);
+            gridPane.add(extract, 1, 0);
+            gridPane.add(setting, 0, 1);
+            gridPane.add(about, 1, 1);
 
-            Button background = new Button();
-            background.setPrefSize(125,2000);
-            background.setStyle("-fx-background-color:#4a9fe1");
-            vBox.getChildren().addAll(normalSetting,separator1,uiSetting,separator2,languageSetting,background);
+            gridPane.setHgap(25);
+            gridPane.setVgap(25);
+            gridPane.setAlignment(Pos.CENTER);
+            gridPane.styleProperty().set("-fx-background-color:#1f88db");
 
-            AnchorPane anchorPane = new AnchorPane();
-            group.getChildren().add(anchorPane);
-            anchorPane.setLayoutX(135);
-
-            Scene settingScene = new Scene(group);
-            if (cursorAble){
-                settingScene.setCursor(new ImageCursor(cursorImage));
+            Scene scene = new Scene(gridPane);
+            if (!fx_guiSetting.getCursorPath().isEmpty()) {
+                cursorImage = new Image("file:" + fx_guiSetting.getCursorPath());
+                scene.setCursor(new ImageCursor(cursorImage));
+                cursorAble = true;
             }
-            Stage settingStage = new Stage();
-            settingStage.setScene(settingScene);
-            settingStage.setTitle("设置");
-            settingStage.getIcons().add(new Image("img/ZIP.png"));
-            settingStage.setWidth(700);
-            settingStage.setHeight(500);
-            settingStage.show();
-            uiSetting.setOnAction(e->{
-                Text cursorText= new Text("鼠标设置");
-                TextField pictureTextField = new TextField();
-                try {
-                    pictureTextField.setText(fx_guiSetting.getCursorPath());
-                } catch (Exception ex) {
-                    ex.printStackTrace();
+            stage.setScene(scene);
+            stage.setWidth(700);
+            stage.setHeight(500);
+            stage.setTitle("OneZip version 0.06 channel1(only for test)");
+            stage.getIcons().add(new Image("img/ZIP.png"));
+            stage.show();
+
+            compress.setOnAction(actionEvent -> compressPane());
+            extract.setOnAction(actionEvent -> {
+                FileChooser fileChooser = new FileChooser();
+                fileChooser.setTitle("选择压缩包");
+                fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("压缩文件", "*.zip", "*.7z", "*.rar"));
+                File file = fileChooser.showOpenDialog(stage);
+                if (file == null) {
+                    
+                    oneAlert.alert("文件不能为空");
+                } else {
+                    extractPane(file);
                 }
-                pictureTextField.setEditable(false);
-                pictureTextField.setPrefWidth(500);
-                Group group1 = new Group();
-                Button explore = new Button("浏览");
-                Text themesText= new Text("主题");
-                ChoiceBox choiceBox = new ChoiceBox();
-                choiceBox.setItems(FXCollections.observableArrayList("normal","fluent"));
-                group1.getChildren().addAll(pictureTextField,explore,cursorText,themesText,choiceBox);
-                themesText.setLayoutY(80);
-                choiceBox.setLayoutY(90);
-                explore.setLayoutY(15);
-                explore.setLayoutX(510);
-                pictureTextField.setLayoutY(15);
+            });
+            about.setOnAction(actionEvent -> {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.titleProperty().set("关于");
+                alert.headerTextProperty().set("OneZip\n版本号：0.06 channel1\n仅供测试");
+                alert.showAndWait();
+            });
+            setting.setOnAction(actionEvent -> {
+                Group group = new Group();
 
+                VBox vBox = new VBox();
 
-                Button apply = new Button("应用");
-                anchorPane.getChildren().clear();
-                anchorPane.getChildren().addAll(group1,apply);
-                AnchorPane.setTopAnchor(group1,10.0);
-                anchorPane.setPrefSize(550,450);
-                AnchorPane.setBottomAnchor(apply,10.0);
-                choiceBox.getSelectionModel().selectedIndexProperty().addListener((observableValue, number, t1) -> {
-                    if (t1.intValue()==1){//0->normal 1->fluent
-                        try {
-                            fx_guiSetting.setBootTheme("Fluent");
-                        } catch (IOException ex) {
-                            throw new RuntimeException(ex);
-                        }
-                    }
-                });
-                explore.setOnAction(event->{
-                    FileChooser fileChooser = new FileChooser();//选择文件
-                    fileChooser.setTitle("选择图片");
-                    fileChooser.getExtensionFilters().addAll(
-                            new FileChooser.ExtensionFilter("PNG","*.png"),
-                            new FileChooser.ExtensionFilter("JPEG","*.jpeg"),
-                            new FileChooser.ExtensionFilter("BMP","*.bmp")
-                    );
-                    File pictures = fileChooser.showOpenDialog(settingStage);
+                group.getChildren().add(vBox);
 
-                    if (pictures==null) {
-                        alert("图片不能为空");
-                    }else{
-                       cursorPath = pictures.getAbsoluteFile().toString();
-                       pictureTextField.setText(cursorPath);
-                    }
+                Button normalSetting = new Button("常规");
+                normalSetting.setPrefSize(125, 35);
+                normalSetting.setStyle("-fx-background-color:#4a9fe1");
+                Separator separator1 = new Separator();
+                Button uiSetting = new Button("外观");
+                uiSetting.setPrefSize(125, 35);
+                uiSetting.setStyle("-fx-background-color:#4a9fe1");
+                Separator separator2 = new Separator();
+                Button languageSetting = new Button("语言");
+                languageSetting.setPrefSize(125, 35);
+                languageSetting.setStyle("-fx-background-color:#4a9fe1");
+
+                Button background = new Button();
+                background.setPrefSize(125, 2000);
+                background.setStyle("-fx-background-color:#4a9fe1");
+                vBox.getChildren().addAll(normalSetting, separator1, uiSetting, separator2, languageSetting, background);
+
+                ScrollPane scrollPane = new ScrollPane();
+                VBox vBoxPaneForContent = new VBox();
+                vBoxPaneForContent.setSpacing(10.0);
+                scrollPane.getStyleClass().clear();
+                group.getChildren().add(scrollPane);
+                scrollPane.setContent(vBoxPaneForContent);
+                scrollPane.setLayoutX(135);
+
+                Scene settingScene = new Scene(group);
+                if (cursorAble) {
+                    settingScene.setCursor(new ImageCursor(cursorImage));
+                }
+                Stage settingStage = new Stage();
+                settingStage.setScene(settingScene);
+                settingStage.setTitle("设置");
+                settingStage.getIcons().add(new Image("img/ZIP.png"));
+                settingStage.setWidth(700);
+                settingStage.setHeight(500);
+                settingStage.show();
+                uiSetting.setOnAction(e -> {
+                    Text cursorText = new Text("鼠标设置");
+                    TextField pictureTextField = new TextField();
                     try {
-                        fx_guiSetting.setCursorPath(cursorPath);
-                    } catch (IOException ex) {
+                        pictureTextField.setText(fx_guiSetting.getCursorPath());
+                    } catch (Exception ex) {
                         ex.printStackTrace();
                     }
-                });
-                apply.setOnAction(actionEvent1 -> {
-                    if (!cursorPath.isEmpty()){
-                        alertSuccess();
+                    pictureTextField.setEditable(false);
+                    pictureTextField.setPrefWidth(500);
+                    Group group1 = new Group();
+                    Button explore = new Button("浏览");
+                    Text themesText = new Text("主题");
+                    ChoiceBox choiceBox = new ChoiceBox();
+                    choiceBox.setItems(FXCollections.observableArrayList("normal", "fluent"));
+                    group1.getChildren().addAll(pictureTextField, explore, cursorText, themesText, choiceBox);
+                    themesText.setLayoutY(80);
+                    choiceBox.setLayoutY(90);
+                    explore.setLayoutY(15);
+                    explore.setLayoutX(510);
+                    pictureTextField.setLayoutY(15);
+
+
+                    Button apply = new Button("应用");
+
+                    vBoxPaneForContent.getChildren().clear();
+                    vBoxPaneForContent.getChildren().addAll(group1, apply);
+                    //.setTopAnchor(group1, 10.0);
+                    vBoxPaneForContent.setPrefSize(550, 450);
+                    AnchorPane.setBottomAnchor(apply, 10.0);
+                    choiceBox.getSelectionModel().selectedIndexProperty().addListener((observableValue, number, t1) -> {
+                        if (t1.intValue() == 1) {//0->normal 1->fluent
+                            try {
+                                fx_guiSetting.setBootTheme("Fluent");
+                            } catch (IOException ex) {
+                                throw new RuntimeException(ex);
+                            }
+                        }
+                    });
+                    explore.setOnAction(event -> {
+                        FileChooser fileChooser = new FileChooser();//选择文件
+                        fileChooser.setTitle("选择图片");
+                        fileChooser.getExtensionFilters().addAll(
+                                new FileChooser.ExtensionFilter("PNG", "*.png"),
+                                new FileChooser.ExtensionFilter("JPEG", "*.jpeg"),
+                                new FileChooser.ExtensionFilter("BMP", "*.bmp")
+                        );
+                        File pictures = fileChooser.showOpenDialog(settingStage);
+
+                        if (pictures == null) {
+                            oneAlert.alert("图片不能为空");
+                        } else {
+                            cursorPath = pictures.getAbsoluteFile().toString();
+                            pictureTextField.setText(cursorPath);
+                        }
                         try {
-                            cursorImage = new Image("file:"+fx_guiSetting.getCursorPath());
-                            scene.setCursor(new ImageCursor(cursorImage));
-                            cursorAble=true;
-                        } catch (Exception ex) {
+                            fx_guiSetting.setCursorPath(cursorPath);
+                        } catch (IOException ex) {
                             ex.printStackTrace();
                         }
-                        settingStage.close();
-                    }
-                });
-            });
-            normalSetting.setOnAction(e->{
-                Text text = new Text("解压设置");
-                CheckBox checkBox = new CheckBox("解压界面关闭‘预览’以节约资源");
-                try {
-                    checkBox.setSelected(NormalSetting.getViewSwitch());
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                    checkBox.setSelected(false);
-                }
-                checkBox.selectedProperty().addListener(ex->{
-
-                    if (checkBox.isSelected()){
-                        try {
-                            NormalSetting.setViewSwitch(true);
-                        } catch (Exception exc) {
-                            exc.printStackTrace();
+                    });
+                    apply.setOnAction(actionEvent1 -> {
+                        if (!cursorPath.isEmpty()) {
+                            oneAlert.alertSuccess();
+                            try {
+                                cursorImage = new Image("file:" + fx_guiSetting.getCursorPath());
+                                scene.setCursor(new ImageCursor(cursorImage));
+                                cursorAble = true;
+                            } catch (Exception ex) {
+                                ex.printStackTrace();
+                            }
+                            settingStage.close();
                         }
-                    }else{
-                        try {
-                            NormalSetting.setViewSwitch(false);
-                        } catch (Exception exc) {
-                            exc.printStackTrace();
-                        }
-                    }
+                    });
                 });
-                Group group1 =new Group();
-                group1.getChildren().addAll(text,checkBox);
-                checkBox.setLayoutY(20);
-                AnchorPane.setTopAnchor(group1,10.0);
-                anchorPane.getChildren().clear();
-                anchorPane.getChildren().add(group1);
-                anchorPane.setPrefSize(550,450);
+                normalSetting.setOnAction(e -> {
+                    Text text = new Text("解压设置");
+                    CheckBox checkBox = new CheckBox("解压界面关闭‘预览’以节约资源");
+                    Text text2 = new Text("注释编码");
+                    ChoiceBox choiceBoxForLang = new ChoiceBox();
+                    choiceBoxForLang.setItems(FXCollections.observableArrayList("UTF-8", "GBK","ASCII","BIG5","Shift_JIS","EUC_KR","KOI8-R","iso-8859-1","iso-8859-2","iso-8859-5"));
+                    Button applyLangDecoding = new Button("应用对字符串的修改");
+                    try {
+                        checkBox.setSelected(NormalSetting.getViewSwitch());
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                        checkBox.setSelected(false);
+                    }
+                    checkBox.selectedProperty().addListener(ex -> {
+
+                        if (checkBox.isSelected()) {
+                            try {
+                                NormalSetting.setViewSwitch(true);
+                            } catch (Exception exc) {
+                                exc.printStackTrace();
+                            }
+                        } else {
+                            try {
+                                NormalSetting.setViewSwitch(false);
+                            } catch (Exception exc) {
+                                exc.printStackTrace();
+                            }
+                        }
+                    });
+                    vBoxPaneForContent.getChildren().clear();
+                    vBoxPaneForContent.getChildren().addAll(text,checkBox,text2,choiceBoxForLang,applyLangDecoding);
+                    vBoxPaneForContent.setPrefSize(550, 450);
+                    applyLangDecoding.setOnAction(new EventHandler<ActionEvent>() {
+                        @Override
+                        public void handle(ActionEvent actionEvent) {
+                            String string = (String) choiceBoxForLang.getValue();
+                            if (string != null) {
+                                NormalSetting.setCommentDecodingType((String) choiceBoxForLang.getValue());
+                            }else{
+                                oneAlert.alert("本次未作出更改");
+                            }
+                        }
+                    });
+                });
+
             });
-
-        });
-        compress.setOnDragOver(event -> {
-            if (event.getGestureSource() != compress) {
-                event.acceptTransferModes(TransferMode.ANY);
-            }
-        });
-        compress.setOnDragDropped(dragEvent -> {
-            Dragboard dragboard = dragEvent.getDragboard();
-            List<File> files = dragboard.getFiles();
-            System.out.println(files);
-            for (File file:files){
-                if (file.isDirectory()){
-                    compressedFolders.add(file);
-                }else{
-                    compressedFiles.add(file);
+            compress.setOnDragOver(event -> {
+                if (event.getGestureSource() != compress) {
+                    event.acceptTransferModes(TransferMode.ANY);
                 }
-                listFiles.add(file.getPath());
-                compressListView.setItems(FXCollections.observableArrayList(listFiles));
-            }
-            compressPane();
-
-        });
-        extract.setOnDragOver(event -> {
-            if (event.getGestureSource() != extract) {
-                event.acceptTransferModes(TransferMode.ANY);
-            }
-        });
-        extract.setOnDragDropped(dragEvent -> {
-            Dragboard dragboard = dragEvent.getDragboard();
-            List<File> files = dragboard.getFiles();
-            if (files.size()==1){
-                if (files.get(0).getName().contains(".zip")||files.get(0).getName().contains(".7z")||files.get(0).getName().contains(".rar")){
-                    extractPane(files.get(0));
-                }else{
-                    alert("（ErrorType：想多了你）只能处理zip,7z,rar压缩包");
+            });
+            compress.setOnDragDropped(dragEvent -> {
+                Dragboard dragboard = dragEvent.getDragboard();
+                List<File> files = dragboard.getFiles();
+                System.out.println(files);
+                for (File file : files) {
+                    if (file.isDirectory()) {
+                        compressedFolders.add(file);
+                    } else {
+                        compressedFiles.add(file);
+                    }
+                    listFiles.add(file.getPath());
+                    compressListView.setItems(FXCollections.observableArrayList(listFiles));
                 }
-            }else if(files.size()>=2){
-                alert("不能贪多哟，一次只能添加一个压缩包");
-            }else{
-                alert("没有选中文件");
-            }
-        });
+                compressPane();
+
+            });
+            extract.setOnDragOver(event -> {
+                if (event.getGestureSource() != extract) {
+                    event.acceptTransferModes(TransferMode.ANY);
+                }
+            });
+            extract.setOnDragDropped(dragEvent -> {
+                Dragboard dragboard = dragEvent.getDragboard();
+                List<File> files = dragboard.getFiles();
+                if (files.size() == 1) {
+                    if (files.get(0).getName().contains(".zip") || files.get(0).getName().contains(".7z") || files.get(0).getName().contains(".rar")) {
+                        extractPane(files.get(0));
+                    } else {
+                        oneAlert.alert("（ErrorType：想多了你）只能处理zip,7z,rar压缩包");
+                    }
+                } else if (files.size() >= 2) {
+                    oneAlert.alert("不能贪多哟，一次只能添加一个压缩包");
+                } else {
+                    oneAlert.alert("没有选中文件");
+                }
+            });
+        }
     }
     private void compressPane(){
 
@@ -411,6 +453,16 @@ public class testOne extends Application {
         if (cursorAble){//自定义鼠标
             compressScene.setCursor(new ImageCursor(cursorImage));
         }
+        if (argType==tool.FILE_IS_NOT_ARCHIVE){//如果启动参数进入设置文本框
+            fileTextField.setText(bootArg);
+            File file = new File(bootArg);
+            if (file.isDirectory()){
+                compressedFolders.add(file);
+            }else{
+                compressedFiles.add(file);
+            }
+
+        }
 
         Stage compressFrame = new Stage();
         compressFrame.setScene(compressScene);
@@ -452,7 +504,7 @@ public class testOne extends Application {
             fileChooser1.setTitle("保存为");
             File savedFile = fileChooser1.showSaveDialog(compressFrame);
             if (savedFile==null) {
-                alert("文件不能为空");
+                oneAlert.alert("文件不能为空");
             }else{
                 String path = savedFile.getAbsoluteFile().toString();
                 if (!path.contains(".")) {
@@ -497,16 +549,13 @@ public class testOne extends Application {
                     if (password1.equals(password2)){
                         System.out.println(password1);
                         password=password1;
-                        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                        alert.titleProperty().set("成功");
-                        alert.headerTextProperty().set("密码设置成功");
-                        alert.showAndWait();
+                        oneAlert.alertInfo("成功","密码设置成功");
                         passwordSetStage.close();
                     }else{
-                        alert("密码不一致");
+                        oneAlert.alert("密码不一致");
                     }
                 }else{
-                    alert("密码不能为空");
+                    oneAlert.alert("密码不能为空");
                 }
             });
             cancel1.setOnAction(actionEvent112 -> passwordSetStage.close());
@@ -539,10 +588,10 @@ public class testOne extends Application {
             System.out.println(compressedFiles);
             System.out.println(compressedFolders);
             if (compressFormatType==999){
-                alert("请选择文件格式");
+                oneAlert.alert("请选择文件格式");
             } else if (compressFormatType==0) {
                 if (zipTo==null){
-                    alert("还没选择保存路径");
+                    oneAlert.alert("还没选择保存路径");
                 }else{
 
                     if(password.isEmpty()){
@@ -563,7 +612,7 @@ public class testOne extends Application {
                 }
             }else if (compressFormatType==1){
                 if (compressTo==null){
-                    alert("还没选择保存路径");
+                    oneAlert.alert("还没选择保存路径");
                 }else{
                     ArrayList<File> arrayList = new ArrayList<>();
                     arrayList.addAll(compressedFiles);
@@ -615,7 +664,7 @@ public class testOne extends Application {
         if (file.getName().contains(".zip")) {
             try {
                 if (!zipUtils.isValid(file)) {
-                    alert("无效的文件");
+                    oneAlert.alert("无效的文件");
                 } else {
                     HBox northPane = new HBox();
                     Button viewPaneExtract = new Button("解压文件");
@@ -645,11 +694,14 @@ public class testOne extends Application {
                     TextArea commentArea = new TextArea();
                     try {
                         String comment = zipUtils.getComment(file);
-                        String UTF_8Comment = new String(comment.getBytes(), "UTF-8");
-                        commentArea.setText(UTF_8Comment);
-                        commentArea.setPrefWidth(800);
-                        commentArea.setEditable(false);
-                        southPane.getChildren().add(commentArea);
+                        if (!comment.isEmpty()) {
+                            System.out.println("s-" + NormalSetting.getCommentDecodingType());
+                            String decodedComment = new String(comment.getBytes(), NormalSetting.getCommentDecodingType());
+                            commentArea.setText(decodedComment);
+                            commentArea.setPrefWidth(800);
+                            commentArea.setEditable(false);
+                            southPane.getChildren().add(commentArea);
+                        }
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -757,6 +809,7 @@ public class testOne extends Application {
                         File extractTo = directoryChooser.showDialog(viewStage);
                         try {
                             if (zipUtils.isEncrypted(file)) {
+
                                 Alert alert = new Alert(Alert.AlertType.WARNING);
                                 alert.setTitle("警告");
                                 alert.setHeaderText("可能出现的问题");
@@ -771,7 +824,7 @@ public class testOne extends Application {
                             throw new RuntimeException(e);
                         }
                         if (extractTo == null) {
-                            alert("请选择解压位置");
+                            oneAlert.alert("请选择解压位置");
                         } else {
                             try {
 
@@ -803,12 +856,8 @@ public class testOne extends Application {
                         Optional<String> result = dialog.showAndWait();
                         result.ifPresent(s -> {
                             System.out.println("comment: " + s);
-                            try {
-                                zipUtils.setComment(s, file);
-                                alertSuccess();
-                            } catch (ZipException e) {
-                                e.printStackTrace();
-                            }
+                            zipUtils.setComment(s, file);
+                            oneAlert.alertSuccess();
                         });
 
                     });
@@ -966,7 +1015,7 @@ public class testOne extends Application {
                     extractPassword = textInputDialog();
                 }
                 if (extractTo == null) {
-                    alert("请选择解压位置");
+                    oneAlert.alert("请选择解压位置");
                 } else {
                     try {
 
@@ -984,7 +1033,7 @@ public class testOne extends Application {
                 }
             });
             viewPaneAdd.setOnAction(actionEvent -> {
-                alertWarning("您添加的文件可能会替代某些文件（似乎是第一个），并且有可能导致部分文件预览不可见，请尽量不要使用");
+                oneAlert.alertWarning("您添加的文件可能会替代某些文件（似乎是第一个），并且有可能导致部分文件预览不可见，请尽量不要使用");
                 FileChooser fileChooser = new FileChooser();
                 fileChooser.setTitle("选择要添加的文件");
                 File toAdd = fileChooser.showOpenDialog(viewStage);
@@ -1007,7 +1056,7 @@ public class testOne extends Application {
                 }
             });
             viewPaneDelete.setOnAction(actionEvent -> {
-                alertWarning("由于技术问题，删除文件的功能已被禁用");
+                oneAlert.alertWarning("由于技术问题，删除文件的功能已被禁用");
                 /*String filePathIn7z = listView.getSelectionModel().getSelectedItem();
                 System.out.println(filePathIn7z);
                 boolean temp = ExtractUtils.isEncrypted(file.getPath());
@@ -1062,74 +1111,7 @@ public class testOne extends Application {
         return cursorImage;
     }
 
-    public static void alert(String text){
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.titleProperty().set("错误");
-        alert.headerTextProperty().set(text);
-        alert.showAndWait();
-    }
-    public static void alertSuccess(){
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.titleProperty().set("成功");
-        alert.headerTextProperty().set("成功");
-        alert.showAndWait();
-    }
-    public static void alertException(Exception ex){
-        Scene scene = new Scene(new AnchorPane());
-        Stage stage = new Stage();
-        stage.setScene(scene);
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Exception Dialog");
-        alert.setHeaderText("发生异常");
-        alert.setContentText(ex.getMessage());
-
-
-
-// Create expandable Exception.
-        StringWriter sw = new StringWriter();
-        PrintWriter pw = new PrintWriter(sw);
-        ex.printStackTrace(pw);
-        String exceptionText = sw.toString();
-
-        Label label = new Label("The exception stacktrace was:");
-
-        TextArea textArea = new TextArea(exceptionText);
-        textArea.setEditable(false);
-        textArea.setWrapText(true);
-
-        textArea.setMaxWidth(Double.MAX_VALUE);
-        textArea.setMaxHeight(Double.MAX_VALUE);
-        GridPane.setVgrow(textArea, Priority.ALWAYS);
-        GridPane.setHgrow(textArea, Priority.ALWAYS);
-
-        GridPane expContent = new GridPane();
-        expContent.setMaxWidth(Double.MAX_VALUE);
-        expContent.add(label, 0, 0);
-        expContent.add(textArea, 0, 1);
-
-// Set expandable Exception into the dialog pane.
-        alert.getDialogPane().setExpandableContent(expContent);
-        alert.initOwner(stage);
-        alert.showAndWait();
-    }
-    public static void alertWarning(String text){
-        Alert alert = new Alert(Alert.AlertType.WARNING,text);
-        alert.showAndWait();
-    }
-    public static String textInputDialog(){
-        TextInputDialog dialog = new TextInputDialog();
-        dialog.setTitle("密码");
-        dialog.setHeaderText("该文件已加密，你需要提供该文件密码才能解压");
-        dialog.setContentText("密码:");
-
-        Optional<String> result = dialog.showAndWait();
-        final String[] str = new String[1];
-        result.ifPresent(s -> {
-            str[0] =s;
-        });
-        System.out.println(str[0]);
-        return str[0];
-    }
+    
 }
 
 
@@ -1168,9 +1150,9 @@ class AddOrDeleteScheduledService extends ScheduledService{
             @Override
             protected void updateValue(Integer value) {
                 if (value==0){
-                    testOne.alert("error:no model selected");
+                    oneAlert.alert("error:no model selected");
                 }else if (value==1||value==2){
-                    testOne.alertSuccess();
+                    oneAlert.alertSuccess();
                 }
                 AddOrDeleteScheduledService.this.cancel();
             }
@@ -1240,9 +1222,9 @@ class SevenZipAddOrDeleteService extends ScheduledService{
             @Override
             protected void updateValue(Integer value) {
                 if (value==0){
-                    testOne.alert("error:no model selected");
+                    oneAlert.alert("error:no model selected");
                 }else if (value==1||value==2){
-                    testOne.alertSuccess();
+                    oneAlert.alertSuccess();
                 }
                 SevenZipAddOrDeleteService.this.cancel();
             }

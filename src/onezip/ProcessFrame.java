@@ -5,6 +5,7 @@ import javafx.scene.control.ProgressBar;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import jfxtras.styles.jmetro.JMetro;
 
 public class ProcessFrame {
     ProgressBar progressBar;

@@ -3,9 +3,38 @@ package onezip.setting;
 import java.io.*;
 
 public class NormalSetting {
-    static String viewSwitch;
+    //预览是否关闭
+    static String viewSwitch="false";
+    //设置时如果有一个值没有设定，会覆盖之前设定的值，所以用来检验
+    static boolean isViewSwitchEdited;
+    //以何种方式编码注释
+    static String commentDecodingType;
+    static boolean isCommentDecodingTypeEdited;
+    // 是否已经加载了配置文件
     static boolean isGet = false;
 
+
+    public static String getCommentDecodingType() {
+        if (!isGet){
+            try {
+                getSetting();
+                isGet=true;
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return commentDecodingType;
+    }
+
+    public static void setCommentDecodingType(String commentDecodingType) {
+        NormalSetting.commentDecodingType = commentDecodingType;
+        isCommentDecodingTypeEdited = true;
+        try {
+            setSetting();
+        }catch (Exception e){
+            throw new RuntimeException(e);
+        }
+    }
 
     public static Boolean getViewSwitch() {
         if (!isGet){
@@ -25,6 +54,7 @@ public class NormalSetting {
         }else{
             viewSwitch="false";
         }
+        isViewSwitchEdited = true;
         try {
             setSetting();
         } catch (IOException e) {
@@ -58,15 +88,38 @@ public class NormalSetting {
         String lineText;
         int i=1;
         while ((lineText=bufferedReader.readLine())!=null){
+            System.out.println("NormalSetting:"+lineText);
             if (i==1){
                viewSwitch=lineText;
-            };
+            } else if (i==2) {
+                commentDecodingType=lineText;
+            }
+            i++;
         }
         inputStream.close();
         bufferedReader.close();
     }
     private static void setSetting() throws IOException {
-        String string = viewSwitch;
+        if (!isViewSwitchEdited){//字符串设置引发的设置
+            String temp = commentDecodingType;
+            try {
+                getSetting();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+            commentDecodingType=temp;
+        } else if (!isCommentDecodingTypeEdited) {//由预览设置引发
+            String temp = viewSwitch;
+            try {
+                getSetting();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+            viewSwitch = temp;
+        }
+        System.out.println("value:"+viewSwitch);
+        String string = viewSwitch+"\n"+commentDecodingType;
+        System.out.println("NormalSetting.setSetting:"+"viewSwitch,"+viewSwitch+",comment"+commentDecodingType);
         byte[] data = string.getBytes();
 
         String filePath = System.getProperty("java.io.tmpdir")+File.separator+"OneZip"+File.separator+"NormalSetting.txt";
