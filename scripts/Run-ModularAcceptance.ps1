@@ -1,6 +1,8 @@
-param([Parameter(Mandatory)][string]$Distribution,[Parameter(Mandatory)][string]$OutputDirectory,[string]$JdkHome='JAVA_HOME',[ValidateSet('SettingsSmartProbe','I18nProbe')][string]$Probe='SettingsSmartProbe',[ValidateSet('zh-CN','zh-TW','ja','en')][string]$Locale='zh-CN')
+param([Parameter(Mandatory)][string]$Distribution,[Parameter(Mandatory)][string]$OutputDirectory,[string]$JdkHome=$env:JAVA_HOME,[ValidateSet('SettingsSmartProbe','I18nProbe')][string]$Probe='SettingsSmartProbe',[ValidateSet('zh-CN','zh-TW','ja','en')][string]$Locale='zh-CN')
 $ErrorActionPreference='Stop'
 $repo=[IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
+. (Join-Path $PSScriptRoot 'Resolve-Jdk.ps1')
+$JdkHome=Resolve-OneZipJdk $JdkHome
 $Distribution=[IO.Path]::GetFullPath($Distribution)
 $OutputDirectory=[IO.Path]::GetFullPath($OutputDirectory)
 New-Item -ItemType Directory -Force -Path $OutputDirectory | Out-Null

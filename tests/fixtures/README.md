@@ -1,6 +1,6 @@
 # ReferenceArchive reference fixtures
 
-Created on 2026-10-27 with the user's installed ReferenceArchive 7.47 (Beta,x64), `bz.exe`, under `D:\Program Files\ReferenceArchive`. These archives contain only synthetic text and empty entries created for these tests; no executable or vendor DLL is included.
+Created on 2026-10-27 with an external reference tool (version 7.47, x64). These archives contain only synthetic text and empty entries created for these tests; no executable or vendor DLL is included.
 
 Source tree: `target/interop-source/alpha.txt`, `beta.txt`, `empty.txt`, `empty/`.
 
@@ -11,9 +11,9 @@ Source tree: `target/interop-source/alpha.txt`, `beta.txt`, `empty.txt`, `empty/
 The archive retains the relative `target/interop-source` path. Creation commands, executed from the repository root:
 
 ```powershell
-& 'D:\Program Files\ReferenceArchive\bz.exe' a -y -fmt:zip -l:5 target/referenceArchive-reference.zip target/interop-source
-& 'D:\Program Files\ReferenceArchive\bz.exe' a -y -fmt:7z -l:5 target/referenceArchive-reference.7z target/interop-source
-& 'D:\Program Files\ReferenceArchive\bz.exe' a -y -fmt:7z -l:5 -p:onezip-fixture target/referenceArchive-reference-aes.7z target/interop-source
+& $env:ONEZIP_REFERENCE_TOOL a -y -fmt:zip -l:5 target/referenceArchive-reference.zip target/interop-source
+& $env:ONEZIP_REFERENCE_TOOL a -y -fmt:7z -l:5 target/referenceArchive-reference.7z target/interop-source
+& $env:ONEZIP_REFERENCE_TOOL a -y -fmt:7z -l:5 -p:onezip-fixture target/referenceArchive-reference-aes.7z target/interop-source
 ```
 
 Result archives were copied here and renamed. The 7z fixture contains one solid stream for both nonempty files. File timestamps and AES random IVs mean regenerating archives need not produce identical bytes.

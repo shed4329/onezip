@@ -1,7 +1,8 @@
 param([switch]$Check,[string]$JdkHome=$env:JAVA_HOME)
 $ErrorActionPreference='Stop'
-if(-not $JdkHome){$JdkHome='JAVA_HOME'}
 $repo=[IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
+. (Join-Path $PSScriptRoot 'Resolve-Jdk.ps1')
+$JdkHome=Resolve-OneZipJdk $JdkHome
 $tool=Join-Path $repo '.mvn\tools\google-java-format-1.29.0-all-deps.jar'
 $expected='AEB4E1831D56011E7E06F3393C4E17340C7CCA0FD7BA9076AB8DC0624759F7F0'
 if(-not(Test-Path -LiteralPath $tool)){throw 'Install google-java-format 1.29.0 all-deps from Maven Central into .mvn/tools; see docs/DEVELOPMENT.md'}

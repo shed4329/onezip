@@ -1,12 +1,14 @@
 param(
  [Parameter(Mandatory)][string]$ApplicationImage,
  [Parameter(Mandatory)][string]$OutputDirectory,
- [string]$JdkHome='JAVA_HOME',
+ [string]$JdkHome=$env:JAVA_HOME,
  [string]$WixHome,
  [ValidateSet('msi','exe')][string[]]$Types=@('msi','exe')
 )
 $ErrorActionPreference='Stop'
 $repo=[IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
+. (Join-Path $PSScriptRoot 'Resolve-Jdk.ps1')
+$JdkHome=Resolve-OneZipJdk $JdkHome
 $ApplicationImage=[IO.Path]::GetFullPath($ApplicationImage)
 $OutputDirectory=[IO.Path]::GetFullPath($OutputDirectory)
 $version=([xml](Get-Content -LiteralPath (Join-Path $repo 'pom.xml') -Raw)).project.version

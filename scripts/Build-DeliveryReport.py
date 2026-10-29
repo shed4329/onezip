@@ -1,6 +1,7 @@
 """Compose the offline handover report from verified release evidence and original screenshots."""
 from pathlib import Path
 import base64
+import os
 import hashlib
 import html
 import json
@@ -18,7 +19,7 @@ ROOT = Path(__file__).resolve().parents[1]
 RELEASE = ROOT / "target/onezip-delivery-20261029-r6"
 OUT = RELEASE / "report"
 OUT.mkdir(exist_ok=True)
-pdfmetrics.registerFont(TTFont("YaHei", "C:/Windows/Fonts/msyh.ttc", subfontIndex=0))
+pdfmetrics.registerFont(TTFont("YaHei", str(Path(os.environ["WINDIR"]) / "Fonts/msyh.ttc"), subfontIndex=0))
 W = A4[0] - 84
 styles = {
     "title": ParagraphStyle("Title", fontName="YaHei", fontSize=25, leading=34, spaceAfter=14),
@@ -81,7 +82,7 @@ page("外观与本地化验收边界",
         ["系统 Acrylic", "未支持", "方案已放弃；程序内图片模糊不作为系统毛玻璃"],
         ["Windows10 真机", "未测", "本机 Windows build 26300；不据此声称 Win10 认证"],
     ], [0.28, 0.21, 0.51]),
-    small("图片路径为 test-background.jpg。imagegen 工具可用，本轮未生成设计参考图；界面沿用已确认的 Fluent 方角设计。原生文件选择器的自动化限制不作为功能失败。"))
+    small("图片路径为 <test image supplied locally>。imagegen 工具可用，本轮未生成设计参考图；界面沿用已确认的 Fluent 方角设计。原生文件选择器的自动化限制不作为功能失败。"))
 
 page("代码整理与可靠性修改",
     h("分层与清理"),
@@ -138,13 +139,13 @@ for line in (RELEASE / "ARTIFACT-SHA256.txt").read_text(encoding="utf-8-sig").sp
     digest, name = line.split("  ", 1)
     hashes.append((name, digest))
 page("启动方式与交付清单",
-    code('OneZip.exe\nOneZip.exe "C:\\檔案 空間\\archive.zip"\nOneZip.exe --cli c backup.zip source.txt\nOneZipCLI.exe c backup.zip source.txt\njava -jar onezip-0.6.0-SNAPSHOT-all.jar --cli --help'),
+    code('OneZip.exe\nOneZip.exe "example archive.zip"\nOneZip.exe --cli c backup.zip source.txt\nOneZipCLI.exe c backup.zip source.txt\njava -jar onezip-0.6.0-SNAPSHOT-all.jar --cli --help'),
     p("便携版先完整解压，再启动 OneZip.exe；无需安装 Java。需要稳定终端显示或交互密码输入时使用 OneZipCLI.exe。安装版选择 windows-x64/installers 中的 MSI 或 EXE 之一；它们安装同一应用，尚未代码签名。独立 JAR 需要 Java21。"),
-    small("交付根目录  REDACTED_LOCAL_PATH"),
+    small("交付根目录  target/onezip-delivery-20261029-r6"),
     h("SHA256 校验"),
     *sum(([small(name), code(digest)] for name, digest in hashes), []),
     h("源码与构建"),
-    p("源码工程位于 REDACTED_LOCAL_PATH"),
+    p("源码工程位于 <repository root>。构建脚本为 scripts/Build-Distribution.ps1 与 scripts/Build-Installers.ps1；交付中 build-scripts 保留审阅副本，运行构建应在完整源码工程内进行。x64 构建可使用 -InstallerTypes msi,exe；x86 只构建便携 app-image。"),
     small("API 文档位于 target/reports/apidocs/index.html；详细开发、设置和格式限制见源码 docs。报告包附原始截图、截图来源和哈希、测试计数。软件包逐文件校验见各 windows 架构目录中的 SHA256SUMS.txt。"))
 
 story = []

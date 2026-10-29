@@ -18,6 +18,24 @@ import javax.imageio.ImageIO;
 
 /** Round-two real-JAR acceptance; logs individual outcomes instead of reusing unit counts. */
 class UiAcceptance {
+    static String probeImage() throws Exception {
+        String supplied = System.getProperty("onezip.probe.image");
+        if (supplied != null && !supplied.isBlank()) {
+            Path path = Path.of(supplied).toAbsolutePath().normalize();
+            if (!Files.isRegularFile(path)) throw new IllegalArgumentException("Test image is not a regular file");
+            return path.toString();
+        }
+        Path generated = output.resolve("synthetic-background.png");
+        if (!Files.exists(generated)) {
+            var bitmap = new BufferedImage(400, 240, BufferedImage.TYPE_INT_RGB);
+            var graphics = bitmap.createGraphics();
+            graphics.setPaint(new java.awt.GradientPaint(0, 0, new java.awt.Color(60, 100, 140), 400, 240, new java.awt.Color(205, 220, 180)));
+            graphics.fillRect(0, 0, 400, 240);
+            graphics.dispose();
+            ImageIO.write(bitmap, "png", generated.toFile());
+        }
+        return generated.toString();
+    }
     static final List<String> results=new ArrayList<>(),contrasts=new ArrayList<>(List.of("case,samples,minimum_ratio,failures"));
     static Stage app;static MainWindowController controller;static Robot robot;static Path output,image,input;static boolean baseline;
     static <T>T fx(Callable<T> c)throws Exception{var t=new FutureTask<>(c);Platform.runLater(t);return t.get(25,TimeUnit.SECONDS);}

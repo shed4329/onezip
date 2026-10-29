@@ -1,10 +1,11 @@
-param([string]$Image='test-background.jpg')
+param([Parameter(Mandatory)][string]$Image,[string]$JdkHome=$env:JAVA_HOME)
 $ErrorActionPreference='Stop'
 $repo=[IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
 Push-Location $repo
 try {
- $jdk=$env:JAVA_HOME
- if(-not $jdk -or -not (Test-Path -LiteralPath (Join-Path $jdk 'bin\javac.exe'))){$jdk='JAVA_HOME'}
+ . (Join-Path $PSScriptRoot 'Resolve-Jdk.ps1')
+ $jdk=Resolve-OneZipJdk $JdkHome
+ if(-not(Test-Path -LiteralPath $Image -PathType Leaf)){throw 'Pass -Image with a readable test image'}
  $compiler=Join-Path $env:SystemRoot 'Microsoft.NET\Framework64\v4.0.30319\csc.exe'
  $metadata=Join-Path $env:SystemRoot 'System32\WinMetadata'
  $framework=Split-Path $compiler
@@ -13,7 +14,8 @@ try {
  $effect=Join-Path $research 'CompositionBlurEffect.dll'
  & $compiler /nologo /target:library "/out:$effect" "/r:$(Join-Path $metadata 'Windows.Graphics.winmd')" "/r:$(Join-Path $metadata 'Windows.Foundation.winmd')" "/r:$(Join-Path $framework 'System.Runtime.dll')" "/r:$(Join-Path $framework 'System.Runtime.WindowsRuntime.dll')" (Join-Path $PSScriptRoot 'native\CompositionBlurEffect.cs')
  if($LASTEXITCODE -ne 0){throw 'Effect descriptor build failed'}
- $jar=Join-Path $repo 'target\onezip-0.6.0-SNAPSHOT-all.jar'
+ $version=([xml](Get-Content -LiteralPath (Join-Path $repo 'pom.xml') -Raw)).project.version
+ $jar=Join-Path $repo "target/onezip-$version-all.jar"
  & (Join-Path $jdk 'bin\javac.exe') -encoding UTF-8 -cp $jar -d $driver (Join-Path $PSScriptRoot 'AppearanceProbe.java') (Join-Path $PSScriptRoot 'UiAcceptance.java') (Join-Path $PSScriptRoot 'WinRtBackdropProbe.java') (Join-Path $PSScriptRoot 'OneZipNativeCarrierProbe.java')
  if($LASTEXITCODE -ne 0){throw 'Research driver build failed'}
  $output=Join-Path $research ('rerun-'+(Get-Date -Format 'yyyyMMdd-HHmmss'))

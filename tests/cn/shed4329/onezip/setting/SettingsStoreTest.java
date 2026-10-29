@@ -46,7 +46,7 @@ class SettingsStoreTest {
         saved.putAll(
                 java.util.Map.of(
                         "appearance.background.path",
-                        "test-background.jpg",
+                        "C:\\OneZipDemo\\背景.jpg",
                         "appearance.background.blur",
                         "true",
                         "appearance.background.enabled",
@@ -55,7 +55,7 @@ class SettingsStoreTest {
         assertFalse(reloaded.flag("appearance.background.enabled"));
         assertTrue(reloaded.flag("appearance.background.blur"));
         assertEquals(
-                "test-background.jpg", reloaded.get("appearance.background.path", ""));
+                "C:\\OneZipDemo\\背景.jpg", reloaded.get("appearance.background.path", ""));
         reloaded.put("appearance.background.enabled", "true");
         assertTrue(store().flag("appearance.background.enabled"));
         assertTrue(store().flag("appearance.background.blur"));
@@ -70,17 +70,17 @@ class SettingsStoreTest {
         current.putAll(
                 java.util.Map.of(
                         "appearance.background.path",
-                        "D:\\图库\\背景.jpg",
+                        "C:\\OneZipDemo\\背景.jpg",
                         "appearance.background.blur",
                         "true"));
         var reloaded = store();
-        assertEquals("D:\\图库\\背景.jpg", reloaded.get("appearance.background.path", ""));
+        assertEquals("C:\\OneZipDemo\\背景.jpg", reloaded.get("appearance.background.path", ""));
         assertTrue(reloaded.flag("appearance.background.blur"));
         var invalid = new java.util.HashMap<String, String>();
         invalid.put("appearance.background.path", "changed");
         invalid.put("appearance.background.blur", null);
         assertThrows(NullPointerException.class, () -> current.putAll(invalid));
-        assertEquals("D:\\图库\\背景.jpg", store().get("appearance.background.path", ""));
+        assertEquals("C:\\OneZipDemo\\背景.jpg", store().get("appearance.background.path", ""));
     }
 
     @Test

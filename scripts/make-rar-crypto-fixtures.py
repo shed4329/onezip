@@ -28,7 +28,7 @@ def keys4(password,salt):
     raw=bytearray(password.encode('utf-16le')+salt)
     if len(raw)>64 and os.environ.get('RAR_FIXTURE_JAVA_CP'):
         # Optional faster assembler path, independently accepted by ReferenceArchive.
-        rows=subprocess.check_output(['JAVA_HOME/bin/java.exe','-cp',os.environ['RAR_FIXTURE_JAVA_CP'],'cn.shed4329.onezip.engine.RarFixtureKeys',password,salt.hex()],text=True).splitlines();return bytes.fromhex(rows[0]),bytes.fromhex(rows[1])
+        rows=subprocess.check_output([str(Path(os.environ['JAVA_HOME']) / 'bin/java.exe') if os.environ.get('JAVA_HOME') else 'java','-cp',os.environ['RAR_FIXTURE_JAVA_CP'],'cn.shed4329.onezip.engine.RarFixtureKeys',password,salt.hex()],text=True).splitlines();return bytes.fromhex(rows[0]),bytes.fromhex(rows[1])
     h=hashlib.sha1() if len(raw)<=64 else LegacySha();iv=bytearray()
     for i in range(0x40000):
         if len(raw)<=64:h.update(raw);h.update(i.to_bytes(3,'little'))

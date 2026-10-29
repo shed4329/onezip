@@ -9,9 +9,16 @@ Commands from the repository root:
 ```powershell
 ./mvnw.cmd test package javadoc:javadoc
 python scripts/verify-java-encoders.py target/onezip-1.01-all.jar
+python scripts/verify-public-content.py
 ./scripts/Format-Code.ps1 -Check
 ./scripts/Build-Distribution.ps1
 ```
+
+Before publishing, check tracked content for user-profile paths and credentials with
+`verify-public-content.py`, and visually review every public screenshot. This check
+does not inspect Git history or replace a complete secret audit. Build helpers use
+`-JdkHome`, `JAVA_HOME`, or `javac.exe` on PATH; do not add a developer's install path
+as a fallback. Image probes use synthetic fixtures or an explicit local image input.
 
 The normal Maven suite excludes `GuiSmokeTest`; desktop acceptance runs
 separately. Do not count a classpath test as a named-module or desktop test.

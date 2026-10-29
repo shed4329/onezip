@@ -7,7 +7,8 @@ param(
 )
 $ErrorActionPreference='Stop'
 $repo=[IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
-if(-not $JdkHome){$JdkHome='JAVA_HOME'}
+. (Join-Path $PSScriptRoot 'Resolve-Jdk.ps1')
+$JdkHome=Resolve-OneZipJdk $JdkHome
 $JdkHome=[IO.Path]::GetFullPath($JdkHome)
 foreach($tool in @('java','jlink','jpackage')){if(-not(Test-Path -LiteralPath (Join-Path $JdkHome "bin\$tool.exe"))){throw "Missing JDK tool: $tool"}}
 if(-not(Test-Path -LiteralPath (Join-Path $JdkHome 'jmods\javafx.controls.jmod'))){throw 'Use a Java21 JDK with matching JavaFX21 jmods'}

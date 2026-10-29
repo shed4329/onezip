@@ -55,7 +55,7 @@ Windows 的定位選中使用獨立 UI FileManager，以系統 Explorer 的 /sel
 
 視覺採中性色面板、少量 5px 面板圓角及間距，不從背景吸取配色。來源工具列統一「添加内容」下拉選單提供檔案／資料夾，保留 Ctrl 多選、無側欄／檔案樹，高級選項預設折疊。
 
-外觀實測使用 `scripts/AppearanceProbe.java` 和發行 JAR，設定隔離在 target/appearance-probe/settings，來源圖 test-background.jpg；真實桌面截圖、API 回傳值及 PASS/FAIL/NOT_TESTED 項目在 target/appearance-probe。`AppearanceRestoreProbe.java` 額外驗證全新 JVM 恢復背景設定。生成的 ui-reference-generated.png 僅是設計參考，不是測試證據。
+外觀實測使用 `scripts/AppearanceProbe.java` 和發行 JAR，設定隔離在 target/appearance-probe/settings，來源圖由本機測試參數提供，不保存個人路徑；真實桌面截圖、API 回傳值及 PASS/FAIL/NOT_TESTED 項目在 target/appearance-probe。`AppearanceRestoreProbe.java` 額外驗證全新 JVM 恢復背景設定。生成的 ui-reference-generated.png 僅是設計參考，不是測試證據。
 
 系統材質實驗腳本 `scripts/ProbeWindowsBackdrop.ps1` 只定位指定標題且 PID 符合的測試窗口，以 DwmEnableBlurBehindWindow 和 DwmSetWindowAttribute 測試；不編入生產引擎，也不自動套用到其他窗口。API 成功與視覺通過分開判斷：變換 OneZip 背後的獨立高頻色塊，檢查客戶區的反應和高頻衰減。build 26300 的本輪 API 設定／讀回成功，兩種系統模糊均未通過客戶區視覺驗證，故未作為可用功能啟用。Windows 10 實機及原生選檔視窗手動操作標為未測。
 
