@@ -65,14 +65,14 @@ class PublishScreenshots {
                 stage.setWidth(1180); stage.setHeight(800);
                 return stage;
             });
-            capture("home");
+            if (args.length < 3) capture("home");
             fx(() -> {
                 controller.model().pageProperty().set(MainWindowModel.Page.COMPRESS);
                 ((TextField) app.getScene().lookup("#compression-name")).setText("Example");
                 ((TextField) app.getScene().lookup("#compression-location")).setText("C:\\Archives");
                 return null;
             });
-            capture("compress");
+            if (args.length < 3) capture("compress");
             fx(() -> { controller.selectArchive(archive); return null; });
             long deadline = System.nanoTime() + 15_000_000_000L;
             while (fx(() -> app.getScene().lookup("#zip-preview-progress").isVisible())) {
@@ -84,6 +84,15 @@ class PublishScreenshots {
                 require(table.getItems().size() >= 3, "Demo entries missing");
                 return null;
             });
+            if (args.length >= 3) {
+                fx(() -> {
+                    ThemeManager.setDark(true);
+                    BackgroundAppearance.configure(args[2], true, true);
+                    BackgroundAppearance.setBlurRadius(12);
+                    BackgroundAppearance.setControlsTransparency(70);
+                    return null;
+                });
+            }
             capture("extract");
             System.out.println("PASS real scene screenshots: home, compress, extract; isolated settings, synthetic files, no desktop capture");
         } finally {
