@@ -1,13 +1,7 @@
 # Public screenshots
 
-`home.png`, `compress.png`, and `extract.png` are real OneZip 1.01 JavaFX scene captures, not generated UI mockups. The archive browser opens a synthetic `Example.zip` containing `Documents/example.txt`, `README.md`, and `notes.txt`.
+These are real OneZip 1.01 JavaFX scene captures. The archive browser opens a synthetic `Example.zip` with a folder and sample Java, CSV, text, PNG, Markdown, JSON, and CSS files.
 
-Only the third screenshot uses an image background: `demo-background.png`, generated with the built-in imagegen tool specifically for this documentation. No personal wallpaper, desktop capture, notifications, credentials, or user-profile paths are included. The visible `C:\Archives` destination in the compression screenshot is synthetic text entered in the actual form.
+The archive-browser background illustration was supplied by the project owner. It is shown with a warm gold accent (#91643f), light mode, image blur radius 3, and control transparency 85%. No desktop, notifications, credentials, or user-profile paths are included. The source illustration is not bundled with the application. The `C:\Archives` destination in the compression screenshot is synthetic text entered in the actual form.
 
-The third screenshot uses dark mode, image blur radius 12, and control transparency 70%. The image blur is an application effect, not Windows Acrylic.
-
-To reproduce, compile `scripts/PublishScreenshots.java` against the built all-in-one JAR, use isolated `onezip.settings.dir` and `onezip.settings.legacy-dir` JVM properties, and supply an output directory and a fresh fixture directory. An optional third argument is the background image path; this updates only the archive-browser screenshot.
-
-Wallpaper generation mode: built-in imagegen, not CLI. Prompt:
-
-> Create a clean abstract desktop wallpaper image for a software screenshot, wide landscape 16:10 composition. Refined flowing translucent blue and teal glass ribbons with a subtle violet accent on a deep charcoal navy background, soft atmospheric lighting and spacious low-detail center so white application text remains readable. Beautiful restrained Windows desktop aesthetic, no text, no logos, no characters, no identifiable objects, no screenshot or UI, no personal information. This will be used as an optional application wallpaper blurred behind an actual JavaFX archive file list. Save the generated wallpaper as an image artifact.
+Reproduce with `scripts/PublishScreenshots.java` against the built JAR, isolated `onezip.settings.dir` / `onezip.settings.legacy-dir`, an output directory, and a fresh fixture directory. An optional third argument supplies the background image and updates only the archive-browser screenshot. Image blur is an application effect, not Windows Acrylic.

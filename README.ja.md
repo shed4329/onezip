@@ -1,36 +1,54 @@
-# OneZip 1.01
+# OneZip
 
 [English](README.md) · [简体中文](README.zh-CN.md) · [繁體中文](README.zh-TW.md) · [日本語](README.ja.md)
 
+Java 21 と JavaFX Fluent で作られた、軽快なファイルアーカイバー。
+
 vibe coding に感謝。古いアプリが、もう一度活躍できるようになりました。
 
-OneZip は Java 21 と JavaFX Fluent で再構築したデスクトップ用アーカイバーです。製品の圧縮エンジンは Java で実装し、圧縮ライブラリ、JNI コーデック、外部圧縮プログラムに依存しません。
+[**最新版をダウンロード →**](https://github.com/shed4329/onezip/releases/latest)
 
-## ダウンロードと起動
+![OneZip でサンプル書庫を表示](docs/screenshots/extract.png)
 
-[Releases](https://github.com/shed4329/onezip/releases/latest) から取得できます。64 ビット版は ZIP／EXE／MSI、32 ビット版は ZIP のみです。フォルダー全体を展開して `OneZip.exe` を実行してください。Java の追加インストールは不要です。CLI は `OneZipCLI.exe` または `OneZip.exe --cli` で起動します。
+<details>
+<summary>ホーム画面と圧縮画面</summary>
 
-## 機能と制限
+![ホーム](docs/screenshots/home.png)
+![書庫を作成](docs/screenshots/compress.png)
 
-ZIP、7z、TAR、GZIP、LZ4、XZ、BZIP2 と TAR 複合形式の作成・展開・一覧・検証に対応します。RAR4／RAR5 は読み取り専用で、RAR 作成と分割書庫は非対応です。ZIP32 は追加・置換・削除・AES-256 作成・書庫コメントに対応し、ZIP64 と 7z 暗号化は読み取り専用です。
+</details>
 
-4 言語、多スレッド、圧縮レベル、進捗・速度・経過時間、キャンセルに対応します。テーマ色、明暗、背景画像、画像ぼかし、コントロールの透明度を設定できます。画像ぼかしは Windows Acrylic ではありません。設定は `%LOCALAPPDATA%\OneZip\settings.properties` に保存し、パスワードは保存しません。
+## 機能
 
-インストーラーは未署名です。インストール・更新・削除と Windows 10 実機の完全な検証は未実施です。32 ビット版は 64 ビット Windows 上で検証しました。詳細は英語 README と docs を参照してください。
+- ZIP、7z、TAR、GZIP、LZ4、XZ、BZIP2 と TAR 複合形式の作成・展開。
+- RAR4／RAR5 の閲覧・展開。
+- ZIP32 内のファイル追加・置換・削除、AES-256 暗号化 ZIP の作成。
+- マルチスレッド、圧縮レベル、速度・進捗表示、キャンセル。
+- 4 言語、ライト／ダークテーマ、アクセントカラー、背景画像のカスタマイズ。
+- GUI と CLI を一つのアプリに統合。圧縮コーデックは Java で独自実装。
 
-## 実際の画面
+## 使い方
 
-サンプルファイルと独立した設定で撮影しています。個人の壁紙、通知、ユーザーパスは含まれません。
+Windows 用 **x64 インストーラー**または **x64／x86 ポータブル ZIP** をダウンロードしてください。ポータブル版は Java を同梱しています。フォルダー全体を展開して `OneZip.exe` を起動します。
 
-![Home](docs/screenshots/home.png)
-![Compress](docs/screenshots/compress.png)
-![Extract](docs/screenshots/extract.png)
+コマンドラインでは `OneZipCLI.exe` を使用します：
 
 ```powershell
-.\mvnw.cmd test package javadoc:javadoc
-.\run-onezip.cmd
-OneZipCLI.exe c backup.7z documents --level 5 --threads 4
-OneZipCLI.exe x backup.7z -o restored --threads 4
+OneZipCLI.exe c backup.7z documents --threads 4
+OneZipCLI.exe x backup.7z -o restored
 ```
 
-Apache-2.0 · [CLI](docs/CLI.md) · [Settings](docs/SETTINGS.md) · [Licenses](docs/THIRD-PARTY.md)
+## ソースから実行
+
+JDK 21 をインストールして実行します：
+
+```powershell
+.\mvnw.cmd test package
+.\run-onezip.cmd
+```
+
+[CLI](docs/CLI.md) · [設定](docs/SETTINGS.md) · [対応形式と制限](docs/JAVA-ENGINE.md) · [開発](docs/DEVELOPMENT.md)
+
+## ライセンス
+
+[Apache-2.0](LICENSE)。依存ライブラリ、アイコン、ランタイムについては[サードパーティ通知](docs/THIRD-PARTY.md)を参照してください。

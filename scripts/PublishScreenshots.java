@@ -46,8 +46,25 @@ class PublishScreenshots {
         Files.writeString(readme, "# OneZip example\nSynthetic public demonstration files.\n");
         Files.writeString(notes, "Archive demo\n".repeat(200));
         Files.writeString(documents.resolve("example.txt"), "OneZip documentation sample.\n");
+        Path config = fixtures.resolve("settings.json");
+        Path css = fixtures.resolve("styles.css");
+        Path javaSource = fixtures.resolve("Example.java");
+        Path csv = fixtures.resolve("measurements.csv");
+        Path preview = fixtures.resolve("preview.png");
+        Files.writeString(config, "{\n  \"theme\": \"sage\",\n  \"language\": \"en\"\n}\n");
+        Files.writeString(css, ".example { color: #526d4e; background: #f2f5eb; }\n".repeat(80));
+        Files.writeString(javaSource, "public class Example { public static void main(String[] args) { System.out.println(\"Hello, OneZip!\"); } }\n");
+        Files.writeString(csv, "sample,value\n" + "example,42\n".repeat(600));
+        var picture = new java.awt.image.BufferedImage(320, 180, java.awt.image.BufferedImage.TYPE_INT_RGB);
+        var graphics = picture.createGraphics();
+        graphics.setColor(new java.awt.Color(221, 232, 203));
+        graphics.fillRect(0, 0, 320, 180);
+        graphics.setColor(new java.awt.Color(87, 119, 76));
+        graphics.fillRoundRect(80, 40, 160, 100, 20, 20);
+        graphics.dispose();
+        javax.imageio.ImageIO.write(picture, "png", preview.toFile());
         Path archive = fixtures.resolve("Example.zip");
-        new ArchiveEngine().compress(List.of(readme, notes, documents), archive,
+        new ArchiveEngine().compress(List.of(readme, notes, documents, config, css, javaSource, csv, preview), archive,
                 ArchiveEngine.Format.ZIP, 5, null, null, null, 2, "OneZip sample archive — demonstration files only.");
         SettingsStore.shared().put("appearance.language", "en");
         I18n.initialize();
@@ -86,10 +103,11 @@ class PublishScreenshots {
             });
             if (args.length >= 3) {
                 fx(() -> {
-                    ThemeManager.setDark(true);
+                    ThemeManager.setDark(false);
+                    AccentTheme.set(javafx.scene.paint.Color.web("#91643f"));
                     BackgroundAppearance.configure(args[2], true, true);
-                    BackgroundAppearance.setBlurRadius(12);
-                    BackgroundAppearance.setControlsTransparency(70);
+                    BackgroundAppearance.setBlurRadius(3);
+                    BackgroundAppearance.setControlsTransparency(85);
                     return null;
                 });
             }
