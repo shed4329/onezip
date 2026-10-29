@@ -1,0 +1,375 @@
+.onezip-window {
+    -fx-font-family: "Microsoft YaHei";
+    -fx-font-size: 13px;
+    -fx-font-weight: normal;
+    -onezip-surface: #ffffff;
+    -onezip-sidebar: #f2f2f2;
+    -onezip-text: #1a1a1a;
+    -onezip-muted: #616161;
+    -onezip-border: #d1d1d1;
+    -onezip-hover: #e5e5e5;
+    -onezip-selected: #dadada;
+    -onezip-accent: #0078d7;
+    -onezip-command: #ededed;
+    -onezip-button: #e1e1e1;
+    -onezip-table: #ffffff;
+    -onezip-row-alt: #f6f6f6;
+    -onezip-grid: #e3e3e3;
+    -onezip-tile: #e9e9e9;
+    -onezip-pressed: #c8c8c8;
+    -onezip-focus: #555555;
+    -fx-background-color: -onezip-surface;
+}
+.onezip-window.dark {
+    -onezip-surface: #151515;
+    -onezip-sidebar: #202020;
+    -onezip-text: #eeeeee;
+    -onezip-muted: #bfbfbf;
+    -onezip-border: #404040;
+    -onezip-hover: #444444;
+    -onezip-selected: #373737;
+    -onezip-accent: #60cdff;
+    -onezip-command: #252525;
+    -onezip-button: #333333;
+    -onezip-table: #1e1e1e;
+    -onezip-row-alt: #242424;
+    -onezip-grid: #353535;
+    -onezip-tile: #303030;
+    -onezip-pressed: #484848;
+    -onezip-focus: #cccccc;
+}
+.onezip-window .sidebar {
+    -fx-padding: 0 0 12 0;
+    -fx-background-color: -onezip-sidebar;
+    -fx-border-color: transparent -onezip-border transparent transparent;
+    -fx-border-width: 0 1 0 0;
+}
+.onezip-window .label { -fx-text-fill: -onezip-text; -fx-font-family: "Microsoft YaHei"; }
+.onezip-window .label, .onezip-window .button, .onezip-window .toggle-button,
+.onezip-window .menu-button, .onezip-window .table-view .column-header .label { -fx-font-weight: normal; }
+.onezip-window .app-name { -fx-font-size: 20px; -fx-font-weight: normal; -fx-padding: 20 16 24 16; }
+.onezip-window .button, .onezip-window .toggle-button {
+    -fx-font-family: "Microsoft YaHei";
+    -fx-font-size: 13px;
+    -fx-background-radius: 0;
+    -fx-border-radius: 0;
+    -fx-background-insets: 0;
+    -fx-background-color: -onezip-button;
+    -fx-text-fill: -onezip-text;
+}
+.onezip-window .button:hover { -fx-background-color: -onezip-hover; }
+.onezip-window .nav-icon { -fx-fill: -onezip-text; -fx-scale-x: 0.75; -fx-scale-y: 0.75; }
+.onezip-window .nav-item {
+    -fx-alignment: CENTER_LEFT;
+    -fx-graphic-text-gap: 12;
+    -fx-padding: 12 13;
+    -fx-min-height: 48;
+    -fx-background-color: transparent;
+    -fx-background-radius: 0;
+    -fx-border-color: transparent;
+    -fx-border-width: 0 0 0 3;
+    -fx-border-radius: 0;
+    -fx-text-fill: -onezip-text;
+}
+.onezip-window .nav-item:hover { -fx-background-color: -onezip-hover; }
+.onezip-window .nav-item:selected {
+    -fx-background-color: -onezip-selected;
+    -fx-border-color: transparent transparent transparent -onezip-accent;
+    -fx-text-fill: -onezip-text;
+}
+.onezip-window .nav-item:focused { -fx-border-color: -onezip-text; -fx-border-style: dotted; -fx-border-width: 1; }
+.onezip-window .nav-item:selected:focused { -fx-border-color: -onezip-accent; -fx-border-style: solid; -fx-border-width: 0 0 0 3; }
+.onezip-window .workspace { -fx-padding: 20; -fx-background-color: -onezip-surface; }
+.onezip-window .page-title { -fx-font-size: 22px; -fx-font-weight: normal; }
+.onezip-window .secondary-text { -fx-text-fill: -onezip-muted; -fx-font-size: 12px; }
+.onezip-window .toolbar { -fx-alignment: CENTER_LEFT; -fx-padding: 4; -fx-background-color: -onezip-command; }
+.onezip-window .toolbar .button { -fx-min-height: 32; -fx-padding: 5 12; }
+.onezip-window .primary-action { -fx-background-color: -onezip-primary; -fx-text-fill: white; -fx-background-radius: 0; }
+.onezip-window .primary-action:hover { -fx-background-color: -onezip-primary-hover; }
+.onezip-window .primary-action:focused { -fx-border-color: -onezip-accent; }
+.onezip-window .archive-heading { -fx-padding: 8 0; -fx-background-color: transparent; -fx-background-radius: 0; -fx-border-color: transparent transparent -onezip-border transparent; -fx-border-width: 0 0 1 0; }
+.onezip-window .archive-name { -fx-font-size: 15px; -fx-font-weight: normal; }
+.onezip-window:archive-mode .workspace { -fx-padding: 0; }
+.onezip-window .archive-commandbar {
+    -fx-background-color: linear-gradient(to bottom, #3597e2, #0876d1);
+    -fx-padding: 4 8;
+    -fx-alignment: CENTER_LEFT;
+}
+.onezip-window .archive-commandbar .button, .onezip-window .archive-commandbar .menu-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: -onezip-text;
+    -fx-min-width: 68;
+    -fx-min-height: 68;
+    -fx-padding: 6 10;
+    -fx-graphic-text-gap: 5;
+    -fx-border-color: transparent;
+    -fx-background-radius: 0;
+}
+.onezip-window .archive-commandbar .menu-button .label { -fx-text-fill: -onezip-text; }
+.onezip-window .archive-commandbar .button:hover, .onezip-window .archive-commandbar .menu-button:hover { -fx-background-color: rgba(255,255,255,0.18); }
+.onezip-window .archive-commandbar .button:focused { -fx-border-color: white; }
+.onezip-window .archive-commandbar .command-icon { -fx-fill: transparent; -fx-stroke: white; -fx-stroke-width: 1.5; }
+.onezip-window:archive-mode .archive-heading { -fx-padding: 4 10; }
+.onezip-window:archive-mode .archive-name { -fx-font-size: 13px; }
+.onezip-window .archive-addressbar { -fx-padding: 3 6; -fx-background-color: -onezip-sidebar; }
+.onezip-window .archive-addressbar .button { -fx-min-height: 26; -fx-padding: 3 8; }
+.onezip-window .archive-statusbar { -fx-padding: 4 8; -fx-border-color: -onezip-border transparent transparent transparent; -fx-border-width: 1 0 0 0; }
+.onezip-window .archive-browser .split-pane { -fx-padding: 0; -fx-background-color: -onezip-surface; }
+.onezip-window .archive-browser .tree-view, .onezip-window .archive-browser .table-view { -fx-background-radius: 0; }
+.onezip-window .archive-browser .tree-cell, .onezip-window .archive-browser .table-cell { -fx-font-family: "Microsoft YaHei"; -fx-font-size: 12px; }
+/* Flat extraction workspace; deliberately no backdrop blur or native effects. */
+.onezip-window:archive-mode { -fx-background-color: -onezip-surface; }
+.onezip-window:archive-mode .workspace { -fx-padding: 0; }
+.onezip-window:archive-mode .archive-commandbar { -fx-background-color: -onezip-command; -fx-border-color: -onezip-border; -fx-border-width: 0 0 1 0; -fx-border-radius: 0; -fx-background-radius: 0; -fx-padding: 0; }
+.onezip-window:archive-mode .archive-commandbar .button, .onezip-window:archive-mode .archive-commandbar .menu-button { -fx-min-width: 58; -fx-min-height: 76; -fx-padding: 8 9; -fx-background-radius: 0; -fx-border-radius: 0; }
+.onezip-window:archive-mode .archive-commandbar .selected-command { -fx-background-color: -onezip-selected; }
+.onezip-window:archive-mode .archive-commandbar .command-icon { -fx-stroke: -onezip-text; -fx-stroke-line-cap: round; -fx-stroke-line-join: round; }
+.onezip-window:archive-mode .archive-commandbar .menu-button .arrow { -fx-background-color: -onezip-text; }
+.onezip-window:archive-mode .archive-commandbar #archive-more { -fx-min-width: 42; }
+.onezip-window:archive-mode .archive-commandbar .text-field { -fx-background-color: -onezip-button; -fx-text-fill: -onezip-text; -fx-prompt-text-fill: -onezip-muted; -fx-border-color: -onezip-border; -fx-pref-height: 36; }
+.onezip-window:archive-mode .archive-heading { -fx-padding: 5 8; }
+.onezip-window:archive-mode .archive-addressbar { -fx-background-color: -onezip-sidebar; }
+.onezip-window:archive-mode .table-view, .onezip-window:archive-mode .table-view .virtual-flow { -fx-background-color: -onezip-table; -fx-border-color: -onezip-border; }
+.onezip-window:archive-mode .table-view .column-header-background, .onezip-window:archive-mode .table-view .column-header, .onezip-window:archive-mode .table-view .filler { -fx-background-color: -onezip-sidebar; -fx-border-color: transparent -onezip-border transparent transparent; }
+.onezip-window:archive-mode .table-view .column-header .label { -fx-text-fill: -onezip-text; -fx-font-size: 13px; }
+.onezip-window:archive-mode .table-row-cell { -fx-background-color: -onezip-table; -fx-border-color: transparent; }
+.onezip-window:archive-mode .table-row-cell:odd { -fx-background-color: -onezip-row-alt; }
+.onezip-window:archive-mode .table-row-cell:selected { -fx-background-color: -onezip-selected; }
+.onezip-window:archive-mode .table-cell { -fx-text-fill: -onezip-text; -fx-font-size: 13px; -fx-border-color: transparent -onezip-grid transparent transparent; }
+.onezip-window:archive-mode .table-view .check-box .box { -fx-background-color: -onezip-sidebar; -fx-border-color: -onezip-focus; }
+.onezip-window:archive-mode .table-view .check-box:selected .mark { -fx-background-color: -onezip-text; }
+.onezip-window:archive-mode .archive-browser .split-pane-divider { -fx-padding: 2; -fx-background-color: -onezip-border; }
+
+.onezip-window:archive-mode .archive-commandbar .button, .onezip-window:archive-mode .archive-commandbar .menu-button { -fx-min-height: 86; -fx-pref-height: 86; }
+.onezip-window:archive-mode #zip-entry-table {
+    text_color: -onezip-text;
+    hover_text_color: -onezip-text;
+    selected_text_color: -onezip-text;
+    selected_unfocused_text_color: -onezip-text;
+    cell_selected_color: -onezip-border;
+    cell_selected_unfocused_color: -onezip-selected;
+    cell_selected_hover_color: -onezip-pressed;
+    cell_selected_pressed_color: -onezip-pressed;
+    cell_hover_color: -onezip-tile;
+    table_background_color: -onezip-table;
+    alternate_row_color: -onezip-row-alt;
+    table_view_border_color: -onezip-border;
+}
+.onezip-window:archive-mode .archive-addressbar .scroll-pane, .onezip-window:archive-mode .archive-addressbar .viewport { -fx-background-color: -onezip-sidebar; }
+.onezip-window:archive-mode .archive-addressbar .button { -fx-background-color: -onezip-button; -fx-text-fill: -onezip-text; }
+.onezip-window:archive-mode .archive-comment-pane { -fx-background-color: -onezip-sidebar; -fx-padding: 0; }
+.onezip-window:archive-mode .archive-comment-pane .text-area { -fx-text-fill: -onezip-text; -fx-padding: 0; -fx-border-width: 0; -fx-background-insets: 0; -fx-background-radius: 0; }
+.onezip-window:archive-mode .archive-comment-pane .text-area .content { -fx-background-color: -onezip-table; -fx-padding: 0; -fx-background-radius: 0; }
+.onezip-window:archive-mode #archive-comment-text .scroll-pane,
+.onezip-window:archive-mode #archive-comment-text .viewport,
+.onezip-window:archive-mode #archive-comment-text .content {
+    -fx-background-color: -onezip-table;
+    -fx-background-insets: 0;
+    -fx-border-width: 0;
+    -fx-padding: 0;
+}
+
+.archive-context-menu { -fx-background-color: -onezip-command; -fx-border-color: -onezip-border; }
+.archive-context-menu .menu-item .label { -fx-text-fill: -onezip-text; }
+.archive-context-menu .menu-item:focused { -fx-background-color: -onezip-border; }
+.onezip-window:home-mode { -fx-background-color: -onezip-surface; }
+.onezip-window .home-tile {
+    -fx-pref-width: 172;
+    -fx-pref-height: 132;
+    -fx-min-width: 150;
+    -fx-min-height: 115;
+    -fx-alignment: CENTER;
+    -fx-padding: 12;
+    -fx-graphic-text-gap: 16;
+    -fx-font-size: 14px;
+    -fx-text-fill: -onezip-text;
+    -fx-background-color: -onezip-tile;
+    -fx-background-radius: 0;
+    -fx-border-radius: 0;
+    -fx-border-color: -onezip-border;
+    -fx-border-width: 1;
+}
+.onezip-window .home-tile .text { -fx-fill: -onezip-text; }
+.onezip-window .home-tile:hover { -fx-background-color: -onezip-selected; }
+.onezip-window .home-tile:focused { -fx-border-color: -onezip-accent; -fx-border-style: solid; }
+.onezip-window .home-tile:pressed { -fx-background-color: -onezip-pressed; }
+
+.archive-context-menu.light { -onezip-command: white; -onezip-border: #d1d1d1; -onezip-text: #111111; }
+.archive-context-menu.dark { -onezip-command: #252525; -onezip-border: #404040; -onezip-text: #eeeeee; }
+.onezip-window .compression-toolbar { -fx-background-color: -onezip-command; -fx-padding: 6; }
+.onezip-window .compression-options { -fx-padding: 12; }
+.onezip-window .compression-scroll, .onezip-window .compression-scroll > .viewport { -fx-background-color: -onezip-surface; -fx-border-width: 0; -fx-padding: 0; }
+.onezip-window .validation-text { -fx-text-fill: #d85050; }
+.onezip-window .source-table {
+    text_color: -onezip-text; hover_text_color: -onezip-text; selected_text_color: -onezip-text; selected_unfocused_text_color: -onezip-text;
+    table_background_color: -onezip-table; alternate_row_color: -onezip-row-alt;
+    cell_selected_color: -onezip-selected; cell_selected_unfocused_color: -onezip-selected; cell_hover_color: -onezip-hover;
+}
+.onezip-window .source-table .table-cell { -fx-padding: 4 10; }
+.onezip-window .compression-files { -fx-border-color: -onezip-border; -fx-border-width: 1; }
+.onezip-window .compression-toolbar { -fx-padding: 10 12; }
+.onezip-window .compression-toolbar .button { -fx-min-height: 34; -fx-padding: 5 14; -fx-background-color: transparent; }
+.onezip-window .compression-toolbar .button:hover { -fx-background-color: -onezip-hover; }
+.onezip-window .compression-settings { -fx-padding: 16; -fx-border-color: -onezip-border; -fx-background-color: -onezip-command; }
+.onezip-window .section-title { -fx-font-size: 15; -fx-font-weight: normal; }
+.onezip-window .compression-settings .text-field, .onezip-window .compression-settings .choice-box { -fx-min-height: 34; }
+.onezip-window .compression-extension { -fx-padding: 8 12; -fx-background-color: -onezip-button; }
+.onezip-window .format-selector .toggle-button { -fx-min-height: 34; -fx-border-color: -onezip-border; -fx-border-width: 1; }
+.onezip-window .format-selector .toggle-button:selected { -fx-background-color: -onezip-primary; -fx-text-fill: white; }
+.onezip-window .compression-advanced > .title { -fx-padding: 16; -fx-background-color: -onezip-command; -fx-border-color: -onezip-border; }
+.onezip-window .compression-advanced > .title > .text { -fx-font-size: 15; -fx-font-weight: normal; }
+.onezip-window .compression-start { -fx-min-width: 180; -fx-min-height: 42; -fx-font-size: 14; -fx-font-weight: normal; }
+
+/* Optional local wallpaper with neutral surfaces, independent of image colors. */
+.onezip-window:wallpaper .workspace { -fx-background-color: transparent; }
+.onezip-window:wallpaper .compression-scroll, .onezip-window:wallpaper .compression-scroll > .viewport { -fx-background-color: transparent; }
+/* At full transparency, helper text needs the same contrast as normal text. */
+.onezip-window:wallpaper { -onezip-muted: #1a1a1a; -onezip-command: rgba(247,247,247,.90); -onezip-table: rgba(255,255,255,.86); -onezip-sidebar: rgba(245,245,245,.90); -onezip-row-alt: rgba(245,245,245,.82); -onezip-tile: rgba(250,250,250,.90); }
+.onezip-window.dark:wallpaper { -onezip-muted: #eeeeee; -onezip-command: rgba(34,34,34,.91); -onezip-table: rgba(25,25,25,.86); -onezip-sidebar: rgba(32,32,32,.92); -onezip-row-alt: rgba(38,38,38,.84); -onezip-tile: rgba(38,38,38,.91); }
+.onezip-window .compression-files, .onezip-window .compression-settings { -fx-background-radius: 5; -fx-border-radius: 5; }
+.onezip-window .compression-advanced > .title { -fx-background-radius: 5; -fx-border-radius: 5; }
+.onezip-window .compression-toolbar .menu-button { -fx-min-height: 34; -fx-padding: 5 14; -fx-background-color: -onezip-primary; }
+.onezip-window .compression-toolbar .menu-button .label { -fx-text-fill: white; }
+.onezip-window .compression-toolbar .menu-button .arrow { -fx-background-color: white; }
+/* JMetro also styles child Text nodes; override those to avoid serif CJK fallback. */
+.onezip-window .text { -fx-font-family: "Microsoft YaHei"; }
+
+/* Round-two interaction and readability refinements; buttons remain square. */
+.onezip-window .button, .onezip-window .toggle-button, .onezip-window .menu-button, .onezip-window .choice-box { -fx-background-radius: 0; -fx-border-radius: 0; }
+.onezip-window .text-input { -fx-prompt-text-fill: -onezip-muted; -fx-text-fill: -onezip-text; }
+.onezip-window .primary-action, .onezip-window .compression-toolbar .menu-button, .onezip-window .format-selector .toggle-button:selected { -fx-background-color: -onezip-primary; }
+.onezip-window:archive-mode .archive-commandbar .button, .onezip-window:archive-mode .archive-commandbar .menu-button { -fx-min-height: 76; -fx-pref-height: 76; }
+.onezip-window:archive-mode .archive-commandbar .menu-button > .label { -fx-padding: 0; }
+
+/* One translucent fill per large archive surface, not an opaque SplitPane plus stacked fills. */
+.onezip-window:wallpaper:archive-mode {
+    -onezip-archive-sheet: rgba(255,255,255,.52);
+    -onezip-archive-stripe: rgba(0,0,0,.025);
+    -onezip-archive-muted: #4b4b4b;
+}
+.onezip-window.dark:wallpaper:archive-mode {
+    -onezip-archive-sheet: rgba(24,24,24,.50);
+    -onezip-archive-stripe: rgba(255,255,255,.035);
+    -onezip-archive-muted: #bfbfbf;
+}
+.onezip-window:wallpaper:archive-mode #archive-browser-split { -fx-background-color: transparent; }
+.onezip-window:wallpaper:archive-mode #zip-entry-table {
+    table_background_color: transparent;
+    alternate_row_color: -onezip-archive-stripe;
+    -fx-background-color: -onezip-archive-sheet;
+}
+.onezip-window:wallpaper:archive-mode #zip-entry-table > .virtual-flow,
+.onezip-window:wallpaper:archive-mode #zip-entry-table .clipped-container,
+.onezip-window:wallpaper:archive-mode #zip-entry-table .sheet,
+.onezip-window:wallpaper:archive-mode #zip-entry-table .table-cell,
+.onezip-window:wallpaper:archive-mode #zip-entry-table .table-row-cell { -fx-background-color: transparent; }
+.onezip-window:wallpaper:archive-mode #zip-entry-table .table-row-cell:odd { -fx-background-color: -onezip-archive-stripe; }
+.onezip-window:wallpaper:archive-mode #zip-entry-table .table-row-cell:empty { -fx-background-color: transparent; }
+.onezip-window:wallpaper:archive-mode #zip-entry-table .table-row-cell:selected { -fx-background-color: -onezip-selected; }
+.onezip-window:wallpaper:archive-mode #archive-comment-pane,
+.onezip-window:wallpaper:archive-mode #archive-comment-text,
+.onezip-window:wallpaper:archive-mode #archive-comment-text .scroll-pane,
+.onezip-window:wallpaper:archive-mode #archive-comment-text .viewport { -fx-background-color: transparent; }
+.onezip-window:wallpaper:archive-mode #archive-comment-text .content { -fx-background-color: -onezip-archive-sheet; }
+.onezip-window:wallpaper:archive-mode #archive-comment-text { -fx-prompt-text-fill: -onezip-archive-muted; }
+.onezip-window:wallpaper:archive-mode .archive-statusbar { -fx-background-color: -onezip-command; }
+
+/* Adjust fill alpha rather than Node.opacity, keeping text and icon contrast intact. */
+.onezip-window:wallpaper .compression-toolbar .button,
+.onezip-window:wallpaper:archive-mode .archive-commandbar .button,
+.onezip-window:wallpaper:archive-mode .archive-commandbar .menu-button,
+.onezip-window:wallpaper:archive-mode .archive-addressbar .button,
+.onezip-window:wallpaper .button,
+.onezip-window:wallpaper .toggle-button,
+.onezip-window:wallpaper .menu-button { -fx-background-color: -onezip-glass-button; }
+.onezip-window:wallpaper .compression-toolbar .button:hover,
+.onezip-window:wallpaper:archive-mode .archive-commandbar .button:hover,
+.onezip-window:wallpaper:archive-mode .archive-commandbar .menu-button:hover,
+.onezip-window:wallpaper:archive-mode .archive-addressbar .button:hover,
+.onezip-window:wallpaper .button:hover,
+.onezip-window:wallpaper .toggle-button:hover,
+.onezip-window:wallpaper .menu-button:hover { -fx-background-color: -onezip-glass-hover; }
+.onezip-window:wallpaper .compression-toolbar .button:pressed,
+.onezip-window:wallpaper:archive-mode .archive-commandbar .button:pressed,
+.onezip-window:wallpaper:archive-mode .archive-commandbar .menu-button:pressed,
+.onezip-window:wallpaper:archive-mode .archive-addressbar .button:pressed,
+.onezip-window:wallpaper .button:pressed,
+.onezip-window:wallpaper .toggle-button:pressed,
+.onezip-window:wallpaper .menu-button:pressed { -fx-background-color: -onezip-glass-pressed; }
+.onezip-window:wallpaper .primary-action,
+.onezip-window:wallpaper .compression-toolbar .menu-button,
+.onezip-window:wallpaper .format-selector .toggle-button:selected { -fx-background-color: -onezip-glass-primary; }
+.onezip-window:wallpaper .primary-action:hover,
+.onezip-window:wallpaper .compression-toolbar .menu-button:hover { -fx-background-color: -onezip-primary-hover; }
+
+/* The user controls all workspace fills, including nested skins, not just button nodes. */
+.onezip-window:wallpaper, .onezip-window.dark:wallpaper,
+.onezip-window:wallpaper:archive-mode, .onezip-window.dark:wallpaper:archive-mode {
+    -onezip-command: -onezip-glass-panel;
+    -onezip-sidebar: -onezip-glass-panel;
+    -onezip-table: -onezip-glass-sheet;
+    -onezip-row-alt: -onezip-glass-stripe;
+    -onezip-tile: -onezip-glass-button;
+    -onezip-archive-sheet: -onezip-glass-sheet;
+    -onezip-archive-stripe: -onezip-glass-stripe;
+}
+.onezip-window:wallpaper .text-input,
+.onezip-window:wallpaper .choice-box,
+.onezip-window:wallpaper .combo-box-base,
+.onezip-window:wallpaper .spinner,
+.onezip-window:wallpaper .compression-advanced > .content { -fx-background-color: -onezip-glass-input; }
+.onezip-window:wallpaper .text-area .scroll-pane,
+.onezip-window:wallpaper .text-area .viewport { -fx-background-color: transparent; }
+.onezip-window:wallpaper .text-area .content { -fx-background-color: -onezip-glass-input; }
+.onezip-window:wallpaper .source-table { -fx-background-color: -onezip-glass-sheet; table_background_color: transparent; }
+.onezip-window:wallpaper .source-table > .virtual-flow,
+.onezip-window:wallpaper .source-table .clipped-container,
+.onezip-window:wallpaper .source-table .sheet,
+.onezip-window:wallpaper .source-table .table-cell,
+.onezip-window:wallpaper .source-table .table-row-cell { -fx-background-color: transparent; }
+.onezip-window:wallpaper .source-table .table-row-cell:odd { -fx-background-color: -onezip-glass-stripe; }
+.onezip-window:wallpaper .source-table .table-row-cell:selected { -fx-background-color: -onezip-selected; }
+.onezip-window:wallpaper .table-view .column-header-background,
+.onezip-window:wallpaper .table-view .column-header,
+.onezip-window:wallpaper .table-view .filler { -fx-background-color: -onezip-glass-panel; }
+.onezip-window:wallpaper:clear-actions .primary-action,
+.onezip-window:wallpaper:clear-actions .primary-action .text,
+.onezip-window:wallpaper:clear-actions .compression-toolbar .menu-button .label,
+.onezip-window:wallpaper:clear-actions .compression-toolbar .menu-button .text,
+.onezip-window:wallpaper:clear-actions .format-selector .toggle-button:selected { -fx-text-fill: -onezip-text; -fx-fill: -onezip-text; }
+.onezip-window:wallpaper:clear-actions .compression-toolbar .menu-button .arrow { -fx-background-color: -onezip-text; }
+/* At 100%, explicitly clear hardcoded skin and interaction fills too. */
+.onezip-window:wallpaper:clear-surfaces .button,
+.onezip-window:wallpaper:clear-surfaces .button:hover,
+.onezip-window:wallpaper:clear-surfaces .button:pressed,
+.onezip-window:wallpaper:clear-surfaces .menu-button,
+.onezip-window:wallpaper:clear-surfaces .menu-button:hover,
+.onezip-window:wallpaper:clear-surfaces .menu-button:pressed,
+.onezip-window:wallpaper:clear-surfaces .toggle-button,
+.onezip-window:wallpaper:clear-surfaces .primary-action:hover,
+.onezip-window:wallpaper:clear-surfaces .compression-toolbar .menu-button:hover,
+.onezip-window:wallpaper:clear-surfaces .compression-toolbar .button:hover,
+.onezip-window:wallpaper:clear-surfaces .compression-extension,
+.onezip-window:wallpaper:clear-surfaces .archive-addressbar .scroll-pane,
+.onezip-window:wallpaper:clear-surfaces .archive-addressbar .viewport { -fx-background-color: transparent; }
+.onezip-window:wallpaper:clear-surfaces .format-selector .toggle-button:selected { -fx-background-color: transparent; -fx-border-color: -onezip-accent; -fx-border-width: 1; }
+
+.onezip-window:wallpaper .spinner .increment-arrow-button,
+.onezip-window:wallpaper .spinner .decrement-arrow-button,
+.onezip-window:wallpaper .text-area .arrow-button { -fx-background-color: -onezip-glass-input; }
+.onezip-window:wallpaper:clear-surfaces .spinner .increment-arrow-button,
+.onezip-window:wallpaper:clear-surfaces .spinner .decrement-arrow-button,
+.onezip-window:wallpaper:clear-surfaces .text-area .arrow-button { -fx-background-color: transparent; }
+
+.onezip-window:wallpaper .arrow-button { -fx-background-color: -onezip-glass-input; }
+.onezip-window:wallpaper:clear-surfaces .arrow-button { -fx-background-color: transparent; }
+.onezip-window:wallpaper:clear-surfaces .primary-action { -fx-border-color: -onezip-accent; -fx-border-width: 1; }
+.onezip-window:wallpaper:clear-surfaces .source-table .table-row-cell:selected,
+.onezip-window:wallpaper:clear-surfaces:archive-mode #zip-entry-table .table-row-cell:selected { -fx-background-color: transparent; -fx-border-color: -onezip-accent; -fx-border-width: 1; }
+.onezip-window:wallpaper:clear-surfaces .source-table,
+.onezip-window:wallpaper:clear-surfaces:archive-mode #zip-entry-table { cell_selected_color: transparent; cell_selected_unfocused_color: transparent; }
+
+.onezip-window:wallpaper .compression-advanced > .title > .arrow-button { -fx-background-color: -onezip-glass-input; }
+.onezip-window:wallpaper:clear-surfaces .compression-advanced > .title > .arrow-button { -fx-background-color: transparent; }
+
+.onezip-window .command-scroll, .onezip-window .command-scroll > .viewport { -fx-background-color: transparent; -fx-padding: 0; -fx-border-width: 0; }

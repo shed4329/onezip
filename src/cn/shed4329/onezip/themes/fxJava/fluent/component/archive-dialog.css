@@ -1,0 +1,4 @@
+.extraction-dialog .text { -fx-font-family: "Microsoft YaHei"; }
+.extraction-dialog .button { -fx-background-radius: 0; -fx-border-radius: 0; -fx-min-height: 32; }
+.extraction-dialog .text-input { -fx-prompt-text-fill: #616161; }
+.dark .extraction-dialog .text-input, .extraction-dialog.dark .text-input { -fx-prompt-text-fill: #bfbfbf; }

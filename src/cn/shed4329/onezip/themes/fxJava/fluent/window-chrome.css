@@ -1,0 +1,14 @@
+.onezip-chrome { -caption-surface: #f6f6f6; -caption-text: #1a1a1a; }
+.onezip-chrome.dark { -caption-surface: #202020; -caption-text: #eeeeee; }
+.onezip-chrome .window-controls { -fx-background-color: transparent; }
+.onezip-chrome .window-controls .caption-command { -fx-padding: 0; -fx-background-color: transparent; -fx-background-radius: 0; -fx-border-width: 0; -fx-min-width: 46; -fx-pref-width: 46; -fx-min-height: 38; -fx-pref-height: 38; }
+.onezip-chrome .caption-glyph { -fx-fill: -caption-text; }
+.onezip-chrome .window-controls .caption-command:hover { -fx-background-color: -onezip-selected; }
+.onezip-chrome #window-close:hover { -fx-background-color: #c42b1c; }
+.onezip-chrome #window-close:hover .caption-glyph { -fx-fill: white; }
+.onezip-chrome #window-resize { -fx-background-color: transparent; }
+.onezip-chrome.dialog-pane > .header-panel { -fx-padding: 0; }
+.onezip-chrome .dialog-heading { -fx-padding: 14 64 14 18; -fx-text-fill: -caption-text; -fx-font-size: 15; -fx-font-weight: normal; }
+.onezip-chrome.dialog-pane > .content { -fx-padding: 14 60 14 18; }
+.onezip-chrome:archive-mode .archive-commandbar { -fx-padding: 8; }
+.onezip-chrome:archive-mode .archive-command-scroll { -fx-padding: 0 138 0 0; }

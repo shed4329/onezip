@@ -1,0 +1,13 @@
+* text=auto
+*.java text eol=lf
+*.md text eol=lf
+*.xml text eol=lf
+*.properties text eol=lf
+*.ps1 text eol=lf
+*.py text eol=lf
+*.cmd text eol=crlf
+*.png binary
+*.ico binary
+*.rar binary
+*.zip binary
+*.7z binary

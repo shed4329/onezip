@@ -1,0 +1,9 @@
+Microsoft Fluent UI System Icons — MIT License, copyright Microsoft Corporation.
+Upstream: https://github.com/microsoft/fluentui-system-icons
+License: https://github.com/microsoft/fluentui-system-icons/blob/main/LICENSE
+Fetched 2026-10-29; original SVG paths and viewBox preserved. JavaFX SVGPath renders them with theme foreground.
+minimize.svg: assets/Subtract/SVG/ic_fluent_subtract_16_regular.svg
+maximize.svg: assets/Maximize/SVG/ic_fluent_maximize_16_regular.svg
+restore.svg: assets/Square Multiple/SVG/ic_fluent_square_multiple_16_regular.svg
+close.svg: assets/Dismiss/SVG/ic_fluent_dismiss_16_regular.svg
+Full MIT license is included alongside these assets in LICENSE.txt, including in the JAR.

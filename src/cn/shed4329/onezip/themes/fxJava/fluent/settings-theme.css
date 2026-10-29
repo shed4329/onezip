@@ -1,0 +1,14 @@
+.onezip-settings { -settings-surface: #fafafa; -settings-panel: white; -settings-text: #1a1a1a; -settings-muted: #555555; -settings-border: #dddddd; -fx-background-color: -settings-surface; -fx-font-family: "Microsoft YaHei"; -fx-font-size: 13; }
+.onezip-settings.dark { -settings-surface: #181818; -settings-panel: #222222; -settings-text: #eeeeee; -settings-muted: #c0c0c0; -settings-border: #363636; }
+.onezip-settings .label { -fx-text-fill: -settings-text; -fx-font-weight: normal; }
+.onezip-settings .settings-heading { -fx-font-size: 18; }
+.onezip-settings .settings-section-title { -fx-font-size: 15; }
+.onezip-settings .settings-hint { -fx-text-fill: -settings-muted; -fx-font-size: 12; }
+.onezip-settings .settings-group { -fx-background-color: -settings-panel; -fx-padding: 18; -fx-border-color: -settings-border; -fx-border-width: 1; }
+.onezip-settings .settings-tabs { -fx-padding: 0 0 12 0; -fx-border-color: transparent transparent -settings-border transparent; -fx-border-width: 0 0 1 0; }
+.onezip-settings .settings-tab { -fx-background-color: transparent; -fx-background-radius: 0; -fx-border-width: 0 0 2 0; -fx-border-color: transparent; -fx-padding: 9 14; -fx-graphic-text-gap: 8; -fx-font-weight: normal; }
+.onezip-settings .settings-tab:selected { -fx-border-color: transparent transparent -onezip-accent transparent; }
+.onezip-settings .settings-tab:hover { -fx-background-color: -onezip-selected; }
+.onezip-settings .scroll-pane, .onezip-settings .scroll-pane > .viewport { -fx-background-color: transparent; -fx-border-width: 0; -fx-padding: 0; }
+.onezip-settings .button { -fx-background-radius: 0; -fx-font-weight: normal; }
+.onezip-settings .toggle-switch:selected .thumb-area { -fx-background-color: -onezip-primary; }

@@ -1,0 +1,15 @@
+.progress-dialog .progress-bar > .bar { -fx-background-color: -onezip-primary; }
+.progress-bar.stopped > .bar {
+    -fx-background-color: #d13438;
+    -fx-background-insets: 0;
+}
+.progress-bar.completed > .bar { -fx-background-color: #16833b; -fx-background-insets: 0; }
+.progress-dialog { -progress-text: #1a1a1a; -fx-background-color: #ffffff; }
+.progress-dialog.dark { -progress-text: #eeeeee; -fx-background-color: #202020; }
+.progress-dialog .label { -fx-text-fill: -progress-text; -fx-font-size: 13; -fx-font-family: "Microsoft YaHei UI"; -fx-font-weight: normal; }
+.progress-dialog .progress-heading { -fx-font-size: 20; -fx-font-weight: normal; }
+.progress-dialog .progress-archive { -fx-font-size: 15; -fx-font-weight: normal; }
+.progress-dialog .progress-actions .button, .progress-dialog .progress-actions .toggle-button { -fx-min-height: 40; -fx-padding: 8 18; -fx-background-radius: 0; -fx-font-size: 14; }
+.progress-dialog #archive-cancel { -fx-min-width: 115; }
+.progress-dialog #archive-open-folder { -fx-graphic-text-gap: 8; }
+.progress-dialog #archive-open-folder:selected { -fx-background-color: -onezip-primary; -fx-text-fill: white; }

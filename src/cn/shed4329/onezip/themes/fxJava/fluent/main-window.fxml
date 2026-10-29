@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.image.*?>
+<?import cn.shed4329.onezip.themes.fxJava.fluent.component.ZipEntryPreview?>
+<?import cn.shed4329.onezip.themes.fxJava.fluent.component.CompressionSourceTable?>
+<BorderPane fx:id="root" styleClass="onezip-window" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="cn.shed4329.onezip.themes.fxJava.fluent.MainWindowController">
+    <fx:define>
+        <ToggleGroup fx:id="encodingGroup"/>
+        <ContextMenu fx:id="archiveActions" styleClass="archive-context-menu">
+            <items>
+                <MenuItem fx:id="testArchive" id="archive-test" text="%archive.testAction" onAction="#testArchive"/>
+                <MenuItem fx:id="archivePassword" id="archive-password" text="%archive.passwordAction" onAction="#enterArchivePassword"/>
+                <MenuItem fx:id="archiveReload" id="zip-preview-reload" text="%archive.reload" onAction="#reloadArchive"/>
+                <SeparatorMenuItem/><MenuItem id="archive-home" text="%navigation.returnHome" onAction="#goHome"/>
+            </items>
+        </ContextMenu>
+    </fx:define>
+    <center>
+        <StackPane styleClass="workspace">
+            <VBox fx:id="homePane" id="home-page" alignment="CENTER" spacing="24" styleClass="home-pane" onDragOver="#sourceDragOver" onDragDropped="#homeDrop">
+                <GridPane alignment="CENTER" hgap="20" vgap="20">
+                    <Button id="home-compress" text="%action.compress" contentDisplay="TOP" onAction="#newArchive" styleClass="home-tile" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                        <graphic><ImageView fitWidth="48" fitHeight="48" preserveRatio="true"><image><Image url="@img/compression.png"/></image></ImageView></graphic>
+                    </Button>
+                    <Button id="home-extract" text="%action.extract" contentDisplay="TOP" onAction="#openArchive" styleClass="home-tile" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                        <graphic><ImageView fitWidth="48" fitHeight="48" preserveRatio="true"><image><Image url="@img/extractLine.png"/></image></ImageView></graphic>
+                    </Button>
+                    <Button id="home-settings" text="%settings.title" contentDisplay="TOP" onAction="#openSettings" styleClass="home-tile" GridPane.columnIndex="0" GridPane.rowIndex="1">
+                        <graphic><ImageView fitWidth="48" fitHeight="48" preserveRatio="true"><image><Image url="@img/settingLightDark.png"/></image></ImageView></graphic>
+                    </Button>
+                    <Button id="home-about" text="%action.about" contentDisplay="TOP" onAction="#openAbout" styleClass="home-tile" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                        <graphic><ImageView fitWidth="48" fitHeight="48" preserveRatio="true"><image><Image url="@img/about.png"/></image></ImageView></graphic>
+                    </Button>
+                </GridPane>
+            </VBox>
+            <ScrollPane fx:id="compressionScroll" fitToWidth="true" fitToHeight="true" styleClass="compression-scroll" hbarPolicy="NEVER">
+            <content><VBox fx:id="compressionPane" spacing="12" onDragOver="#sourceDragOver" onDragDropped="#sourceDrop">
+                <Label text="%compress.heading" styleClass="page-title"/>
+                <VBox spacing="0" VBox.vgrow="ALWAYS" styleClass="compression-files">
+                    <ScrollPane fx:id="compressionToolbarScroll" fitToWidth="true" fitToHeight="true" minHeight="76" prefHeight="76" maxHeight="76" vbarPolicy="NEVER" styleClass="command-scroll"><content><HBox minWidth="-Infinity" minHeight="-Infinity" styleClass="compression-toolbar" spacing="8" alignment="CENTER_LEFT">
+                        <MenuButton id="source-add" text="%sources.add"><items><MenuItem text="%sources.fileAction" onAction="#addSourceFiles"/><MenuItem text="%sources.folderAction" onAction="#addSourceFolder"/></items></MenuButton>
+                        <Button fx:id="removeSource" id="source-remove" text="%sources.remove" onAction="#removeSources"/>
+                        <Button fx:id="clearSource" id="source-clear" text="%sources.clear" onAction="#clearSources"/>
+                        <Separator orientation="VERTICAL" prefHeight="24"/>
+                        <Button fx:id="moveSourceUp" id="source-up" text="%sources.moveUp" onAction="#moveSourcesUp"/>
+                        <Button fx:id="moveSourceDown" id="source-down" text="%sources.moveDown" onAction="#moveSourcesDown"/>
+                        <Region HBox.hgrow="ALWAYS"/>
+                        <Label fx:id="sourceCount" styleClass="secondary-text"/>
+                        <Label fx:id="sourceSize" styleClass="secondary-text"/>
+                    </HBox></content></ScrollPane>
+                    <CompressionSourceTable fx:id="sourceList" VBox.vgrow="ALWAYS"/>
+                </VBox>
+                <GridPane fx:id="compressionPanels" hgap="16" vgap="12" alignment="TOP_LEFT" styleClass="compression-panels">
+                    <columnConstraints><ColumnConstraints percentWidth="66"/><ColumnConstraints percentWidth="34"/></columnConstraints>
+                    <VBox fx:id="compressionSettings" spacing="12" styleClass="compression-settings" GridPane.columnIndex="0">
+                        <Label text="%compress.settings" styleClass="section-title"/>
+                        <GridPane hgap="12" vgap="12">
+                            <columnConstraints><ColumnConstraints minWidth="90"/><ColumnConstraints hgrow="ALWAYS"/></columnConstraints>
+                            <Label text="%compress.format" GridPane.rowIndex="0"/>
+                            <HBox spacing="0" alignment="CENTER_LEFT" styleClass="format-selector" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                                <ToggleButton fx:id="formatZip" text="ZIP" onAction="#selectCompressionFormat" maxWidth="Infinity" HBox.hgrow="ALWAYS"/>
+                                <ToggleButton fx:id="formatSevenZip" text="7z" onAction="#selectCompressionFormat" maxWidth="Infinity" HBox.hgrow="ALWAYS"/>
+                                <ToggleButton fx:id="formatTar" text="TAR" onAction="#selectCompressionFormat" maxWidth="Infinity" HBox.hgrow="ALWAYS"/>
+                                <ToggleButton fx:id="formatTarGzip" text="TAR.GZ" onAction="#selectCompressionFormat" maxWidth="Infinity" HBox.hgrow="ALWAYS"/>
+                                <ChoiceBox fx:id="compressionFormat" id="compression-format" prefWidth="100"/>
+                            </HBox>
+                            <Label text="%compress.name" GridPane.rowIndex="1"/>
+                            <HBox spacing="0" alignment="CENTER_LEFT" GridPane.columnIndex="1" GridPane.rowIndex="1"><TextField fx:id="compressionName" id="compression-name" text="%compress.defaultName" HBox.hgrow="ALWAYS"/><Label fx:id="compressionExtension" id="compression-extension" text=".zip" styleClass="compression-extension"/></HBox>
+                            <Label text="%compress.location" GridPane.rowIndex="2"/>
+                            <HBox spacing="12" GridPane.columnIndex="1" GridPane.rowIndex="2"><TextField fx:id="compressionLocation" id="compression-location" HBox.hgrow="ALWAYS"/><Button id="compression-browse" text="%action.browseEllipsis" onAction="#browseCompressionLocation"/></HBox>
+                            <Label text="%password.label" GridPane.rowIndex="3"/>
+                            <PasswordField fx:id="compressionPassword" id="compression-password" promptText="%compress.passwordHint" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
+                        </GridPane>
+                    </VBox>
+                    <TitledPane fx:id="compressionAdvanced" text="%compress.advanced" expanded="false" animated="false" GridPane.columnIndex="1" GridPane.valignment="TOP" styleClass="compression-advanced">
+                        <content><VBox spacing="12" styleClass="compression-options">
+                            <Label text="%compress.level"/>
+                            <ChoiceBox fx:id="compressionLevel" id="compression-level" maxWidth="Infinity"/>
+                            <Label text="%threads.label"/>
+                            <Spinner fx:id="compressionThreads" id="compression-threads" editable="false" maxWidth="Infinity"/>
+                            <Label text="%compress.description"/>
+                            <TextArea fx:id="compressionComment" id="compression-comment" promptText="%compress.descriptionHint" prefRowCount="8" minHeight="160" prefHeight="180" wrapText="true" VBox.vgrow="ALWAYS"/>
+                        </VBox></content>
+                    </TitledPane>
+                </GridPane>
+                <Label fx:id="compressionValidation" id="compression-validation" wrapText="true" styleClass="validation-text"/>
+                <HBox alignment="CENTER_RIGHT"><Button fx:id="compressStart" id="compression-start" text="%compress.start" onAction="#compressAll" styleClass="primary-action,compression-start"/></HBox>
+            </VBox></content>
+            </ScrollPane>
+            <VBox fx:id="extractionPane" spacing="0" onDragOver="#archiveDragOver" onDragDropped="#archiveDrop">
+                <ScrollPane fx:id="archiveToolbarScroll" fitToWidth="true" fitToHeight="true" minHeight="114" prefHeight="114" maxHeight="114" vbarPolicy="NEVER" styleClass="command-scroll,archive-command-scroll"><content><HBox minWidth="-Infinity" minHeight="-Infinity" styleClass="archive-commandbar" spacing="0">
+                    <Button id="archive-open" text="%action.open" onAction="#openArchive" contentDisplay="TOP"><graphic><ImageView fitWidth="32" fitHeight="32" preserveRatio="true"><image><Image url="@img/import.png"/></image></ImageView></graphic></Button>
+                    <Button fx:id="extractAll" text="%action.extract" onAction="#extractAll" contentDisplay="TOP" styleClass="selected-command"><graphic><ImageView fitWidth="32" fitHeight="32" preserveRatio="true"><image><Image url="@img/extractLine.png"/></image></ImageView></graphic></Button>
+                    <Button text="%action.new" onAction="#newArchive" contentDisplay="TOP"><graphic><ImageView fitWidth="32" fitHeight="32" preserveRatio="true"><image><Image url="@img/zip.png"/></image></ImageView></graphic></Button>
+                    <MenuButton fx:id="addEntries" id="archive-add" text="%action.add" contentDisplay="TOP"><graphic><ImageView fitWidth="32" fitHeight="32" preserveRatio="true"><image><Image url="@img/addFile.png"/></image></ImageView></graphic><items><MenuItem text="%zip.addFiles" onAction="#addArchiveFiles"/><MenuItem text="%zip.addFolder" onAction="#addArchiveFolder"/></items></MenuButton>
+                    <Button fx:id="deleteEntries" id="archive-delete" text="%action.delete" onAction="#deleteArchiveEntries" contentDisplay="TOP"><graphic><ImageView fitWidth="32" fitHeight="32" preserveRatio="true"><image><Image url="@img/delete.png"/></image></ImageView></graphic></Button>
+                    <Separator orientation="VERTICAL" prefHeight="48"/>
+                    <Button fx:id="comment" text="%archive.comment" onAction="#editComment" contentDisplay="TOP"><graphic><ImageView fitWidth="32" fitHeight="32" preserveRatio="true"><image><Image url="@img/comment.png"/></image></ImageView></graphic></Button>
+                    <MenuButton id="archive-encoding" text="%archive.encoding" contentDisplay="TOP"><graphic><ImageView fitWidth="32" fitHeight="32" preserveRatio="true"><image><Image url="@img/language.png"/></image></ImageView></graphic><items><RadioMenuItem text="%encoding.auto" userData="IBM437" toggleGroup="$encodingGroup" onAction="#changeEncoding" selected="true"/><RadioMenuItem text="UTF-8" userData="UTF-8" toggleGroup="$encodingGroup" onAction="#changeEncoding"/><RadioMenuItem text="%encoding.zhCN" userData="GB18030" toggleGroup="$encodingGroup" onAction="#changeEncoding"/><RadioMenuItem text="%encoding.zhTW" userData="Big5" toggleGroup="$encodingGroup" onAction="#changeEncoding"/><RadioMenuItem text="%encoding.western" userData="windows-1252" toggleGroup="$encodingGroup" onAction="#changeEncoding"/></items></MenuButton>
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <Button id="archive-settings" text="%settings.title" onAction="#openSettings" contentDisplay="TOP"><graphic><ImageView fitWidth="32" fitHeight="32" preserveRatio="true"><image><Image url="@img/settingLightDark.png"/></image></ImageView></graphic></Button>
+                </HBox></content></ScrollPane>
+                <ZipEntryPreview fx:id="zipPreview" VBox.vgrow="ALWAYS"/>
+            </VBox>
+        </StackPane>
+    </center>
+</BorderPane>

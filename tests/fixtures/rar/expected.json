@@ -1,0 +1,228 @@
+{
+  "test_read_format_rar.safe.rar": {
+    "sha256": "6514fbcc2ca1ca636ec20137dc864faffd13631dddb100befd92c3a9daeefa6d",
+    "unpacked_bytes": 40,
+    "files": {
+      "test.txt": "5a5f16e01faf8adf92eb4499a2d3e93010c4b41dbb7f698f4a8466d9f58e6dd2",
+      "testdir/test.txt": "5a5f16e01faf8adf92eb4499a2d3e93010c4b41dbb7f698f4a8466d9f58e6dd2"
+    }
+  },
+  "test_read_format_rar_windows.rar": {
+    "sha256": "8d689455e9ecd92c19426604e2360b5ef8eb023890fe46aabbe2864260b70fc9",
+    "unpacked_bytes": 473,
+    "files": {
+      "test.txt": "2d45c5f87d1b6cef59a1d67a0ddeea9c75a7df81e5b64d30ecff39199b411bd9",
+      "testshortcut.lnk": "08b633f146f22534956b11bbc92e85f3f975e2820ecb892f958db5ae7bd7cf1f",
+      "testdir/test.txt": "2d45c5f87d1b6cef59a1d67a0ddeea9c75a7df81e5b64d30ecff39199b411bd9"
+    }
+  },
+  "test_read_format_rar_compress_normal.safe.rar": {
+    "sha256": "e037d27b3cd14f31b6c858644318c0f958758ae327aaeabac32313f34a1ee1da",
+    "unpacked_bytes": 40242,
+    "files": {
+      "LibarchiveAddingTest.html": "ee16390e87152d7dec632ae2b37566da6135966e46b5166e6f40a1c827fa61ad",
+      "testdir/LibarchiveAddingTest.html": "ee16390e87152d7dec632ae2b37566da6135966e46b5166e6f40a1c827fa61ad",
+      "testdir/test.txt": "5a5f16e01faf8adf92eb4499a2d3e93010c4b41dbb7f698f4a8466d9f58e6dd2"
+    }
+  },
+  "test_read_format_rar_multi_lzss_blocks.rar": {
+    "sha256": "232593586009149311a21c2a3e509ce32c726322a9d971aee6f55676a4caebf1",
+    "unpacked_bytes": 20131111,
+    "files": {
+      "multi_lzss_blocks_test.txt": "49a84a381599f749f93beaf486f3d661883d45659d9f46bfde9d34f72644f208"
+    }
+  },
+  "test_read_format_rar3_lowdist_reset.rar": {
+    "sha256": "45ca17d52b91a6f24c48fe5d79b04cb26052f7e1d732d8bf8e459c433540f916",
+    "unpacked_bytes": 64,
+    "files": {
+      "lowdist-reset.bin": "353d5f7a0789034186922e5834f666f36fa1f98e18f53fb4140b336ba090a923"
+    }
+  },
+  "test_read_format_rar_filter.rar": {
+    "sha256": "b058412adcd3329a868cb66561a224eb0acf22ad2d380ef5d9e17e432a47d6a8",
+    "unpacked_bytes": 204288,
+    "files": {
+      "bsdcat.exe": "a961532b3a196e0b2c0126ad6f35d511c9fdfeadacbe78a1b15dc221251ad9a2"
+    }
+  },
+  "test_read_format_rar_unicode.safe.rar": {
+    "sha256": "1de6314bb23babb84db48042fb832d0e799c30da5057dcf0de689d0ccaf80253",
+    "unpacked_bytes": 21,
+    "files": {
+      "表だよ/漢字長いファイル名long-filename-in-漢字.txt": "7faabe854be71defacd1fd3b0403f2c54f446dd60a46db60b7d823cf988a6deb",
+      "表だよ/新しいフォルダ/新規テキスト ドキュメント.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "abcdefghijklmnopqrsテスト.txt": "84674f2bcd7325f909505e1532c6a07fdd33d441168618f5aa24f8346f6bec6e"
+    },
+    "name_correction": "Raw UTF-8 filename matches libarchive test; ReferenceArchive extraction produced a replacement/sanitized filename. Content SHA-256 retained."
+  },
+  "test_read_format_rar5_stored.rar": {
+    "sha256": "35d75e315d164d2e329afc28f7d844f013271b4fcffd4ddd78efcdd114a383a7",
+    "unpacked_bytes": 29,
+    "files": {
+      "helloworld.txt": "fef9ad8cf601b43f76c6320075f62267c6e5c0a526d750a70b80c919a4a0aad8"
+    }
+  },
+  "test_read_format_rar5_compressed.rar": {
+    "sha256": "68f9d7e2662cd5bc5607ba9c6bf1edbf121cf3b08011a7d8643091791750a7c8",
+    "unpacked_bytes": 1200,
+    "files": {
+      "test.bin": "588870a2dade35c2650fbb7898c9a9c7f21fce7c281198604e8d0c9737f2c375"
+    }
+  },
+  "test_read_format_rar5_multiple_files.rar": {
+    "sha256": "65305723965a55a89b7e120d54807c6ae30b69532712aa20d3934296799e923b",
+    "unpacked_bytes": 16384,
+    "files": {
+      "test1.bin": "7d89f86f9f69d744ffff3fc043e15bf89fc3ffc134ffcbb31d164a99bb8b67b0",
+      "test2.bin": "f81e6fceeeab366306b23466bf6bb3aac2875e0906dc20a8652be0696ceb15a2",
+      "test3.bin": "5e621f2b6ce8fed758c3df8221f994eda55d1e432c7cc4349c34a30ec2e1c43d",
+      "test4.bin": "2627f40180217252956edb9a426e8d3e344adaf89019d3bccbe04f6c3416dcdd"
+    }
+  },
+  "test_read_format_rar5_multiple_files_solid.rar": {
+    "sha256": "0aa2c652c06304dedd93019663c1d52d5e85055d5fdb8045bfcc4345b90b4a0f",
+    "unpacked_bytes": 16384,
+    "files": {
+      "test1.bin": "7d89f86f9f69d744ffff3fc043e15bf89fc3ffc134ffcbb31d164a99bb8b67b0",
+      "test2.bin": "f81e6fceeeab366306b23466bf6bb3aac2875e0906dc20a8652be0696ceb15a2",
+      "test3.bin": "5e621f2b6ce8fed758c3df8221f994eda55d1e432c7cc4349c34a30ec2e1c43d",
+      "test4.bin": "2627f40180217252956edb9a426e8d3e344adaf89019d3bccbe04f6c3416dcdd"
+    }
+  },
+  "test_read_format_rar5_solid.rar": {
+    "sha256": "1149dda288494ab6c954d0e3f2a8831318aaf9c69e7da741729bb0c681f924b5",
+    "unpacked_bytes": 25776,
+    "files": {
+      "test.bin": "588870a2dade35c2650fbb7898c9a9c7f21fce7c281198604e8d0c9737f2c375",
+      "test1.bin": "7d89f86f9f69d744ffff3fc043e15bf89fc3ffc134ffcbb31d164a99bb8b67b0",
+      "test2.bin": "f81e6fceeeab366306b23466bf6bb3aac2875e0906dc20a8652be0696ceb15a2",
+      "test3.bin": "5e621f2b6ce8fed758c3df8221f994eda55d1e432c7cc4349c34a30ec2e1c43d",
+      "test4.bin": "2627f40180217252956edb9a426e8d3e344adaf89019d3bccbe04f6c3416dcdd",
+      "test5.bin": "b0622b648b174abd9c5f3965155bbcc82c642f997ab8949add0a8632bf94e636",
+      "test6.bin": "0b79ce23670b7c2e5a0d4b62f0de7b0c745522be9ed6a9ec70da6991c2f010f2"
+    }
+  },
+  "test_read_format_rar5_arm.rar": {
+    "sha256": "c5b149097c4f3e17239d80d6c9897c1a5aa98608d4f2e74e711bea5ef8ca85dd",
+    "unpacked_bytes": 90808,
+    "files": {
+      "elf-Linux-ARMv7-ls": "e68c62b49184ed764f324fb4722481d60e1bf321b722238d95247f391960605c"
+    }
+  },
+  "test_read_format_rar5_win32.rar": {
+    "sha256": "f33f17c7b3f1a623bba4f81b41565860ae9f1589dfaf7386e62a520543390c49",
+    "unpacked_bytes": 25776,
+    "files": {
+      "test.bin": "588870a2dade35c2650fbb7898c9a9c7f21fce7c281198604e8d0c9737f2c375",
+      "test1.bin": "7d89f86f9f69d744ffff3fc043e15bf89fc3ffc134ffcbb31d164a99bb8b67b0",
+      "test2.bin": "f81e6fceeeab366306b23466bf6bb3aac2875e0906dc20a8652be0696ceb15a2",
+      "test3.bin": "5e621f2b6ce8fed758c3df8221f994eda55d1e432c7cc4349c34a30ec2e1c43d",
+      "test4.bin": "2627f40180217252956edb9a426e8d3e344adaf89019d3bccbe04f6c3416dcdd",
+      "test5.bin": "b0622b648b174abd9c5f3965155bbcc82c642f997ab8949add0a8632bf94e636",
+      "test6.bin": "0b79ce23670b7c2e5a0d4b62f0de7b0c745522be9ed6a9ec70da6991c2f010f2"
+    }
+  },
+  "test_read_format_rar5_blake2.rar": {
+    "sha256": "e2889c7498cb8065b9fd2338b142a135b906576a30d24acaf44850cca6fb845a",
+    "unpacked_bytes": 814,
+    "files": {
+      "cebula.txt": "1e98540238b2b13d1a22f4f4fa8e2eb6c66e24d46115ffdfafd3f3f981b212e7"
+    }
+  },
+  "junrar-rar5filters-rar5-delta.rar": {
+    "sha256": "4a49eccf50ff5b40a7c3cbcc032f44de2fc0bd0039f100e52c29f2528701e1b6",
+    "unpacked_bytes": 262144,
+    "files": {
+      "delta.bin": "808dfc21490452cb7740e316f1255a35578aa3ec3b56e42956d18e43dd7279c1"
+    }
+  },
+  "junrar-rar5filters-rar5-e8.rar": {
+    "sha256": "97e51dac965a6adee0c827fddc9f5f7555e6da29b6e20652d56c2c4b96c67442",
+    "unpacked_bytes": 196608,
+    "files": {
+      "e8.bin": "65b41504002936b8c0fc5c389ff5d9a191e8d1d7f584458fe0198e442a1397fd"
+    }
+  },
+  "junrar-rar5filters-rar5-e8e9.rar": {
+    "sha256": "81280670bb37b1261bc0ee4b2a3183b66781602837628e91edb76d6ecea6b00c",
+    "unpacked_bytes": 196608,
+    "files": {
+      "e8e9.bin": "4e53b7d69dc125bf232dff52d9d9d2a183eaecae9dad85bee80358133856f4e3"
+    }
+  },
+  "junrar-rar5unpack-m3-plain-128k.rar": {
+    "sha256": "4ee20affff9cac75e651141457cfb4ea66a0feb73bb90891f8b7a29caa389269",
+    "unpacked_bytes": 307200,
+    "files": {
+      "med.bin": "ae9df0480568cad2c176c7a0cb228a0676ce927a3fbc7df80ae324edc7bf24b0"
+    }
+  },
+  "junrar-rar5unpack-m3-plain-32m.rar": {
+    "sha256": "6610a5d8f82b473a23c93a1ea2360b6ce55ab9548f5b6f3460b8840b1c9a09ec",
+    "unpacked_bytes": 41943040,
+    "files": {
+      "big.bin": "6864d2cd164a21bb287e58a0ae1940c254eb0ff5af61c365b0e8d11119fb2e78"
+    }
+  },
+  "junrar-rar5unpack-m3-solid-128k.rar": {
+    "sha256": "a3bea228bfac430addddab61968d162950f6e6b331d27648336dfcfb6ca571ce",
+    "unpacked_bytes": 204800,
+    "files": {
+      "s0.bin": "d99fac30d0b27a3dd7bc437a716ba05c3574617fa82efa4959650fb576dd9e11",
+      "s1.bin": "7e753e1f8090deba1687f6ccd5610e105d8b49c6c8a71a4e0b87f1fb7b086126",
+      "s2.bin": "43c943b9814425661e6fdeaca9060ab1e7e8fa0af501618810eb3c8d55629b46",
+      "s3.bin": "634bd533555da52660aa54ecd1d266ff124897a66e989c2d36a460e6852ca412",
+      "s4.bin": "d7539b9930a82e3320c498edf3170b9502dfd8efecd60f6ca6651e94ff88d237"
+    }
+  },
+  "junrar-rar5unpack-m5-solid-128k.rar": {
+    "sha256": "389366645155fb5aaebaadd08f1fdca8eba3a11cdea6dffe641a2b0b8dc6ba12",
+    "unpacked_bytes": 204800,
+    "files": {
+      "s0.bin": "d99fac30d0b27a3dd7bc437a716ba05c3574617fa82efa4959650fb576dd9e11",
+      "s1.bin": "7e753e1f8090deba1687f6ccd5610e105d8b49c6c8a71a4e0b87f1fb7b086126",
+      "s2.bin": "43c943b9814425661e6fdeaca9060ab1e7e8fa0af501618810eb3c8d55629b46",
+      "s3.bin": "634bd533555da52660aa54ecd1d266ff124897a66e989c2d36a460e6852ca412",
+      "s4.bin": "d7539b9930a82e3320c498edf3170b9502dfd8efecd60f6ca6651e94ff88d237"
+    }
+  },
+  "junrar-solid-rar4-solid.rar": {
+    "sha256": "b158d4b0e3506f04fcaff18db9b369b573fd54f313062c7b8c622cb33b9c5da4",
+    "unpacked_bytes": 54,
+    "files": {
+      "file1.txt": "ecdc5536f73bdae8816f0ea40726ef5e9b810d914493075903bb90623d97b1d8",
+      "file2.txt": "67ee5478eaadb034ba59944eb977797b49ca6aa8d3574587f36ebcbeeb65f70e",
+      "file3.txt": "94f6e58bd04a4513b8301e75f40527cf7610c66d1960b26f6ac2e743e108bdac",
+      "file4.txt": "899e08f22584531d18a4ec45a5dd1daef683ea941daa8c95969f1fe5c08a8137",
+      "file5.txt": "2dbe9e279b85ee61cab10513c39791a2ce4bad678906832551afd1446c24bbe3",
+      "file6.txt": "6533870544daa5db6e1f35b346390e92403b2f3eab8839f3e251fae53c699492",
+      "file7.txt": "ae66f7a411a2c31287c836faf537fb650ea34869571c462c153a3c71544e5679",
+      "file8.txt": "3b8badb856a190fe3a35a85c9ee6a806986f51e2125f02c46ba9e42a50559acd",
+      "file9.txt": "9c03f1a0e14af0400b2fd4942754c99718d2a247ab10820f3f2523ffc9e7760b"
+    }
+  },
+  "junrar-solid-rar5-solid.rar": {
+    "sha256": "d004997e805cb7bb47bd73904aae113f81ee1d82d80bed9372c5dd64d1684754",
+    "unpacked_bytes": 54,
+    "files": {
+      "file1.txt": "ecdc5536f73bdae8816f0ea40726ef5e9b810d914493075903bb90623d97b1d8",
+      "file2.txt": "67ee5478eaadb034ba59944eb977797b49ca6aa8d3574587f36ebcbeeb65f70e",
+      "file3.txt": "94f6e58bd04a4513b8301e75f40527cf7610c66d1960b26f6ac2e743e108bdac",
+      "file4.txt": "899e08f22584531d18a4ec45a5dd1daef683ea941daa8c95969f1fe5c08a8137",
+      "file5.txt": "2dbe9e279b85ee61cab10513c39791a2ce4bad678906832551afd1446c24bbe3",
+      "file6.txt": "6533870544daa5db6e1f35b346390e92403b2f3eab8839f3e251fae53c699492",
+      "file7.txt": "ae66f7a411a2c31287c836faf537fb650ea34869571c462c153a3c71544e5679",
+      "file8.txt": "3b8badb856a190fe3a35a85c9ee6a806986f51e2125f02c46ba9e42a50559acd",
+      "file9.txt": "9c03f1a0e14af0400b2fd4942754c99718d2a247ab10820f3f2523ffc9e7760b"
+    }
+  },
+  "junrar-unicode.rar": {
+    "sha256": "b35d9c57cab65a2f15827cb072aed971a99902d332f8c0ccf1ebcac69ab951e2",
+    "unpacked_bytes": 77,
+    "files": {
+      "ウニコド.txt": "964336330c97fe539379ef00101a8ac0577049c8d65fa9a3a4261221fcfff14e",
+      "新建文本文档.txt": "bf2cb58a68f684d95a3b78ef8f661c9a4e5b09e82cc8f9cc88cce90528caeb27"
+    }
+  }
+}

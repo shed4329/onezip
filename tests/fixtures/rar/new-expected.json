@@ -1,0 +1,165 @@
+{
+  "test_read_format_rar_compress_best.safe.rar": {
+    "password": "",
+    "sha256": "d5c195491156665b5ef2f825d1c1468e7c6b2842f7e8804e520a0753f284d2b5",
+    "files": {
+      "LibarchiveAddingTest.html": "ee16390e87152d7dec632ae2b37566da6135966e46b5166e6f40a1c827fa61ad",
+      "testdir/LibarchiveAddingTest.html": "ee16390e87152d7dec632ae2b37566da6135966e46b5166e6f40a1c827fa61ad",
+      "testdir/test.txt": "5a5f16e01faf8adf92eb4499a2d3e93010c4b41dbb7f698f4a8466d9f58e6dd2"
+    }
+  },
+  "test_read_format_rar_ppmd_lzss_conversion.rar": {
+    "password": "",
+    "sha256": "1c75b4b35d0f381b46918b4ff26b6579cbfc18b8e3c78d39ce3b5a97af606183",
+    "files": {
+      "ppmd_lzss_conversion_test.txt": "a0b8a5130c56577e61620f3f51ae29478a4c5251f1ed575cec73455fc9b485ea"
+    }
+  },
+  "junrar-audio-BoatModernEnglish-audio-text-unpack30.rar": {
+    "password": "",
+    "sha256": "e7c6736027e069e35e0e431b52339d263d0c7807602440672627eecf4b44d2a6",
+    "files": {
+      "BoatModernEnglish.wav": "0aeeb3c12f01d7089ca83eb321d5a54673ba0e6011231f5bc1fa10102ea3d797",
+      "LICENSE.txt": "ad43c21d4e68b2dcd345bf2dfe6f40082d1a54f8ba9e61b629ad5adcefa01ff1"
+    }
+  },
+  "junrar-ppm-preserved-maxmb0.rar": {
+    "password": "",
+    "sha256": "067fcba7c4614072dbbd25d4547806ca29f726b3e97577a5a2809238422a3c23",
+    "files": {
+      "small_payload.txt": "0a31d8250be2a88228f9a76753b6aea50f47af974b37762f526c94c41c4b1b80"
+    }
+  },
+  "junrar-ppm-legit-maxmb63.rar": {
+    "password": "",
+    "sha256": "46d5f3196f150e9f384b657208e2ae9a45934c1bfbd95ecd507cb06ef18a2325",
+    "files": {
+      "final_payload.txt": "ce38ef7faf04e1785b1ed0142972c40105045e227d74295a464a2011c1ddca7e"
+    }
+  },
+  "junrar-password-rar4-encrypted-junrar.rar": {
+    "password": "junrar",
+    "sha256": "d8c3117434d142cfdb479ffd08c6239126f7805e0547907578a41b3740668735",
+    "files": {
+      "file1.txt": "ecdc5536f73bdae8816f0ea40726ef5e9b810d914493075903bb90623d97b1d8"
+    }
+  },
+  "junrar-password-rar4-password-junrar.rar": {
+    "password": "junrar",
+    "sha256": "6eaba6677e056caee5548669eed13ac932e6a8ac150d6c5c69ae95d23f002588",
+    "files": {
+      "file1.txt": "ecdc5536f73bdae8816f0ea40726ef5e9b810d914493075903bb90623d97b1d8"
+    }
+  },
+  "junrar-password-rar5-encrypted-junrar.rar": {
+    "password": "junrar",
+    "sha256": "eedcde5498c9f7b7431b524b44f481184b08e64a7274a2f29d8b9d11850790b9",
+    "files": {
+      "file1.txt": "ecdc5536f73bdae8816f0ea40726ef5e9b810d914493075903bb90623d97b1d8"
+    }
+  },
+  "junrar-password-rar5-password-junrar.rar": {
+    "password": "junrar",
+    "sha256": "3fd635f8e1b880d10c1fea72ab3b2487309d8699dabb3869c3a3b489ec36ee92",
+    "files": {
+      "file1.txt": "ecdc5536f73bdae8816f0ea40726ef5e9b810d914493075903bb90623d97b1d8"
+    }
+  },
+  "junrar-rar5unpack-m3-enc-p.rar": {
+    "password": "junrar",
+    "sha256": "f4ad15caf603e5709c2b5a6dff80eef3fbf796434d1994be66435d54b2ca58a3",
+    "files": {
+      "med.bin": "ae9df0480568cad2c176c7a0cb228a0676ce927a3fbc7df80ae324edc7bf24b0"
+    }
+  },
+  "junrar-rar5unpack-m3-enc-hp.rar": {
+    "password": "junrar",
+    "sha256": "75c9309bf1dd5a3d0987d0cfd4c61008425c27f75eaf489a9461f3b999bcf196",
+    "files": {
+      "med.bin": "ae9df0480568cad2c176c7a0cb228a0676ce927a3fbc7df80ae324edc7bf24b0"
+    }
+  },
+  "junrar-blake2-rar5-htb-mac.rar": {
+    "password": "junrar",
+    "sha256": "17da7ce54c99795c2c6102388643115491cc6bb2e9dd21ba740868968c2cb32f",
+    "files": {
+      "payload.bin": "9fdc4f360d729e9c8d0534bf686d49a1008055c186d48114b156e96c6364e80f"
+    }
+  },
+  "junrar-blake2-rar5-htb.rar": {
+    "password": "",
+    "sha256": "556f8ce50cd45d6eaf4ab3a2974fc76af5a2f627a5efb928cab5322b84370ff0",
+    "files": {
+      "payload.bin": "9fdc4f360d729e9c8d0534bf686d49a1008055c186d48114b156e96c6364e80f"
+    }
+  },
+  "junrar-password-rar3-nonascii-password.rar": {
+    "password": "пароль密码ü",
+    "sha256": "53d19b0aec508bd49926162b45a4fd7ecaa1b9d8c13060bc4dbe1dbb953896be",
+    "files": {
+      "file1.txt": "efaffec1b655c3e25054629091aa6b46f71d34470bf3b587d3b7cdc1b7e8d135"
+    }
+  },
+  "junrar-password-rar5-nonascii-password.rar": {
+    "password": "пароль密码ü",
+    "sha256": "3d071e10b1497e393580a9dbe26c83fb53d5354f510735836d6c1b6d0df3755a",
+    "files": {
+      "file1.txt": "efaffec1b655c3e25054629091aa6b46f71d34470bf3b587d3b7cdc1b7e8d135"
+    }
+  },
+  "crypto-test-rar4-long-password.rar": {
+    "password": "Long-RAR4-password-0123456789-ABCDEFGHIJKLMN",
+    "sha256": "0ac262fd2d21d25ee4bc2c2dd4897927460e1c47207406f5c44acf16e95b6825",
+    "files": {
+      "LibarchiveAddingTest.html": "ee16390e87152d7dec632ae2b37566da6135966e46b5166e6f40a1c827fa61ad",
+      "testdir/LibarchiveAddingTest.html": "ee16390e87152d7dec632ae2b37566da6135966e46b5166e6f40a1c827fa61ad",
+      "testdir/test.txt": "5a5f16e01faf8adf92eb4499a2d3e93010c4b41dbb7f698f4a8466d9f58e6dd2"
+    }
+  },
+  "crypto-test-rar4-ppm-data.rar": {
+    "password": "rar-secret",
+    "sha256": "b1b1d67f544992823f506fcd520266e46f8643933251e5cee6e85ce00e4e976a",
+    "files": {
+      "LibarchiveAddingTest.html": "ee16390e87152d7dec632ae2b37566da6135966e46b5166e6f40a1c827fa61ad",
+      "testdir/LibarchiveAddingTest.html": "ee16390e87152d7dec632ae2b37566da6135966e46b5166e6f40a1c827fa61ad",
+      "testdir/test.txt": "5a5f16e01faf8adf92eb4499a2d3e93010c4b41dbb7f698f4a8466d9f58e6dd2"
+    }
+  },
+  "crypto-test-rar4-solid-headers.rar": {
+    "password": "пароль密码ü",
+    "sha256": "36a598994f4695aa735f06faa86e1bdb702a62b8001920cbed555db6a3cda18b",
+    "files": {
+      "file1.txt": "ecdc5536f73bdae8816f0ea40726ef5e9b810d914493075903bb90623d97b1d8",
+      "file2.txt": "67ee5478eaadb034ba59944eb977797b49ca6aa8d3574587f36ebcbeeb65f70e",
+      "file3.txt": "94f6e58bd04a4513b8301e75f40527cf7610c66d1960b26f6ac2e743e108bdac",
+      "file4.txt": "899e08f22584531d18a4ec45a5dd1daef683ea941daa8c95969f1fe5c08a8137",
+      "file5.txt": "2dbe9e279b85ee61cab10513c39791a2ce4bad678906832551afd1446c24bbe3",
+      "file6.txt": "6533870544daa5db6e1f35b346390e92403b2f3eab8839f3e251fae53c699492",
+      "file7.txt": "ae66f7a411a2c31287c836faf537fb650ea34869571c462c153a3c71544e5679",
+      "file8.txt": "3b8badb856a190fe3a35a85c9ee6a806986f51e2125f02c46ba9e42a50559acd",
+      "file9.txt": "9c03f1a0e14af0400b2fd4942754c99718d2a247ab10820f3f2523ffc9e7760b"
+    }
+  },
+  "crypto-test-rar5-solid-data.rar": {
+    "password": "rar-secret",
+    "sha256": "0a6f685ce2f1e9c9daebf61a87cdcb35bcca892dda16e7802b0f7949f37edb9c",
+    "files": {
+      "s0.bin": "d99fac30d0b27a3dd7bc437a716ba05c3574617fa82efa4959650fb576dd9e11",
+      "s1.bin": "7e753e1f8090deba1687f6ccd5610e105d8b49c6c8a71a4e0b87f1fb7b086126",
+      "s2.bin": "43c943b9814425661e6fdeaca9060ab1e7e8fa0af501618810eb3c8d55629b46",
+      "s3.bin": "634bd533555da52660aa54ecd1d266ff124897a66e989c2d36a460e6852ca412",
+      "s4.bin": "d7539b9930a82e3320c498edf3170b9502dfd8efecd60f6ca6651e94ff88d237"
+    }
+  },
+  "crypto-test-rar5-solid-headers.rar": {
+    "password": "пароль密码ü",
+    "sha256": "cde446c6757e7e76fbabd95ec832445ce12bd42aaf9abcd79473a8d3b29cebbd",
+    "files": {
+      "s0.bin": "d99fac30d0b27a3dd7bc437a716ba05c3574617fa82efa4959650fb576dd9e11",
+      "s1.bin": "7e753e1f8090deba1687f6ccd5610e105d8b49c6c8a71a4e0b87f1fb7b086126",
+      "s2.bin": "43c943b9814425661e6fdeaca9060ab1e7e8fa0af501618810eb3c8d55629b46",
+      "s3.bin": "634bd533555da52660aa54ecd1d266ff124897a66e989c2d36a460e6852ca412",
+      "s4.bin": "d7539b9930a82e3320c498edf3170b9502dfd8efecd60f6ca6651e94ff88d237"
+    }
+  }
+}

@@ -1,27 +1,61 @@
-# OneZip-一个使用JavaFX GUI的解压缩软件
+# OneZip 1.01
 
-## 关于OneZip
+[English](README.md) · [简体中文](README.zh-CN.md) · [繁體中文](README.zh-TW.md) · [日本語](README.ja.md)
 
-OneZip是一个跨平台，支持主流压缩格式（zip,7z,rar),支持简单的自定义UI的压缩软件  
-~~(其实就是很拉垮而已)~~
-## 截图
-![OneZip 截图](https://s1.328888.xyz/2022/08/14/TgZWi.png)
-![OneZip 截图](https://s1.328888.xyz/2022/08/14/TgRtw.png)
-## 在无java环境的windows PC上使用onezip
-点击[此处](https://github.com/shed4329/onezip_test/releases/tag/0.05)下载  
-如果您需要安装版 
-对于64位windows推荐选择 Windows_x64_mysetup.exe;对于32位windows请选择Windows_x86_mysetup.exe  
-如果您需要可携版本
-对于64位windows推荐选择 Windows_x64_OneZip.zip;对于32位windows请选择Windows_x86_OneZip.zip
-## 鸣谢
-排序不分先后  
-[Zip4j](http://www.lingala.net/zip4j.html)  
-[7-Zip-JBinding](http://sevenzipjbind.sourceforge.net)  
-[JMetro](https://pixelduke.com/java-javafx-theme-jmetro/)  
-[unrar5](https://github.com/sucat1997/unrar5#a-uncompress-and-compress-tooluncompress-rarrar5zip)  
-[JavaFX中文官方网站](https://openjfx.cn)  
-[JavaFX](https://openjfx.io)  
-[iconfont](https://www.iconfont.cn/)  
-[Liberica JDK](https://bell-sw.com/pages/downloads/)  
-[IDEA](https://www.jetbrains.com/idea/)  
+Thanks to vibe coding, an old application gets a second life.
 
+OneZip is a desktop file archiver rebuilt with Java 21 and a JavaFX Fluent interface. The archive containers and compression codecs are implemented in Java, without compression libraries, JNI codec calls, or external archive programs in the production engine.
+
+## Screenshots
+
+Actual application captures using isolated demo settings and sample files. No personal wallpaper, desktop, notifications, or user paths are included.
+
+![OneZip home](docs/screenshots/home.png)
+![Create an archive](docs/screenshots/compress.png)
+![Browse an archive](docs/screenshots/extract.png)
+
+## Download and launch
+
+Get the latest packages from [Releases](https://github.com/shed4329/onezip/releases/latest).
+
+- **Windows x64:** portable ZIP, EXE installer, or MSI installer. The runtime is bundled.
+- **Windows x86:** portable ZIP only. A 32-bit installer is not provided.
+- Unpack the entire portable package and run `OneZip.exe`; keep its runtime and app folders together.
+- `OneZipCLI.exe` is the console launcher. Both launchers use the same Java argument parser; the console launcher selects `--cli` automatically.
+
+```powershell
+OneZip.exe "C:\Archives\example.zip"
+OneZipCLI.exe c backup.7z documents --level 5 --threads 4
+OneZipCLI.exe x backup.7z -o restored --threads 4
+OneZipCLI.exe t backup.7z
+OneZipCLI.exe l backup.zip
+```
+
+## Features and limits
+
+- Create, extract, list, and test ZIP, 7z, TAR, GZIP, LZ4 frame, XZ, BZIP2, and TAR combinations.
+- Read RAR4/RAR5, including supported solid, PPMd, and encrypted archives; RAR creation and split archives are not supported.
+- ZIP32 add, replace, delete, AES-256 creation, and archive descriptions. ZIP64 is read-only; 7z encryption is read-only.
+- Configurable workers and compression levels, progress, throughput, elapsed time, cancellation, and output selection in Explorer.
+- English, Simplified Chinese, Traditional Chinese, and Japanese. Theme color, light/dark mode, optional image backgrounds, image blur strength, and control transparency.
+- Image blur is an application effect; native Windows Acrylic is not a released feature.
+- Settings are stored in one UTF-8 file: `%LOCALAPPDATA%\OneZip\settings.properties`. Passwords are not saved.
+
+Installers are unsigned. Installer generation and static inspection are verified; installation/upgrade/uninstallation and Windows 10 hardware have not been fully tested. x86 packages have been tested under 64-bit Windows. See [format documentation](docs/CLI.md) for detailed limits.
+
+## Build
+
+Use a Java 21 JDK. The Maven wrapper downloads Maven on its first run.
+
+```powershell
+.\mvnw.cmd test package javadoc:javadoc
+.\run-onezip.cmd
+java -jar target/onezip-1.01-all.jar --cli --version
+python scripts/verify-java-encoders.py target/onezip-1.01-all.jar
+```
+
+Production sources are in `src`, tests in `tests`. The JPMS module is `cn.shed4329.onezip`. Desktop and CLI version strings are generated from `pom.xml`.
+
+Windows runtime images require matching JavaFX 21 jmods; EXE/MSI generation additionally requires WiX 3. See [development](docs/DEVELOPMENT.md), [settings](docs/SETTINGS.md), and [third-party notices](docs/THIRD-PARTY.md).
+
+The project is licensed under Apache-2.0. Dependency, icon, RAR-related, and runtime notices must be retained. Historical versions remain available through Git history and previous releases.
